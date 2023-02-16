@@ -1,0 +1,4 @@
+{% load i18n %}
+{% autoescape off %}
+{% blocktrans %}Set your password for your account at SADC ICT Observatory{% endblocktrans %}
+{% endautoescape %}

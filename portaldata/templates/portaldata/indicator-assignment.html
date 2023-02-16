@@ -1,0 +1,293 @@
+{% extends 'base_auth.html' %}
+
+{% load static %}
+
+{% block title %}Indicator Assignment{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+     <div class="container-fluid">
+      
+      <div class="card shadow">
+          <div class="card-header py-3">
+          
+              <h4 class="text-end text-primary m-0 fw-bold">Indicator Assignment</h4>
+              </div>
+          <div class="card-body">
+            <form method="post">
+            
+              {% csrf_token %}
+
+            
+              <table class="table table-responsive table-hover">
+                <thead class="table-light  borderit">
+                  <th>S/N</th>
+                  <th>Indicator</th>
+                  <th>Assign to</th>
+                  
+                  <th>Definition</th>
+                  
+      
+                </thead>
+                <tbody>
+             
+
+              {% if exisiting_indicator_assign_data %}
+
+                {{ formset.management_form }}
+
+                {{formset.non_form_errors}}
+
+                
+
+                {% for form in formset %}
+
+                {{ form.id }}
+
+                {% comment %} {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p> {{ error }} </p>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %} {% endcomment %}
+                <span class="d-none">
+                  {{form.created_by}}</span>
+
+                 <tr>
+
+                    <td> {{form.instance.indicator.indicator_number}}</td>
+                  
+                   
+                    
+                 
+                   
+                  
+                    <td >
+                      <span class="d-none">
+                      {{form.indicator}}
+                      </span>
+                     
+                      {{form.instance}}
+                   
+                      
+                    </td>
+                    <td>
+                      
+                                                               
+                        {{ form.assigned_to_organisation }}
+                      
+                        <div class="invalid-tooltip"> 
+                          {{ form.errors }}
+                        </div>
+                      </div>
+                     
+                     
+                     
+                      
+                    </td>
+                    
+
+                   
+                   
+                    <td>
+                      
+                      <a data-toggle="modal" data-id=' {{form.instance.indicator.label}} <br> {{form.instance.indicator.definition}}'
+                        title="Show Definition" class="open-Definition btn btn-primary btn-esm" href="#openDefinition">
+                        {% comment %} <span class="fa fa-eye"></span> {% endcomment %}
+                        <i class="bi-eye-fill"></i>
+                        
+                      </a>
+                     
+                      {% comment %} <a href="#">{{ form.instance.indicator.id }}</a> {% endcomment %}
+                    
+                    
+                    </td>
+
+
+                   
+
+                   
+                    
+                  </tr>
+                  {% endfor %} 
+
+                </tbody> 
+
+  {% comment %} ########################################################################################### {% endcomment %}
+
+              {% else %}
+                    {{ formset.management_form }}
+
+                    {% for form in formset %}
+
+                    {{ form.id }}
+                  
+                      <tr>
+
+                        <td>{{form.initial.indicator.indicator_number}}</td>
+                      
+                        
+                        
+                      
+                        
+                      
+                        <td>
+                          <span class="d-none" >
+                          {{form.indicator}}
+                          </span>
+                          {{form.initial.indicator}}
+                          
+                        </td>
+
+                        <td>
+                          
+                     
+                          
+                            {{ form.assigned_to_organisation }}
+                          
+                            <div class="invalid-tooltip"> 
+                              {{ form.errors }}
+                            </div>
+                          </div>
+                         
+                         
+                          
+                        </td>
+                        
+              
+
+
+                        
+                        <td >
+                          {% comment %} Definition {% endcomment %}
+                          <a data-toggle="modal" data-id=' {{form.initial.indicator.label}} <br> {{form.initial.indicator.definition}}'
+                            title="Show Definition" class="open-Definition btn btn-primary btn-esm" href="#openDefinition">
+                            <span class="fa fa-eye"></span></a>
+                          
+                          </td>
+
+
+                        
+
+                        
+                        
+                      </tr>
+                      {% endfor %} 
+
+                    </tbody> 
+              {% endif %}
+            </table>
+
+                
+               
+              <button type="submit" class="btn btn-dark  float-end ">Cancel</button>
+              <button type="submit" class="btn btn-primary  float-end me-4">Save</button>
+              
+              </form>
+             
+            </div>
+                     
+                 
+                    
+                      
+      
+    
+  </div>
+</div>
+</div>
+<footer class="bg-white sticky-footer">
+  <div class="container my-auto">
+      <div class="text-center my-auto copyright"><span>Copyright © SADC 2022</span></div>
+  </div>
+</footer>
+</div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+
+<div class="modal fade" id="definitionModal" tabindex="-1" aria-labelledby="definitionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-start">
+      <div class="modal-header">
+        <h5 class="modal-title" id="definitionModalLabel">Definition </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body justify-content-end text-justify ">
+        <div  id="indLabel" class="modal-title fw-bold">{{ indicator.label }}</div>
+        
+        <p  name="indDefinition" id="indDefinition" > </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div> 
+
+
+ <script>
+
+  
+
+$(document).on("click", ".open-Definition", function () {
+  
+  var myDef = $(this).data('id');
+ 
+  $(".modal-body #indDefinition").html( myDef );
+  // As pointed out in comments, 
+  // it is unnecessary to have to manually call the modal.
+  $('#definitionModal').modal('show');
+});
+</script> 
+
+<script>
+  
+  {% comment %} form_idx = 0;
+  form_vidx = 0
+  form_cidx = 0
+  
+  {% for form in formset %}
+     
+  
+      var form_valueNA='id_form-'+form_idx+'-value_NA';
+      var form_value = 'id_form-'+form_vidx+'-value';
+      var form_comments = 'id_form-'+form_cidx+'-comments'; 
+   
+       document.getElementById(form_valueNA).onchange = function() {
+        alert(form_valueNA)
+        alert(form_value)
+        alert(this.id)
+        document.getElementById(form_value).disabled = this.checked;
+      };     
+      form_idx = form_idx + 1;
+      form_vidx = form_vidx + 1;
+      form_cidx = form_cidx + 1;
+  
+      {%endfor%} {% endcomment %}
+
+</script>
+
+
+
+      
+
+
+
+
+{% endblock content %}
+
+{% block js_scripts %}
+
+
+
+
+{% endblock js_scripts %}

@@ -1,0 +1,69 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}General Indicator Management{% endblock title %}
+
+
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+            <h5 class="text-dark mb-4 fw-bold">Add General Indicator</h5>
+            {% comment %} <div class="col-md-8 d-sm-flex justify-content-between align-items-center ">
+              
+               
+                <h4 class="text-dark mb-0  fw-boldest">Add Indicator</h4>
+             
+            </div> {% endcomment %}
+            <div class="card shadow">
+               
+                <div class="card-body mt-4">
+             <form  method="post">
+                {% csrf_token %}
+              
+                {% comment %} <label for="ind" id="ind_num" value="{{form.next_indicator_num}}">test</label> {% endcomment %}
+
+              
+                
+                
+            {{ form|crispy }}
+               
+                {% comment %} {% crispy form %}   {% endcomment %}
+          
+
+            <button id="btncancel" type="button" class="btn btn-dark float-end "  >
+                <a class="text-decoration-none text-white"  href="{% url 'portaldata:managegeneralindicators' %}">Close</a></button>
+            <button id="save" type="submit" class="btn btn-primary  float-end me-4">Save</button>
+
+           
+
+            </form>
+
+        </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+
+
+{% block extra_js %}
+
+<script src="{% static 'js/confirmExit.js' %}"></script>
+{% endblock extra_js %}

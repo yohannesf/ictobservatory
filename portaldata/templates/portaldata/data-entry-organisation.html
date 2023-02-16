@@ -1,0 +1,236 @@
+{% extends 'base_auth.html' %}
+{% load dataentrytags %}
+{% load static %}
+
+{% block title %}Data Entry{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+        {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+            <h5 class="text-dark mb-4 fw-bold"> Data Entry Form </h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <p class="text-start text-primary m-0 fw-bold"> {{ initial_indicator_data }} <br> Year: <span
+                            style="color: rgb(78, 223, 84);">{% reporting_year %}</span></p>
+                    <p class="text-end  m-0 " style="border-color: var(--bs-green);">
+                        <a data-toggle="modal"
+                            data-id=' {{initial_indicator_data.label}} <br> {{initial_indicator_data.definition}}'
+                            title="Show Definition" class="open-Definition btn btn-primary btn-sm"
+                            href="#openDefinition">
+                            <span class="fa fa-eye"></span></a>
+
+                    </p>
+                </div>
+                <div class="card-body">
+
+                    <form action="" method="post">
+                        {% include 'partials/_messages.html'%} 
+                        {% csrf_token %}
+
+
+                        <table class="table table-responsive table-hover">
+                            <thead class="table-light  borderit">
+                                <th>Member State</th>
+                                <th>Data</th>
+                                <th>Comments</th>
+                                <th>Data N/A?</th>
+
+                            </thead>
+                            <tbody>
+
+                                {% if exisiting_indicator_data %}
+
+                                {{ formset.management_form }}
+
+                                {{formset.non_form_errors}}
+
+
+
+                                {% for form in formset %}
+
+                                {{ form.id }}
+
+                                {{ form.errors }}
+
+                                <tr>
+                                    <td class="d-none"><span>
+                                            {{form.reporting_year}}{{form.created_by}}{{form.submitted}}{{form.validation_status}}</span>
+                                    </td>
+
+
+                                    <td><span class="d-none">{{form.indicator}} 
+                                            {{form.member_state}}</span>
+
+                                            
+
+                                            
+
+                                            {{form.instance.member_state}} 
+                                        
+                                            {% if form.instance.is_returned_for_revision %}
+                                            <span data-toggle="tooltip" title="Returned for revision!" style="color: red;"  
+                                            class="bi-exclamation-circle-fill small ms-2 "> </span>
+
+                                            {% endif %}
+                                        </td>
+
+
+                                   <td>
+                      
+                     
+                      <div class="input-group has-validation">
+                    
+                        <span class="input-group-text">$</span>
+                        {{ form.ind_value }}
+                      
+                        <div class="invalid-tooltip"> 
+                          {{ form.errors }}
+                        </div>
+                      </div>
+                     
+                     
+                      
+                    </td>
+                    <td>
+                      {{form.comments|addclass:'form-control'}}
+                     
+                    </td>
+
+                    <td class="text-center">
+                      {{form.value_NA|addclass:'form-check-input'}}
+                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+
+
+
+
+
+                            </tbody>
+
+                            {% else %} {% comment %} There is no existing data so enter new data {% endcomment %}
+
+                            {{ formset.management_form }}
+
+                            {{formset.non_form_errors}}
+
+                            {{ form.id }}
+
+                            {% for form in formset %}
+
+                            <tr>
+
+                                <td><span class="d-none">{{form.indicator}} {{form.member_state}}</span>
+                                    {{form.initial.member_state}}</td>
+
+
+                                <td>
+                      
+                     
+                      <div class="input-group has-validation">
+                        <span class="input-group-text">$</span>
+                        {{ form.ind_value|addclass:'form-control' }}
+                      
+                        <div class="invalid-tooltip"> 
+                          {{ form.errors }}
+                        </div>
+                      </div>
+                     
+                     
+                      
+                    </td>
+                    <td>
+                      {{form.comments|addclass:'form-control'}}
+                     
+                    </td>
+
+                    <td class="text-center">
+                      {{form.value_NA|addclass:'form-check-input'}}
+                    </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+
+
+                            {% endif %}
+                        </table>
+
+
+                     
+
+
+                        <button id="btncancel" type="button" class="btn btn-dark float-end "  >
+                            <a class="text-decoration-none text-white"  href="{% url 'portaldata:dataentrybyorg' %}">Close</a></button>
+                        <button id="save" type="submit" class="btn btn-primary  float-end me-4">Save</button>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% comment %} <footer class="bg-white sticky-footer">
+        <div class="container my-auto">
+            <div class="text-center my-auto copyright"><span>Copyright © SADC 2022</span></div>
+        </div>
+    </footer> {% endcomment %}
+</div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+
+<div class="modal fade" id="definitionModal" tabindex="-1" aria-labelledby="definitionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start">
+            <div class="modal-header">
+                <h5 class="modal-title" id="definitionModalLabel">Definition </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body justify-content-end text-justify ">
+                <div id="indLabel" class="modal-title fw-bold">{{ indicator.label }}</div>
+
+                <p name="indDefinition" id="indDefinition"> </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+    $(document).on("click", ".open-Definition", function () {
+
+        var myDef = $(this).data('id');
+
+        $(".modal-body #indDefinition").html(myDef);
+        // As pointed out in comments, 
+        // it is unnecessary to have to manually call the modal.
+        $('#definitionModal').modal('show');
+    });
+</script>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/confirmExit.js' %}"></script>
+
+{% endblock extra_js %}

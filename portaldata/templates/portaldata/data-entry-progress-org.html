@@ -1,0 +1,197 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+{% load showprogress %}
+{% load dataentrytags %}
+
+{% block title %}Indicator Data Entry Progress{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+     {% check_within_reporting_period as rep_period %} 
+
+        <div class="container-fluid">
+
+          <div class="card shadow">
+            <div class="card-header py-3">
+              {% comment %} <h4 class="text-dark mb-0  fw-boldest">{{user.getUserOrganisation}} - Data Entry Progress</h4> {% endcomment %}
+            
+                <h4 class="text-end text-primary m-0 fw-bold">{{user.getUserOrganisation}} - Data Entry Progress</h4>
+                {% if rep_period   %}
+                <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{% reporting_year %}</span></p>
+                {% endif %}
+                </div>
+            <div class="card-body">
+
+            <!--begin::Page Title and search-->
+          
+                
+
+                {% if not rep_period   %}
+ 
+  <div class="col-md-12">
+    <p class=" text-primary  fw-bold" >Data entry is enabled only during Reporting Periods. 
+      Please revisit the page at a later date. </p>
+  </div>
+{% endif %}
+             
+            
+         
+
+              
+
+
+          
+           
+
+            {% comment %} <div class="row-cols-auto justify-content-end mb-4 ">
+                
+                <div class="form-group col-4 float-end mb-2">
+                    <input type="text" placeholder="Search" id="searchField" class="form-control">
+    
+                </div>
+            </div> {% endcomment %}
+
+             <!--end::Page Title and Search-->
+
+             <!--Begin:List-->
+
+          
+
+
+             <table class="table table-responsive table-hover">
+                <thead class="table-light  borderit">
+                  <th>S/N</th>
+                  <th>Indicator</th>
+                  <th>Focus Area</th>
+                  <th>Progress <br> <span class="small"> (# of Member States)</span></th>
+                 
+                  <th>Enter / Edit Data</th>
+      
+                </thead>
+
+                
+
+             {% for indicator in indicators  %}
+             <tbody>
+
+                    {% getRevisionRequestOrg indicator user.getUserOrganisation as revision_request %}
+                   
+                     
+
+                <td> {{indicator.indicator_number}}
+
+                  {% if revision_request %}
+                  <span class="ms-2 badge rounded-pill bg-danger">
+                   {{revision_request}}
+                    <span class="visually-hidden">For revision</span>
+                  </span>
+                  {% endif %}
+
+                </td>
+                <td>{{indicator.label}}</td>
+                <td>{{indicator.focus_area}}</td>
+                <td>{{indicator.count_completed_required_indicators}} of {{indicator.active_member_states}} completed. ({{indicator.calculate_progress}}%)  
+                 
+                </td>
+                <td> 
+                    
+                    <a href="{% url 'portaldata:manage_indicatordata_organisation' id=indicator.pk %}" class="btn btn-primary btn-esm me-3 {% if not rep_period   %} disabled {% endif %}  ">
+                    <span class="bi-pencil-fill" aria-hidden="true"> </span>
+                  </a></td>
+                
+               
+                {% endfor %}
+             </tbody>
+            </table>
+                
+               
+
+               
+              
+            
+
+             <!--End:List-->
+
+        </div>
+   
+    <div class="container-fluid">
+
+        <div class="row mb-3 ">
+          <form action="{% url 'portaldata:submitIndicatorDatabyOrg' %}" method="post">
+            {% include 'partials/_messages.html'%} 
+            {% csrf_token %}
+    
+          <!--begin::Col-->
+          <div class="col-md-12 pe-lg-10">
+            <!--begin::Form-->
+            
+            {% countallactiveindicatorsOrg user.getUserOrganisation as countActive %}
+            {% countallcompletedindicatorsOrg user.getUserOrganisation as countCompleted %}
+            {% calculateoverallprogressOrg user.getUserOrganisation as overallProgress %}
+            {% getOverallToSubmitOrg user.getUserOrganisation as check_overall_submitted %}
+           
+
+
+           
+
+           
+            <button type="submit" class="btn btn-primary btn-lg  btn-block" 
+            id="kt_contact_submit_button"
+             {% if overallProgress != 100 or check_overall_submitted == 0 %}disabled{% endif %}   > 
+            
+            
+             
+              <span class="indicator-label p-5">
+                Submit</span>
+              {% if check_overall_submitted > 0 and overallProgress == 100  %}
+                <span class=" badge rounded-pill bg-danger">
+                  {{check_overall_submitted}}
+                  
+                </span>
+                {% endif %}
+                
+    
+              {% comment %} <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span> {% endcomment %}
+              <!--end::Indicator-->
+            </button>
+            
+            <!--end::Form-->
+          </div>
+          <!--end::Col-->
+          <!--begin::Col-->
+    
+          <!--end::Col-->
+        </form>
+        <br>
+    
+      
+        <div class="block ">
+            {% if overallProgress != 100 %}
+            <p class=" mt-3 ">You can submit when data is completed for all required indicators. <br>
+              Currently, <strong> {{overallProgress}}% overall </strong>completed.
+            
+            </p>
+    
+            {% elif check_overall_submitted == 0 %}
+    
+            <p class=" mt-3 ">You have submitted all data to SADC secretariat. <br>
+              
+            
+            </p>
+            
+            {% endif %}
+          </div>
+        </div>
+      </div>
+<div>
+</div>
+{% endblock content %}

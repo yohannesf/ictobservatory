@@ -1,0 +1,54 @@
+{% load static %}
+<form method="post" action="">
+    {% csrf_token %}
+  
+   <div class="modal-header">
+      <h5 class="modal-title">Return for Revision</h5>
+     
+    </div>
+  
+    <div class="modal-body">
+      
+      <p hidden  name="indDataID" id="indDataID" value="indDataID" > </p>
+
+      <div class="form-group">
+        <label for="commentTextArea">Comment</label>
+        <textarea class="form-control" id="comment" rows="3"></textarea>
+      </div>
+
+      
+    </div>
+
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary" id="submitbutton" onclick="SendBack()">Send</button>
+    </div>
+  
+  </form>
+
+  <script>
+
+    function SendBack() {
+      const id = document.getElementById('indDataID').innerHTML;
+      const comment = document.getElementById('comment').value;
+     
+          $.ajax({
+            url: "/portaldata/sendback/"+id+"/",
+            data: {
+                "id": id,
+                'comment': comment,
+            },
+            
+            type: "POST",
+            
+              }).done(function(data, textStatus, jqXHR) {
+                  table.DataTable().ajax.reload(null, false);
+        
+          });
+    }
+
+    
+        
+    
+     </script>

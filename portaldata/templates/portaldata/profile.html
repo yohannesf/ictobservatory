@@ -1,0 +1,224 @@
+
+
+{% extends 'base_auth.html' %}
+
+{% load showprogress %}
+{% load dataentrytags %}
+
+{% load static %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+     
+
+
+        <div class="container-fluid">
+
+          <!--begin::Page Title-->
+          <div class="d-sm-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-dark mb-0  fw-boldest">Profile</h4>
+            
+          </div>
+
+
+          <section class="section profile">
+            <div class="row">
+                
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
+                            <li class="nav-item" role="presentation"> <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab">Overview</button></li>
+                            {% comment %} <li class="nav-item" role="presentation"> <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" aria-selected="false" tabindex="-1" role="tab">Edit Profile</button></li> {% endcomment %}
+                            <li class="nav-item" role="presentation"> <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" aria-selected="false" tabindex="-1" role="tab">Change Password</button></li>
+                        </ul>
+                        
+                        <div class="tab-content pt-2">
+                            <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                                      <h5 class="card-title">Profile Details</h5>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
+                                    <div class="col-lg-9 col-md-8">{{user.get_full_name|title}}</div>
+                                </div>
+                                
+                                {% comment %} <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Role</div>
+                                    <div class="col-lg-9 col-md-8">Focal Point Person</div>
+                                </div> {% endcomment %}
+                        
+                   
+                        {% if user.is_memberstate  %}
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Member State</div>
+                            <div class="col-lg-9 col-md-8">{{user.getSysUser.user_member_state}}</div>
+                      
+                        </div>
+                            <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Role</div>
+                            <div class="col-lg-9 col-md-8">{{user.getSysUser.role}}</div>
+                        </div>
+
+                            <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Organisation</div>
+                            <div class="col-lg-9 col-md-8">{{user.getSysUser.organisation_name}}</div>
+                        </div>
+
+
+
+                      
+
+                        {% elif user.is_organisation %}
+
+                       
+                        <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Organisation</div>
+                        <div class="col-lg-9 col-md-8">{{user.getSysUser.user_organisation}}</div> 
+                            
+                    </div>
+
+                        {% elif user.is_sadc %}
+
+                      
+                        <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Organisation</div>
+                        <div class="col-lg-9 col-md-8">{{user.getSysUser.user_organisation}}</div> 
+                    </div>
+                        
+                        {% else %}
+                        <div class="row">
+                        <div class="col-lg-3 col-md-4 label">Role</div>
+                        <div class="col-lg-9 col-md-8">Admin</div> 
+                    </div>
+
+
+                        
+                        {% endif %}
+
+                           
+
+                      
+                                   
+                              
+                                {% comment %} <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Country</div>
+                                    <div class="col-lg-9 col-md-8">USA</div>
+                                </div> {% endcomment %}
+                                
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Phone Number</div>
+                                    <div class="col-lg-9 col-md-8">{{user.getSysUser.phone_number}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Email</div>
+                                    <div class="col-lg-9 col-md-8">{{user.email}}</div>
+                                </div>
+                            </div>
+                             {% comment %} 
+                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit" role="tabpanel">
+                                <form autocomplete="off" method="post" >
+                                    {% include 'partials/_messages.html'%}
+                                    {% csrf_token %}
+                                    
+                                    <div class="row mb-3"> 
+                                       
+                                       
+                                            <label for="firstname" class=" col-form-label col-md-2 col-lg-2">First Name</label>
+                                      
+                                            <div class="col-md-4 col-lg-4 "> 
+
+                                            <input name="firstname" type="text" class="form-control" id="firstname" value="{{user.first_name|title}}" required></div>
+                                            </div>
+                                            <div class="row mb-3"> 
+                                         
+                                                <label for="lastname" class=" col-form-label col-md-2 col-lg-2">Last Name</label>
+                                           
+                                                <div class="col-md-4 col-lg-4 "> 
+                                                <input name="lastname" type="text" class="form-control" id="lastname" value="{{user.last_name|title}}" required></div>
+                                           
+                                              
+                                        </div>
+                                         
+                                    
+                                     
+                                    <div class="row mb-3"> 
+                                        <div class="col-md-2 col-lg-2 ">
+                                        <label for="Phone" class="col-form-label">Phone</label>
+                                        </div>
+                                            <div class="col-md-4 col-lg-4"> 
+                                                <input name="phone" type="text" class="form-control" id="Phone" value="{{user.phone}}">
+                                            </div>
+                                    </div>
+                                    
+                                   <div class="row mb-3"> 
+                                        <div class="col-md-2 col-lg-2 ">
+                                        <label for="Email" class="col-form-label">Email</label>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4"> 
+                                            <input name="email" type="email" class="form-control" id="Email" value="{{user.email}}" required>
+                                        </div>
+                                    </div> 
+                                    
+                                    <div class=""> <button type="submit" class="btn btn-primary">Save Changes</button></div>
+                                </form>
+                               
+
+                               
+                          
+                        </div>
+                        {% endcomment %}
+                        
+                        <div class="tab-pane fade show " id="profile-change-password" role="tabpanel">
+                           
+                              
+                            <h5 class="card-title">To change your password, click the button below.</h5>
+                            <div class="row">
+
+                           
+                            <p class="card-text"><a href="{% url 'password_change' %}" class="btn btn-primary btn-lg">Change Password</a></p> 
+                            </div>
+                            
+                        </div>
+                            {% comment %} <form method="post" action= "{% url 'core:account_change_password' %}">
+                                {% csrf_token %}
+                                <div class="row mb-3"> 
+                                    <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                    <div class="col-md-4 col-lg-4"> 
+                                        <input name="password" type="password" class="form-control" id="currentPassword">
+                                    </div>
+                                </div>
+                                <div class="row mb-3"> 
+                                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                                    <div class="col-md-4 col-lg-4"> 
+                                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                                    </div>
+                                </div>
+                                <div class="row mb-3"> 
+                                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+                                    <div class="col-md-4 col-lg-4"> 
+                                        <input name="renewpassword" type="password" class="form-control" id="renewPassword"></div>
+                                    </div>
+                                    <div class=""> 
+                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                    </div>
+                                </form> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base_auth.html' %}
+{% load dataentrytags %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block title %}Data Entry{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+        {% include 'partials/_auth_navbar.html' %}
+
+        {% check_within_reporting_period as rep_period %} 
+
+        <div class="container-fluid">
+            <h5 class="text-dark mb-4 fw-bold"> Data Entry Form </h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <p class="text-end text-primary m-0 fw-bold">General Indicators: <span style="color: rgb(78, 223, 92);">SADC</span></p>
+
+                    {% if rep_period   %}
+                        <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{% reporting_year %}</span></p>
+                    {% endif %}
+                  
+                    
+                </div>
+              
+             
+                <div class="card-body">
+                    {% if not rep_period   %}
+                    <div class="col-md-12">
+                        <p class=" text-primary  fw-bold" >Data entry is enabled only during Reporting Periods. 
+                          Please revisit the page at a later date. </p>
+                      </div>
+                      {% endif %}
+
+                    <form action="" method="post">
+
+                        {% include 'partials/_messages.html'%} 
+                        {% csrf_token %}
+
+                        <fieldset  {% if not rep_period   %} disabled="disabled"  {% endif %} >
+ 
+                   
+
+                        {{ formset.management_form }}
+                        <label for="inputEmail3" class="col-sm-7 col-form-label fw-bold">Indicator</label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label fw-bold">Data</label>
+                        {{ formset.non_field_errors }}
+                        {% for form in formset %}
+                        {{ form.id }}
+                            <div class="row mb-3"> 
+                             
+                                <label for="inputEmail3" class="col-sm-6 col-form-label">{{ form.general_indicator|addclass:'form-select'  }}</label>
+                               
+                                <div class="col-sm-3 mt-2"> 
+                                    {{ form.indicator_value|addclass:'form-control'  }}
+                                </div>
+                            </div>
+                           
+                            
+                        {% endfor %}
+
+                        
+
+                        <button id="btncancel" type="button" class="btn btn-dark float-end "  >
+                            <a class="text-decoration-none text-white"  href="{% url 'portaldata:index' %}">Close</a></button>
+                        <button id="save" type="submit" class="btn btn-primary  float-end me-4">Save</button>
+                        </fieldset>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+
+
+
+
+<script src="{% static 'js/confirmExit.js' %}"></script>
+
+{% endblock extra_js %}

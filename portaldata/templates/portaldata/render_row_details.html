@@ -1,0 +1,58 @@
+{% load static %}
+
+
+<table  width="100%" class="table  table-bordered dt-responsive compact nowrap">
+
+    
+        <thead class="table-dark " >
+            <tr>
+              <th colspan="100%" class="table-dark text-center card-title text-white" >Details</th>
+    </thead>
+    <tbody>
+       
+        <tr><td>Reporting Year</td><td><strong>{{ind_data.reporting_year}}</strong></td></tr>
+        <tr><td>Indicator</td><td><strong>{{ind_data.indicator}}</strong></td></tr>
+        <tr><td>Member State</td><td><strong>{{ind_data.member_state}}</strong></td></tr>
+        {% if ind_data.value_NA == False %}
+        <tr><td>Data</td><td><strong>{{ind_data.ind_value_adjusted}}</strong></td>
+        {% else %}
+        <tr><td>Data</td><td><strong>N/A</strong></td></tr>
+        {% endif %}
+           
+        {% comment %} <tr><td>Data N/A</td><td><strong>{{ind_data.value_NA}}</strong></td></tr> {% endcomment %}
+        <tr><td>Comments</td><td><strong>{{ind_data.comments}}</strong></td></tr>
+        
+        <tr><td>Submitted</td><td><strong>{{ind_data.submitted}}</strong></td></tr>
+        <tr><td>Validation Status</td><td><strong>{{ind_data.get_validation_status_display}}</strong></td></tr>
+        
+        <tr><td>Last Update</td><td><strong>{{ind_data.last_update}}</strong></td></tr>
+        <tr><td>Updated By</td><td><strong>{{ind_data.updated_by|title }}</strong></td></tr>
+    </tbody>
+</table>
+
+
+
+{% comment %} {% if history %}
+<thead class="table-dark " >
+    <tr>
+      <th colspan="100%" class="table-dark text-center card-title" >Details</th>
+</thead>
+<tbody>
+{% for h in history  %}
+<tr>
+    <td>Reporting Year</td>
+    <td><strong>{{ind_data.reporting_year}}</strong>
+    </td>
+</tr>
+<p>
+
+{{h.indicator_data}}
+{{h.indicator_data.ind_value}}
+</p>
+{% endfor %}
+
+{% else %}
+
+No revision history for this data.
+
+{% endif %} {% endcomment %}

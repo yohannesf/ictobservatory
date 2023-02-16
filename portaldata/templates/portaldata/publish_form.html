@@ -1,0 +1,179 @@
+{% extends 'base_auth.html' %}
+
+{% load showprogress %}
+{% load dataentrytags %}
+
+{% load static %}
+
+{% block title %}Publish{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+     
+
+
+        <div class="container-fluid">
+
+            <div class="card shadow">
+                <div class="card-header py-3">
+                     <h4 class="text-start text-primary m-0 fw-bold">Publish / Unpublish Data
+                        <br>
+                        <span class="text-secondary" style="font-size:15px;"><small>Only validated Indicators will be published!</small></span>
+                     </h4>
+                     
+                     {% comment %} <p class="text-end text-primary m-0 fw-bold">Only validated Indicators will be published!</p>  {% endcomment %}
+                     
+                </div>
+
+          <!--begin::Page Title-->
+          <div class="card-body">
+          <table class="table table-responsive table-hover">
+            <thead class="table-light  borderit">
+              <th>Reporting Year</th>
+              <th class="text-center">Ready for validation</th>
+             
+              <th class="text-center">Returned for Revision</th>
+              <th class="text-center">Validated</th>
+              <th class="text-center">Total</th>
+
+              <th class="text-center">Status</th>
+
+              <th class="text-center">Publish / Unpublish</th>
+
+            </thead>
+
+            {% for data in indicator_data  %}
+            <tbody>
+                
+
+            <td> {{data.reporting_year}}</td>
+            <!--2 = Ready for Validation-->
+            <td class="text-center"> {% getCountbyYearandStatus data.reporting_year 2 as ready  %} 
+                {% if ready == 0 %}
+                {% else %}
+                {{ready}}
+                {% endif %}
+                  </td>
+           
+           <!--3 = Returned for Revision-->
+           <td class="text-center"> {% getCountbyYearandStatus data.reporting_year 3 as returned  %} 
+                {% if returned == 0 %}
+                -
+                {% else %}
+                {{returned}}
+                {% endif %}
+                
+            </td> 
+            <!--2 = Validated-->
+             <td class="text-center"> {% getCountbyYearandStatus data.reporting_year 4 as validated %} 
+                {% if validated == 0 %}
+                -
+                {% else %}
+                {{validated}}
+                {% endif %}
+                
+               </td>
+            
+            <td class="text-center">
+                {{ready|add:returned|add:validated}}
+                
+            </td>
+
+            <td class="text-center">{% getPublishedStatus data.reporting_year as status  %}
+
+                {% if status %}
+
+                <span class="badge bg-success">&nbsp;&nbsp;&nbsp;Published&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
+                
+
+                {% else %}
+
+                <span class="badge bg-warning">Not published</span>
+
+              
+                
+                
+                
+                {% endif %}
+
+
+            </td>
+
+            <td class="text-center"> 
+                {% comment %} <a href="#" class="btn btn-primary btn-esm me-3  ">
+                <span class="fa fa-pencil-alt" aria-hidden="true"> </span>
+              </a> {% endcomment %}
+            
+              <button  class="btn btn-primary btn-esm" 
+              onclick = "Publish({{data.reporting_year}})"
+              >
+
+              <span data-toggle="tooltip" title="Publish / Unpbulish" class="bi bi-check2-circle" aria-hidden="true"> </span>
+           </button>
+            
+            </td>
+
+        
+        
+       
+
+        </tbody>
+          
+          {% endfor %}
+       
+                
+               
+
+               
+              
+            
+
+        <!--End:List-->
+
+   </table>
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+      
+    function Publish(reporting_year) {
+
+    
+
+     $.ajax({
+        url: "{% url 'portaldata:publish-data' %}",
+        data: {
+            "reporting_year": reporting_year
+        },
+        
+        type: "POST",
+            
+    });
+    
+    
+    };
+
+    $(document).ajaxSuccess(function(){
+        window.location.reload();
+    });
+        
+    
+
+
+</script>
+
+{% endblock content %}

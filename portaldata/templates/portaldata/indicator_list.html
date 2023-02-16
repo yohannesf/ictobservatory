@@ -1,0 +1,193 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}Indicator Management{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+          
+            <!--begin::Page Title-->
+          <div class="row bg-light mb-4">
+            <div class="col-md-8 d-sm-flex justify-content-between align-items-center ">
+              
+               
+                <h4 class="text-dark mb-0  fw-boldest">Manage Indicators</h4>
+             
+            </div>
+             
+            
+         
+
+            <div class="col-md-4 d-sm-flex justify-content-end    ">
+              <a href="{% url 'portaldata:createindicator' %}" class="btn btn-primary me-3  ">
+                <span class="fa fa-plus-circle" aria-hidden="true"> </span>  Add New
+              </a>
+
+              <a href="{% url 'portaldata:index' %}" class="btn btn-primary">
+                <span class="fa fa-file-export" aria-hidden="true"> </span>  Export List
+              </a>
+            </div>
+          </div>
+          <!--end::Page Title-->
+
+          <div class="row-cols-auto justify-content-end mb-4 ">
+            
+            <div class="form-group col-4 float-end mb-2">
+                <input type="text" placeholder="Search" id="searchField" class="form-control">
+  
+            </div>
+        </div>
+
+        
+
+        {% regroup Indicators by focus_area  as indicators_list %}
+
+        <table class="table table-responsive table-hover">
+          <thead class="table-light  borderit">
+            <th>S/N</th>
+            <th>Indicator</th>
+            <th>Indicator Type</th>
+            <th>Data Type</th>
+            <th>Status</th>
+            <th>Assigned to</th>
+            <th>Definition</th>
+            <th>Actions</th>
+
+          </thead>
+
+        {% for inx in indicators_list  %}
+        
+        <tbody>
+          
+
+        <tr class=" table-primary border-top border-primary fw-bolder  " >
+          <td colspan="100%">
+            Focus Area: {{inx.grouper}}
+
+            
+            
+            {% comment %} <span class="text-end"> {% endcomment %}
+
+          </td>
+          {% comment %} <td colspan="2" class="text-end">
+           
+
+            Total: {{inx.list | length}}
+            
+          
+
+          </td> {% endcomment %}
+        
+        </tr>
+        {% comment %} {{ indicator.grouper }} {% endcomment %}
+       
+       
+
+        {% for indicator in inx.list %}
+        
+        <tr>
+          <td>
+            {{ indicator.indicator_number }}
+          </td>
+          <td>
+            {{ indicator.label }}
+          </td>
+          <td >
+            {{ indicator.indicator_type }}
+          </td>
+          <td>
+            {{ indicator.datatype }}
+          </td>
+          <td>
+            {{ indicator.status }}
+          </td>
+           <td>
+            {{ indicator.get_indicator_assigned_to_display }}
+          </td> 
+          <td class="text-center">
+
+              <a data-toggle="modal" data-id=' {{indicator.label}} <br> {{indicator.definition}}'
+              title="Show Definition" class="open-Definition btn btn-primary btn-sm" href="#openDefinition">
+              <span class="fa fa-eye"></span></a>
+          </td>
+
+          <td class="text-center">
+                      
+
+              <a href="{% url 'portaldata:updateindicator' pk=indicator.pk %}" class="btn btn-primary btn-sm " value=" "
+                data-toggle="tooltip" data-placement="top" title="View Detail | Edit">
+                <span class="fa fa-pencil-alt" > </span>
+              </a>
+              
+           
+            
+          </td>
+        </tr>
+        {% endfor %}
+        
+        
+        {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+ <div class="modal fade" id="definitionModal" tabindex="-1" aria-labelledby="definitionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-start">
+      <div class="modal-header">
+        <h5 class="modal-title" id="definitionModalLabel">Definition </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body justify-content-end text-justify ">
+        <div  id="indLabel" class="modal-title fw-bold">{{ indicator.label }}</div>
+        
+        <p  name="indDefinition" id="indDefinition" > </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div> 
+
+
+ <script>
+
+
+$(document).on("click", ".open-Definition", function () {
+  
+  var myDef = $(this).data('id');
+ 
+  $(".modal-body #indDefinition").html( myDef );
+  // As pointed out in comments, 
+  // it is unnecessary to have to manually call the modal.
+  $('#definitionModal').modal('show');
+});
+</script> 
+
+
+
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,77 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}General Indicators Management{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+
+          <div class="card shadow">
+            <div class="card-header py-3">
+                 <h4 class="text-end text-primary m-0 fw-bold">Manage General Indicators</h4>
+                 <div class="col-md-4 d-sm-flex justify-content-end    ">
+                  <a href="{% url 'portaldata:creategeneralindicator' %}" class="btn btn-primary me-3  ">
+                    <span class="fa fa-plus-circle" aria-hidden="true"> </span>  Add New
+                  </a>
+    
+                 
+                </div>
+                 {% comment %} <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{{reporting_year}}</span></p> {% endcomment %}
+            </div>
+          
+            <!--begin::Page Title-->
+            <div class="card-body">
+         
+       
+
+        
+
+        <table class="table table-responsive table-hover">
+          <thead class="table-light  borderit">
+            {% comment %} <th>S/N</th> {% endcomment %}
+            <th>Indicator</th>
+            <th>Definition</th>
+           
+            <th>Edit</th>
+
+          </thead>
+
+       {% for genind in GeneralIndicators  %}
+        <tbody>
+
+            {% comment %} <td>{{focusarea.sn}}</td> {% endcomment %}
+            <td>{{genind.indicator_label}}</td>
+            <td>{{genind.definition}}</td>
+            
+            <td> <a href="{% url 'portaldata:updategeneralindicator' pk=genind.pk %}" class="btn btn-primary btn-esm me-3  ">
+                <span class="fa fa-pencil-alt" aria-hidden="true"> </span>
+              </a></td>
+          
+            {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% endblock content %}

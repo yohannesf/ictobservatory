@@ -1,0 +1,231 @@
+{% extends 'base_portal.html' %} 
+{% load dataentrytags %}
+
+{% load static %} 
+
+{% block title %}Home {% endblock title %} 
+
+
+{% block content %}
+
+
+
+
+
+  <div id="content">
+    <div class="container-fluid">
+      <div class="d-sm-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-dark mb-0">Dashboard</h3>
+
+        
+        {% comment %} <a  class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"   href=" {% url 'portal:chart' %}">
+            <i class="fas fa-download fa-sm text-white-50"></i>Chart</a> {% endcomment %}
+
+
+        <a  class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"   href="{% url 'portal:generate-report' %}">
+            <i class="fas fa-download fa-sm text-white-50"></i>&nbsp;Query Data</a>
+      </div>
+
+    <div class="row d-block ">
+     
+      <form class="row g-3 mb-3" method="GET" >
+            <div class="d-inline-flex mt-2">
+
+                <div class="">
+                    <label for="inputEmail3" class="pt-2 me-3">Year: </label>
+                </div>
+                <div class="col-2" >
+                    {{form.year_filter|addclass:'form-select'}}
+                </div>
+
+                <input  class="btn btn-primary btn-sm d-none  d-sm-inline-block ms-3" role="button" type="submit" value="Show" >
+            <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
+            </div>
+
+        </form>
+    </div>
+
+
+      <div class="row">
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card shadow border-start-primary py-2">
+                <div class="card-body">
+                    <div class="row align-items-center no-gutters">
+                        <div class="col me-2">
+                            <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>sadc MOBILE PENETRATION&nbsp; &nbsp;&nbsp;</span></div>
+                            <div class="text-dark fw-bold h5 mb-0"><span>{{score_cards.sadc_mobile_penetration|floatformat}}</span></div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card shadow border-start-success py-2" style="height: 93.2px;">
+                <div class="card-body">
+                    <div class="row align-items-center no-gutters">
+                        <div class="col me-2">
+                            <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>AVG INTERNET PENETRATION</span></div>
+                            <div class="text-dark fw-bold h5 mb-0"><span>22.1%</span></div>
+                        </div>
+                        {% comment %} <div class="col-auto"><i class="fas fa-arrow-circle-up text-primary fa-2x text-gray-300" style="color: var(--bs-indigo);"></i>
+                            <div class="text-dark fw-bold h5 mb-0"><span>4%</span></div>
+                        </div> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card shadow border-start-info py-2">
+                <div class="card-body">
+                    <div class="row align-items-center no-gutters">
+                        <div class="col me-2">
+                            <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>MOBILE NETWORK COVERAGE</span></div>
+                            <div class="row g-0 align-items-center">
+                                <div class="col-auto">
+                                    <div class="text-dark fw-bold h5 mb-0 me-3"><span>{{score_cards.sadc_network_coverage}}%</span></div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-info" aria-valuenow="{{score_cards.sadc_network_coverage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{score_cards.sadc_network_coverage}}%;"><span class="visually-hidden">50%</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-wifi fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-4">
+            <div class="card shadow border-start-warning py-2">
+                <div class="card-body" style="height: 74.6px;">
+                    <div class="row align-items-center no-gutters">
+                        <div class="col me-2">
+                            <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>average Population Coverage by at least 3G</span></div>
+                            <div class="text-dark fw-bold h5 mb-0"><span>{{score_cards.avg_pop_coverage_3g}}%</span></div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-wifi fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+    <!--Start: Iterate Charts-->  
+    
+    {% for chart in charts  %}
+       
+    <div class="col-lg-4 col-xl-6">
+        <div class="card shadow mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="text-primary fw-bold m-0">{{chart|slice:"1:2"|first}}   ({{chart|slice:"2:3"|first}})</h6>
+                <div class="dropdown no-arrow">
+                    <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                        <p class="dropdown-header fw-bold">Options:</p>
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'viewinfullscreen')" value="viewinfullscreen">View in fullscreen</button>
+                            {% comment %} <button class="dropdown-item" onclick="return exportChart({{gni_gdp|last}},'print')"  value="print">Print</button> {% endcomment %}
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'png')" value="image/png">Download PNG</button>
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'jpeg')" value="image/jpeg">Download JPEG</button>
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'pdf')" value="application/pdf">Download PDF</button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'csv')" value="application/pdf">Download CSV</button>
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'xls')" value="application/pdf">Download XLS</button>
+                            <button class="dropdown-item" onclick="return exportChart({{chart|last}},'dt')" value="application/pdf">View Data Table</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" >
+                    {{chart|first|safe}}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+<!--End: Iterate Charts--> 
+
+<div class="alert alert-success  fade show" role="alert">
+    <h4 class="alert-heading">Socio-Economic Charts</h4>
+    <p>For socio-economic charts including Population, Population Percentages by Male and Female, GDP per Capita, GNI per Capita and Exchange Rate values, follow the link below.</p><hr>
+    <p class="mb-0"><a href=" {% url 'portal:socio-economic-charts' %} "> Socio-Economic Charts.</a></p> 
+ 
+
+</div>
+
+    
+
+    </div>
+      
+    </div>
+  </div>
+  
+  
+
+
+{% endblock content %}
+
+{% block footer %}<footer class="bg-white sticky-footer">
+    <div class="container my-auto">
+      <div class="text-center my-auto copyright">
+        <span>Copyright © SADC {% now "Y" %}</span>
+      </div>
+    </div>
+  </footer>{% endblock footer %}
+
+{% block extra_js %}
+    <script>
+        function exportChart(container, option) {
+            var chart = $(container).highcharts();
+
+            switch(option) {
+                case "print":
+                    chart.print();
+                    break;
+                case "viewinfullscreen":
+                chart.fullscreen.toggle()
+                break;
+                case "png":
+                    
+                    chart.exportChart();
+                    break;
+                case "jpeg":
+                    chart.exportChart({type: 'image/jpeg'});
+                    break;
+                case "pdf":
+                    chart.exportChart({
+                        type: 'application/pdf'
+                    });
+                    break;
+                case "csv":
+                    chart.downloadCSV();
+                    break;
+                case "xls":
+                    chart.downloadXLS();
+                    break;
+                case "dt":
+                    chart.toggleDataTable()
+                    break;
+            }
+        };  
+
+
+    {% comment %} document.querySelector(".dropdown-item").addEventListener('click', (event) => {
+        alert("here")
+        let value = event.target.value;
+        alert(value)
+    }); {% endcomment %}
+
+
+    </script>
+
+{% endblock extra_js %}
+
+
+
+
+
+
+
+

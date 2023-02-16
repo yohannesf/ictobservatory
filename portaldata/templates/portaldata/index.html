@@ -1,0 +1,230 @@
+{% extends 'base_auth.html' %}
+
+{% load showprogress %}
+{% load dataentrytags %}
+
+{% load static %}
+
+{% block title %}Backend{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column backend-home" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+     
+
+
+        <div class="container-fluid">
+
+          <!--begin::Page Title-->
+          <div class="d-sm-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-dark mb-0  fw-boldest">ICT Observatory Portal : Backend</h4>
+            {% comment %} {% num_days_left  %} {% endcomment %}
+             
+            {% num_days_left as ndl  %}
+           
+
+          </div>
+            <section class="section dashboard">
+
+              {% if user.is_authenticated %}
+
+              {% if user.is_sadc or user.is_superuser %}  
+
+              <div class="row">
+
+                <div class="col-lg-9">
+                  <div class="card">
+                    <div class="card-body"><h5 class="card-title">Admin Process</h5>
+                      <div class="activity">
+                        <div class="activity-item d-flex">
+                          <div class="activite-label">Overall&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+                          <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
+                          <div class="activity-content"> You can create Focus areas, Indicators etc.. through this backend. </div></div>
+                        
+                          <div class="activity-item d-flex">
+                              <div class="activite-label">Validation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+                              <i class="bi bi-circle-fill activity-badge text-danger align-self-start"></i>
+                              <div class="activity-content"> Once data is submitted by Member States or Organisations, you'll receive a notification. You can then visit the validation page to start validating data.</div></div>
+                              
+                          <div class="activity-item d-flex">
+                            <div class="activite-label">Publishing&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+                            <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                            <div class="activity-content"> Once validation is completed, go to the Publish link to publish the data for the reporting year.</div></div>
+                            
+                          {% comment %} <div class="activity-item d-flex"><div class="activite-label">Step 4:</div> 
+                            <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
+                            <div class="activity-content"> Once data is revised (based on Step 3), you'll need to resubmit your data.</div></div>
+                             {% endcomment %}
+                          {% comment %} <div class="activity-item d-flex">
+                              <div class="activite-label">2 days</div> 
+                            <i class="bi bi-circle-fill activity-badge text-warning align-self-start"></i><div class="activity-content"> Est sit eum reiciendis exercitationem</div></div>
+                            
+                          <div class="activity-item d-flex">
+                              <div class="activite-label">4 weeks</div> 
+                              <i class="bi bi-circle-fill activity-badge text-muted align-self-start"></i>
+                              <div class="activity-content"> Dicta dolorem harum nulla eius. Ut quidem quidem sit quas</div></div> {% endcomment %}
+                            
+                          </div></div></div>
+
+              {% endif %}
+
+              {% endif %}
+
+
+
+              {% if user.is_authenticated and user.is_memberstate %}  
+
+              <div class="row">
+
+                <div class="col-lg-9">
+                  <div class="card">
+                    <div class="card-body"><h5 class="card-title">Process</h5>
+                      <div class="activity">
+                        <div class="activity-item d-flex">
+                          <div class="activite-label">Step 1:</div> 
+                          <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
+                          <div class="activity-content"> Once data entry period is open, start entering data for all the required indicators assigned to you. </div></div>
+                        
+                          <div class="activity-item d-flex">
+                              <div class="activite-label">Step 2:</div> 
+                              <i class="bi bi-circle-fill activity-badge text-danger align-self-start"></i>
+                              <div class="activity-content"> Once data entry is done, you can submit your data to SADC secretariat. Once data is submitted, data edit will be disabled.</div></div>
+                              
+                          <div class="activity-item d-flex">
+                            <div class="activite-label">Step 3:</div> 
+                            <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                            <div class="activity-content"> If and when you are requested to revise data on certain indicators, you'll receive a notification to edit them.</div></div>
+                            
+                          <div class="activity-item d-flex"><div class="activite-label">Step 4:</div> 
+                            <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
+                            <div class="activity-content"> Once data is revised (based on Step 3), you'll need to resubmit your data.</div></div>
+                            
+                          {% comment %} <div class="activity-item d-flex">
+                              <div class="activite-label">2 days</div> 
+                            <i class="bi bi-circle-fill activity-badge text-warning align-self-start"></i><div class="activity-content"> Est sit eum reiciendis exercitationem</div></div>
+                            
+                          <div class="activity-item d-flex">
+                              <div class="activite-label">4 weeks</div> 
+                              <i class="bi bi-circle-fill activity-badge text-muted align-self-start"></i>
+                              <div class="activity-content"> Dicta dolorem harum nulla eius. Ut quidem quidem sit quas</div></div> {% endcomment %}
+                            
+                          </div></div></div>
+
+                    {% endif %}
+                  
+                  
+                    <div class=""><br></div>
+
+                 
+
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Quick Links</h5>
+                      <ul class="list-group">
+
+                     
+
+                        {% if user.is_memberstate  %}
+                          
+                        <li class="list-group-item"><i class="bi bi-card-checklist me-1 text-success"></i><a class="text-decoration-none text-dark" href= "{% url 'portaldata:dataentrybyms' %}" > Enter Data</a></li>
+                        
+                        {% elif user.is_organisation %}
+                        
+                        <li class="list-group-item"><i class="bi bi-card-checklist me-1 text-success"></i><a class="text-decoration-none text-dark" href= "{% url 'portaldata:dataentrybyorg' %}" > Enter Data</a></li>
+                        
+                        {% elif user.is_sadc or user.is_superuser %}
+
+                        <li class="list-group-item"><i class="bi bi-card-checklist me-1 text-success"></i><a class="text-decoration-none text-dark" href= "{% url 'portaldata:dataentrybysadc' %}" > Enter Data</a></li>
+
+                        {% else %}
+
+                        <li class="list-group-item"><i class="bi bi-card-checklist me-1 text-success"></i><a class="text-decoration-none text-dark" href= "#" > Enter Data</a></li>
+
+                        
+                        {% endif %}
+                          
+                          <li class="list-group-item"><i class="bi bi-clipboard-data me-1 text-primary"></i> <a class="text-decoration-none text-dark" href= "{% url 'portal:generate-report' %}" > Query / Export Data</a></li>
+                          <li class="list-group-item"><i class="bi bi-bell me-1 text-danger"></i><a class="text-decoration-none text-dark" href="{% url 'notifications:all' %}  " >   View Notifications </a></li>
+                          <li class="list-group-item"><i class="bi bi-person me-1 text-warning"></i><a class="text-decoration-none text-dark" href="{% url 'portaldata:profile' %}  " > Manage Profile</a></li>
+                          <li class="list-group-item"><i class="bi bi-question-octagon me-1 text-primary"></i><a class="text-decoration-none text-dark" href="#  " > Manual</a></li>
+                        
+                        <br>
+
+                          {% if user.is_superuser %}
+                          <li class="list-group-item"><i class="bi bi-gear-fill me-1 text-success"></i><a class="text-decoration-none text-dark" href= "{% url 'admin:index' %}" > Administration</a></li>
+                     
+                          {% endif %}
+                        </ul></div></div>
+                
+                </div>
+
+               
+                <div class="col-lg-3">
+                  {% if ndl != None %}
+                  <div class="row">
+
+                 
+                
+                  <div class=" col-xxl-12 col-md-12">
+                    <div class="card info-card sales-card">
+                                          
+                            <div class="card-body">
+
+                              {% if ndl < 10  %}
+                              
+                              <div class="spinner-grow text-danger float-end" role="status"> <span class="visually-hidden"></span></div>
+                          
+                              {% else %}
+                              <div class="spinner-grow text-warning float-end" role="status"> <span class="visually-hidden"></span></div>
+                           
+                              {% endif %}
+
+                            
+                              <h5 class="card-title">Days Remaining </h5>
+                               <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> 
+                                  <i class="bi bi-calendar"></i></div>
+                                  <div class="ps-5"><h6>{{ndl}}</h6> 
+                                    </div></div></div></div></div>
+                                  
+                </div>
+               
+                <br>
+                {% endif %} 
+
+                <div class="row">
+                  <div class=" col-xxl-12 col-md-12">
+                  <div class="info-box card"> <i class="bi bi-telephone"></i><h3>Call Us</h3><p>+1 5589 55488 55<br>+1 6678 254445 41</p></div>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class=" col-xxl-12 col-md-12">
+                    <div class="info-box card"> <i class="bi bi-envelope"></i><h3>Email Us</h3><p>info@example.com<br>contact@example.com</p></div>
+                  </div>
+                </div>
+              </div>
+
+             
+
+
+              </div>
+
+          
+            
+                </section>
+         
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+

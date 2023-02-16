@@ -1,0 +1,190 @@
+{% extends 'base_auth.html' %}
+{% load i18n static %}
+{% load static %}
+
+{% block title %}Manage Indicator Data - Validation {% endblock title %}
+
+{% block extracss %}
+
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+</style>
+
+    <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/frontend.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+
+
+    <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" />
+    
+    <link href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.bootstrap5.min.css" />
+    <link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+
+    
+   
+{% endblock extracss %}
+
+{% block extrajstop %}
+
+        
+        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
+
+        <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.bootstrap5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+       
+    
+{% endblock extrajstop %}
+
+
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+       
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+
+            
+            <div class="card shadow">
+                <div class="card-header py-3">
+                     <h4 class="text-end text-primary m-0 fw-bold">Review and Validate Indicator Data</h4>
+                     <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{{reporting_year}}</span></p>
+                </div>
+
+                <!--Data table-->
+                <div class="card-body">
+                   
+                    <div class="table-responsive">
+                        <table id="datatable" width="100%" class="table table-striped table-bordered dt-responsive compact dt-nowrap">
+                        
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+            
+            
+            <div class="modal fade" tabindex="-1" role="dialog" id="showRevisionHistory">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                       
+                        <div class="modal-body">
+                            <p  name="indRevision" id="indRevision" > </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="sendRevision">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        {% include 'portaldata/data_revision_comment_modal.html' %}
+                    </div>
+                </div>
+            </div>
+
+
+</div>
+
+
+
+
+<script>
+      
+    function Validate(id) {
+
+        table = $("#datatable").closest('table.dataTable');
+        
+        $.ajax({
+            url: "{% url 'portaldata:validate-data' %}",
+            data: {
+                "id": id
+            },
+            
+            type: "POST",
+                
+        }).done(function(data, textStatus, jqXHR) {
+            table.DataTable().ajax.reload(null, false);
+        
+        
+    })};
+</script>
+
+
+ <script language="javascript">
+    $( document ).ready(function() {
+       
+        AjaxDatatableViewUtils.initialize_table(
+            $('#datatable'),
+            "{% url 'portaldata:manage-indicator-data-ajax' %}",
+            {
+                // extra_options (example)
+                processing: false,
+                autoWidth: false,
+                full_row_select: false,
+                scrollX: false,
+               
+                dom: 'lBfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', ],
+            
+
+                detail_callback: function(data, tr) {
+                                
+                    $('.modal-body #indRevision').html(data, 'details');
+                    $('#showRevisionHistory').modal('show');
+                }
+                
+                
+            }, {
+                // extra_data
+                // ...
+            },
+        );
+        });
+
+
+    $('#datatable').on('click', 'button', function( ) {
+        if (this.name=='send-back') {
+            var table = $('#datatable').DataTable();
+        
+            var data = table.row($(this).parents('tr')).data();
+        
+            $('.modal-body #indDataID').html(data['pk']);
+            $('#sendRevision').modal('show');
+       
+        }
+      
+    });
+
+</script> 
+    
+
+{% endblock content %}
+
+
+
+
+

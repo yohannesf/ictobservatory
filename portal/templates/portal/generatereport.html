@@ -1,0 +1,138 @@
+{% extends 'base_portal.html' %} 
+{% load django_tables2 %} 
+{% load dataentrytags %}
+{% load querystring from django_tables2 %}
+{% load static %} 
+
+{% block extra_style %}
+
+<style>
+  #wrapper {
+    min-height: 550px;
+  }
+</style>
+
+{% endblock extra_style %} 
+
+
+
+{% block title %}Query Data {% endblock title %} 
+
+
+{% block content %}
+
+{{ form.media.css }}
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+  
+
+  <div id="content">
+    <div class="container-fluid">
+      
+      {% comment %} <div class="d-sm-flex justify-content-between align-items-center mb-4"> {% endcomment %}
+       
+
+        <div class="card shadow">
+
+          <div class="card-header py-3">
+            <h4 class="text-end text-primary m-0 fw-bold">Query Data</h4>
+
+            <div class="float-end text-end align-content-end">
+            
+            <p class="text-end text-dark m-0 fw-bold" style="border-color: var(--bs-green);"> 
+              
+              Export:   
+              <a href="  {% querystring '_export'='csv' %}" class="btn btn-primary btn-esm me-1 ms-2   ">
+                <i class="bi bi-filetype-csv"></i> CSV</a>
+                
+              <a href="{% querystring '_export'='xlsx' %}" class="btn btn-primary btn-esm me-1  ">
+                <i class="bi bi-file-earmark-excel-fill "></i> Excel </a>
+               {% comment %} <a href="{% querystring '_export'='html' %}" class="btn btn-primary btn-esm me-1  ">
+                <span class="bi-pencil-fill" aria-hidden="true"> </span></a> {% endcomment %}
+
+              </p>
+            </div>
+            
+              
+           
+        </div>
+          
+
+      <div class="card-body">
+
+        <form class="row g-3" method="GET" >
+
+          
+       
+        
+          
+          <div class="col-4">
+            <label for="inputEmail3" class="col-sm-6 col-form-label">Indicator: </label>
+             {{form.indicator_filter_field|addclass:'form-control'}}
+          </div>
+
+          <div class="col-4">
+
+            <label for="inputEmail3" class="col-sm-6 col-form-label">Member State: </label>
+              {{form.memberstate_filter_field|addclass:'form-control'}}
+          </div>
+
+          <div class="col-4">
+            <label for="inputEmail3" class="col-sm-6 col-form-label">Year: </label>
+            {{form.year_filter_field|addclass:'form-control'}}
+          </div>
+          
+
+          {% comment %} <label for="inputName5" class="form-label">Indicator:</label>
+          {{form.indicator_filter_field|addclass:'form-control'}} 
+          Member State: {{form.memberstate_filter_field}}
+          Year: {{form.year_filter_field}}{% endcomment %}
+         
+          
+          {% comment %} <input type="submit" class="btn btn-default" value="Search"> {% endcomment %}
+
+          <div class="float-end text-end align-content-end">
+          <input  class="btn btn-primary btn-sm d-none  d-sm-inline-block" role="button" type="submit" value="Filter" >
+            <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
+
+          <a  class="btn btn-primary btn-sm d-none d-sm-inline-block " role="button"    href="{% url 'portal:generate-report' %}">
+            <i class="fas fa-fa-undo fa-sm text-white-50"></i>&nbsp;Reset</a>
+          </div>
+
+          {% if table %}
+          <div class="row g-3 mt-2">
+            {% render_table table %}
+          </div>
+          {% else %}
+          <div class="row g-3 mt-2">
+            Make a selection and click filter to retrieve data.
+          </div>
+        
+          {% endif %}
+          
+      </form>
+
+
+      
+
+            
+
+     
+
+      
+  </div>
+      </div>
+      </div>
+
+    </div>
+  </div>
+  {% comment %} </div> {% endcomment %}
+
+      
+{% endblock content %}
+
+{% block extra_js %}
+{{ form.media.js }}
+    
+{% endblock extra_js %}

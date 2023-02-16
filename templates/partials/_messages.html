@@ -1,0 +1,21 @@
+{% load static %}
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div{% if message.tags %} class="alert alert-sm alert-{{ message.tags }} alert-dismissable"{% endif %}>
+        
+        {{ message }}
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<script>
+    $(document).ready(function(){
+window.setTimeout(function() {
+  $(".alert").fadeTo(100, 0).slideUp(100, function(){
+      $(this).remove();
+  });
+}, 2000);
+});
+</script>

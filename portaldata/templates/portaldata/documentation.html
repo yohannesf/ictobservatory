@@ -1,0 +1,113 @@
+{% extends 'base_auth.html' %}
+
+{% load showprogress %}
+{% load dataentrytags %}
+
+{% load static %}
+
+{% block title %}Documentation & Manual{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column backend-home" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+     
+
+
+        <div class="container-fluid">
+
+          <!--begin::Page Title-->
+          <div class="d-sm-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-dark mb-0  fw-boldest">Documentation / Manual</h4>
+            {% comment %} {% num_days_left  %} {% endcomment %}
+             
+          
+           
+
+          </div>
+            <section class="section dashboard">
+
+              
+                {% if user.is_authenticated %}
+
+                {% if user.is_sadc or user.is_superuser %}  
+                <div class="col-lg-9 ms-4 center-block">
+
+                    
+
+                <div class="card mb-5"><div class="card-body">
+                    <h5 class="card-title">Administration</h5>
+
+                    <br>
+     <p>Administration Manual <span class="pull-right float-end">
+     <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
+     <br>
+                   
+                   
+                    </div></div>
+
+                </div>
+                {% endif %}
+                {% endif %}
+
+                {% if user.is_authenticated and user.is_memberstate %}  
+
+                <div class="col-lg-9 ms-4 center-block">
+
+                    
+
+                    <div class="card mb-5"><div class="card-body">
+                        <h5 class="card-title">Member States</h5>
+    
+                        <br>
+         <p>Log-in <span class="pull-right float-end">
+         <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
+         <br>
+                       
+                       
+                        </div></div>
+    
+                    </div>
+
+                {% endif %}
+
+                {% if user.is_organisation %}
+
+                <div class="col-lg-9 ms-4 center-block">
+
+                    
+
+                    <div class="card mb-5"><div class="card-body">
+                        <h5 class="card-title">Organisations</h5>
+    
+                        <br>
+         <p>Log-in <span class="pull-right float-end">
+         <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
+         <br>
+                       
+                       
+                        </div></div>
+    
+                    </div>
+
+                {% endif %}
+
+              
+
+          
+            
+                </section>
+         
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+

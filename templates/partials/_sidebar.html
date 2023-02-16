@@ -1,0 +1,113 @@
+{% load static %}
+{% load notifications_tags %}
+<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
+
+<nav  class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0      ">
+            <div class="container-fluid d-flex flex-column p-0   " >
+              <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0 " href="{% url 'portal:index' %}">
+                    <div class="logo " >
+                      <img src="{% static 'img/sadc-logo-circle.svg' %}  " alt="logo">
+                      
+                    </div>
+                    
+              </a>
+                <hr class="sidebar-divider my-0">
+                {% with request.resolver_match.url_name as url_name %}
+                <ul class="navbar-nav text-light mt-2   " id="accordionSidebar">
+
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'index' %}active{% endif %}" href=" {% url 'portaldata:index' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Home</span></a>
+                    </li>
+
+                    
+                    {% comment %} <li class="nav-item"><a class="nav-link active" href=" {% url 'portaldata:manageindicators' %}">
+                      <i class="fas fa-tachometer-alt"></i><span>Manage Indicators</span></a>
+                    </li> {% endcomment %}
+                    {% if user.is_authenticated %}
+
+                    {% if user.is_sadc or user.is_superuser %}  
+                  
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'managefocusarea' %}active{% endif %}" href=" {% url 'portaldata:managefocusarea' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Manage Focus Areas</span></a>
+                    </li>
+                
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'manageindicators' %}active{% endif %}" href=" {% url 'portaldata:manageindicators' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Manage Indicators</span></a>
+                    </li>
+                    
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'managegeneralindicators' %}active{% endif %}" href=" {% url 'portaldata:managegeneralindicators' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Manage General Indicators</span></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'validate-indicator-data' %}active{% endif %}" href=" {% url 'portaldata:validate-indicator-data' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Manage Data (Validate)</span></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'publish-data' %}active{% endif %}" href=" {% url 'portaldata:publish-data' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Publish Data </span></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'indicator-assignment' %}active{% endif %}" href=" {% url 'portaldata:indicator-assignment' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Assign Indicators</span></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybysadc' %}active{% endif %}" href=" {% url 'portaldata:dataentrybysadc' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Data Entry - SADC</span></a>
+                    </li>
+                    {% endif %}
+                    {%endif%}
+
+                  
+                 
+                 
+
+                    {% if user.is_authenticated and user.is_memberstate %}  
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybyms' %}active{% endif %}" href=" {% url 'portaldata:dataentrybyms' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Data Entry</span></a>
+                    </li>
+                    {% endif %}
+                   
+
+                    
+
+                    {% comment %} {% if user.is_authenticated and user. %}  {% endif %} {% endcomment %}
+
+                    {% if user.is_authenticated and user.is_organisation %}  
+           
+
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybyorg' %}active{% endif %}" href=" {% url 'portaldata:dataentrybyorg' %}">
+                      <i class="fas fa-tachometer-alt"></i><span> Data Entry: {{user.getSysUser.user_organisation}}</span></a>
+                    </li>
+                    {% endif %}
+
+                  
+                    
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'generate-report' %}active{% endif %}" href=" {% url 'portal:generate-report' %} ">
+                      <i class="fas fa-table"></i><span> Export Data | Report</span></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'profile' %}active{% endif %}" href="{% url 'portaldata:profile' %}  ">
+                      <i class="fas fa-user"></i><span> Profile</span></a>
+                    </li>
+
+
+
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'documentation' %}active{% endif %}" href="{% url 'portaldata:documentation' %}">
+                      <i class="fa fa-book"></i><span> Documentation</span></a>
+                    </li>
+
+                   
+
+                    {% if user.is_authenticated and user.is_superuser %}  
+
+                    <li class="nav-item"><a class="nav-link " href="{% url 'admin:index' %}" >
+                      <i class="fas bi-gear "></i><span> Admin Page</span></a>
+                    </li>
+
+                    {% endif %}
+
+                    <li class="nav-item"><a class="nav-link " href="{% url 'portal:index' %}" >
+                      <i class="fas fa-arrow-circle-left"></i><span> Front Page</span></a>
+                    </li>
+                </ul>
+                {% endwith %}
+                <!--<div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0"
+                        id="sidebarToggle" type="button"></button></div> -->
+            </div>
+        </nav>

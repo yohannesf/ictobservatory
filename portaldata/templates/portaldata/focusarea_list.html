@@ -1,0 +1,112 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}Focus Area Management{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+
+            <div class="card shadow">
+                <div class="card-header py-3">
+                     <h4 class="text-end text-primary m-0 fw-bold">Manage Focus Areas</h4>
+                     <div class="col-md-4 d-sm-flex justify-content-end    ">
+                        <a href="{% url 'portaldata:createfocusarea' %}" class="btn btn-primary me-3  ">
+                            <span class="fa fa-plus-circle" aria-hidden="true"> </span>  Add New
+                        </a>
+    
+                        {% comment %} <a href="{% url 'portaldata:index' %}" class="btn btn-primary">
+                            <span class="fa fa-file-export" aria-hidden="true"> </span>  Export List
+                        </a> {% endcomment %}
+                    </div>
+                     {% comment %} <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{{reporting_year}}</span></p> {% endcomment %}
+                </div>
+
+                <!--Data table-->
+                <div class="card-body">
+
+
+
+            <!--begin::Page Title and search-->
+            
+           
+
+            {% comment %} <div class="row-cols-auto justify-content-end mb-4 ">
+                
+                <div class="form-group col-4 float-end mb-2">
+                    <input type="text" placeholder="Search" id="searchField" class="form-control">
+    
+                </div>
+            </div> {% endcomment %}
+
+             <!--end::Page Title and Search-->
+
+             <!--Begin:List-->
+
+             <table class="table table-responsive table-hover">
+                <thead class="table-light  borderit">
+                  <th>S/N</th>
+                  <th>Focus Area</th>
+                  <th>Status</th>
+                  <th class="text-center">Total # of Indicators</th>
+                  <th class="text-center">Core</th>
+                  <th class="text-center">Extended</th>
+                  <th class="text-center">Required</th>
+                  <th class="text-center">Optional</th>
+                  <th class="text-center">Active</th>
+                  <th class="text-center">Archived</th>
+                  <th>Edit</th>
+      
+                </thead>
+
+             {% for focusarea in FocusAreas  %}
+            
+             <tbody>
+                <td>{{focusarea.sn}}</td>
+                <td>{{focusarea.title}}</td>
+                <td>{{focusarea.get_focusarea_status_display}}</td>
+                <td class="text-center">{{focusarea.indicator_set.count}}</td>
+                <td class="text-center">{{focusarea.count_core_indicators}}</td>
+                <td class="text-center">{{focusarea.count_extended_indicators}}</td>
+                <td class="text-center">{{focusarea.count_required_indicators}}</td>
+                <td class="text-center">{{focusarea.count_optional_indicators}}</td>
+                <td class="text-center">{{focusarea.count_active_indicators}}</td>
+                <td class="text-center">{{focusarea.count_archived_indicators}}</td>
+                <td> <a href="{% url 'portaldata:updatefocusarea' pk=focusarea.pk %}" class="btn btn-primary btn-esm me-3  ">
+                    <span class="fa fa-pencil-alt" aria-hidden="true"> </span>
+                  </a></td>
+                {% comment %} S/N:
+                Title:
+                Total:
+                Core:
+                Extended:
+                Active:
+                Acrchived:
+                Required:
+                Optional: {% endcomment %}
+                {% endfor %}
+             </tbody>
+                
+               
+
+               
+              
+            
+
+             <!--End:List-->
+
+        </table>
+    </div>
+    </div>
+<div>
+{% endblock content %}

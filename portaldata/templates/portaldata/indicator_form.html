@@ -1,0 +1,195 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Indicator Management{% endblock title %}
+
+
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+        <div class="container-fluid">
+            <h5 class="text-dark mb-4 fw-bold">Add Indicator</h5>
+            {% comment %} <div class="col-md-8 d-sm-flex justify-content-between align-items-center ">
+              
+               
+                <h4 class="text-dark mb-0  fw-boldest">Add Indicator</h4>
+             
+            </div> {% endcomment %}
+            <div class="card shadow">
+               
+                <div class="card-body mt-4">
+             <form  method="post">
+                {% csrf_token %}
+              
+                {% comment %} <label for="ind" id="ind_num" value="{{form.next_indicator_num}}">test</label> {% endcomment %}
+
+                <input hidden type="text" name="label" maxlength="255" required="" value="{{form.next_indicator_num}}" id="ind_num">
+       
+                
+                
+            
+               
+                {% crispy form %}  
+          
+
+            <button id="btncancel" type="button" class="btn btn-dark float-end "  >
+                <a class="text-decoration-none text-white"  href="{% url 'portaldata:manageindicators' %}">Close</a></button>
+            <button id="save" type="submit" class="btn btn-primary  float-end me-4">Save</button>
+
+           
+
+            </form>
+
+        </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+
+
+{% block extra_js %}
+
+<script src="{% static 'js/confirmExit.js' %}"></script>
+
+    <script>
+        var focusareaVal = document.getElementById('id_focus_area').value;
+
+        var choicesVal = document.getElementById('id_data_type').value;
+
+        var next_indicator = document.getElementById('ind_num').value;
+
+        var elChoice = document.querySelector("#id_choices");
+
+        var elabel = findLableForControl(elChoice);
+
+        //var currencyType = document.querySelector('#id_type_of_currency');
+        //var currencyTypeLabel = findLableForControl(currencyType);
+        
+        var t = document.getElementById('id_indicator_number').value
+
+     
+        
+        var dictionary = JSON.parse(next_indicator);
+        console.log(dictionary);
+
+        toggleFocusAreas(focusareaVal);
+        document.getElementById('id_focus_area').addEventListener('change', function() {
+            console.log('You selected: ', this.value);
+            toggleFocusAreas(this.value);
+            
+          });
+
+          if(t){
+            document.getElementById('id_indicator_number').value=t
+        }
+
+        
+  
+
+        toggleChoices(choicesVal);
+
+        document.getElementById('id_data_type').addEventListener('change', function() {
+          console.log('You selected: ', this.value);
+          toggleChoices(this.value);
+        });
+
+        function toggleChoices(value) {
+
+        
+          if (value == 5  ) {
+            elChoice.hidden = false;
+            elabel.hidden=false; 
+
+            //currencyTypeLabel.hidden = true;
+            //currencyType.hidden = true;
+          }
+
+        /*if (value == 0){
+            elChoice.hidden = true;
+            elabel.hidden=true;
+
+            currencyTypeLabel.hidden = false;
+            currencyType.hidden = false;
+
+        }*/
+
+                      
+       else {
+           
+            elChoice.hidden = true;
+            elabel.hidden=true;
+           // currencyTypeLabel.hidden = true;
+           // currencyType.hidden = true;
+            
+        }
+        
+
+
+
+
+      }
+
+      function toggleFocusAreas(value) {
+
+        //var t=document.getElementById('id_indicator_number').value
+        //if(t) 
+        //{
+        //alert(t)
+        //document.getElementById('id_indicator_number').value = t
+           // }
+        //else if (typeof dictionary[value] === 'undefined')
+        //{
+            
+         //       alert(t.value)
+        //}
+       // else{
+      //      document.getElementById('id_indicator_number').value = dictionary[value]
+      //  }
+        
+        
+       // console.log(dictionary[value])
+        //console.log(typeof(document.getElementById('id_indicator_number').value)
+        //alert(typeof(t.value))
+//        console.log(value)
+        if (typeof dictionary[value] === 'undefined') {
+            //console.log("underined")
+        }
+        else if (typeof((document.getElementById('id_indicator_number').value)) != 'undefined') {
+            //console.log("here inside")
+            document.getElementById('id_indicator_number').value = dictionary[value]
+            
+        }
+        else {
+            //console.log("last")
+            document.getElementById('id_indicator_number').value = dictionary[value]
+            
+        }
+    } 
+      function findLableForControl(el) {
+        var idVal = el.id;
+        labels = document.getElementsByTagName('label');
+        for( var i = 0; i < labels.length; i++ ) {
+           if (labels[i].htmlFor == idVal)
+                return labels[i];
+        }
+     }
+    </script>
+{% endblock extra_js %}
+

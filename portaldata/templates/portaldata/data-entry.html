@@ -1,0 +1,363 @@
+{% extends 'base_auth.html' %}
+{% load dataentrytags %}
+{% load static %}
+
+{% block title %}Data Entry{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+     <div class="container-fluid">
+      <h5 class="text-dark mb-4 fw-bold">  {{ focusarea_title }} Indicators</h5>
+      <div class="card shadow">
+          <div class="card-header py-3">
+              <p class="text-end text-primary m-0 fw-bold">Member State: <span style="color: rgb(78, 223, 92);">{{user.getUserMemberState}}</span></p>
+              <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{% reporting_year %}</span></p>
+          </div>
+          <div class="card-body">
+            <form method="post">
+            
+              {% include 'partials/_messages.html'%} 
+              {% csrf_token %}
+
+            
+              <table class="table table-responsive table-hover">
+                <thead class="table-light  borderit">
+                  <th>S/N</th>
+                  <th>Indicator</th>
+                  <th>Data</th>
+                  <th>Comments</th>
+                  <th>Data N/A?</th>
+                  {% comment %} <th>Attachment</th> {% endcomment %}
+                  <th>Definition</th>
+                  
+      
+                </thead>
+                <tbody>
+             
+
+              {% if exisiting_indicator_data %}
+             
+
+                {{ formset.management_form }}
+
+                {{formset.non_form_errors}}
+
+                
+
+                {% for form in formset %}
+
+                {{ form.id }}
+
+                {{ form.errors }}
+
+                {% comment %} {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p> {{ error }} </p>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %} {% endcomment %}
+                <span class="d-none">
+                  {{form.reporting_year}}{{form.member_state}}{{form.created_by}}{{form.submitted}}{{form.validation_status}}</span>
+
+                 <tr>
+                  
+                   
+                    
+                 
+                   
+                  <td tooltip="Required"> 
+                   
+                    
+                    {{form.instance.indicator.indicator_number}}
+                    {% if form.instance.indicator.required %}
+                    
+                    <span data-toggle="tooltip" title="Required indicator!" style="color: blue;"  
+                    class=" bi-info-circle  small ">
+
+                    </span>{% endif %}
+
+                    {% if form.instance.is_returned_for_revision %}
+                                            <span data-toggle="tooltip" title="Returned for revision!" style="color: red;"  
+                                            class="bi-exclamation-circle-fill ms-1  "> </span>
+
+                                            {% endif %}
+                  </td>
+                    <td >
+                      <span class="d-none">
+                      {{form.indicator}}
+                      </span>
+                     
+                      {{form.instance}}
+                   
+                      
+                    </td>
+                    <td>
+                      
+                      
+
+                      <div class="input-group has-validation">
+                        
+                        <span class="input-group-text"> {% getInputDecorator form.instance.indicator %}</span>
+                        {{ form.ind_value }}
+                      
+                        <div class="invalid-tooltip"> 
+                          {{ form.errors }}
+                        </div>
+                      </div>
+                     
+                     
+                     
+                      
+                    </td>
+                    <td>
+                      {{form.comments|addclass:'form-control'}}
+                     
+                    </td>
+
+                    <td class="text-center">
+                      {{form.value_NA|addclass:'form-check-input'}}
+                    </td>
+
+                   
+                   
+                    <td class="text-center">
+                      
+                      <a data-toggle="modal" data-id=' {{form.instance.indicator.label}} <br> {{form.instance.indicator.definition}}'
+                        title="Show Definition" class="open-Definition btn btn-primary btn-esm" href="#openDefinition">
+                        {% comment %} <span class="fa fa-eye"></span> {% endcomment %}
+                        <i class="bi-eye-fill"></i>
+                        
+                      </a>
+                     
+                      {% comment %} <a href="#">{{ form.instance.indicator.id }}</a> {% endcomment %}
+                    
+                    
+                    </td>
+
+
+                    {% comment %} {% if form.instance.indicator.attachment %} 
+                    
+                    <td>
+                     
+                      {{form.attachment}}
+                    </td>
+                    {% endif %} {% endcomment %}
+
+                   
+                    
+                  </tr>
+                  {% endfor %} 
+
+                </tbody> 
+
+  {% comment %} ########################################################################################### {% endcomment %}
+
+              {% else %}
+                    {{ formset.management_form }}
+
+                    {% for form in formset %}
+
+                    {{ form.id }}
+                  
+                      <tr>
+                      
+                        
+                        
+                      
+                        
+                      <td> 
+                      
+                        
+                        {{form.initial.indicator.indicator_number}}
+                        {% if form.initial.indicator.required %}
+                        <span data-toggle="tooltip" title="Required indicator!" style="color: blue;" 
+                        class=" bi-info-circle small "></span>{% endif %}</td>
+                        <td>
+                          <span class="d-none" >
+                          {{form.indicator}}
+                          </span>
+                          {{form.initial.indicator}}
+                          
+                        </td>
+
+                        <td>
+                      
+                     
+                          <div class="input-group has-validation">
+                        
+                         
+                            <span class="input-group-text">{% getInputDecorator form.initial.indicator %}</span>
+                            {{ form.ind_value }}
+                          
+                            <div class="invalid-tooltip"> 
+                              {{ form.errors }}
+                            </div>
+                          </div>
+                         
+                         
+                          
+                        </td>
+                        <td>
+                          {{form.comments|addclass:'form-control'}}
+                         
+                        </td>
+    
+                        <td class="text-center">
+                          {{form.value_NA|addclass:'form-check-input'}}
+                        </td>
+              
+
+
+                        
+                        <td class="text-center">
+                          {% comment %} Definition {% endcomment %}
+                          <a data-toggle="modal" data-id=' {{form.initial.indicator.label}} <br> {{form.initial.indicator.definition}}'
+                            title="Show Definition" class="open-Definition btn btn-primary btn-esm" href="#openDefinition">
+                            <span class="fa fa-eye"></span></a>
+                          
+                          </td>
+
+{% comment %} 
+                        {% if form.initial.indicator.attachment %} 
+                        
+                        <td>
+                          
+                          {{form.attachment}}
+                        </td>
+                        {% endif %} {% endcomment %}
+
+                        
+                        
+                      </tr>
+                      {% endfor %} 
+
+                    </tbody> 
+              {% endif %}
+            </table>
+
+                
+               
+            <button id="btncancel" type="button" class="btn btn-dark float-end "  >
+              <a class="text-decoration-none text-white"  href="{% url 'portaldata:dataentrybyms' %}">Close</a></button>
+              <button id="save"  type="submit" class="btn btn-primary  float-end me-4">Save</button>
+
+             
+              
+              </form>
+             
+            </div>
+                     
+                 
+                    
+                      
+      
+    
+  </div>
+</div>
+</div>
+{% comment %} <footer class="bg-white sticky-footer">
+  <div class="container my-auto">
+      <div class="text-center my-auto copyright"><span>Copyright © Brand 2022</span></div>
+  </div>
+</footer> {% endcomment %}
+</div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+
+<div class="modal fade" id="definitionModal" tabindex="-1" aria-labelledby="definitionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-start">
+      <div class="modal-header">
+        <h5 class="modal-title" id="definitionModalLabel">Definition </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body justify-content-end text-justify ">
+        <div  id="indLabel" class="modal-title fw-bold">{{ indicator.label }}</div>
+        
+        <p  name="indDefinition" id="indDefinition" > </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div> 
+
+
+ <script>
+
+  
+
+$(document).on("click", ".open-Definition", function () {
+  
+  var myDef = $(this).data('id');
+ 
+  $(".modal-body #indDefinition").html( myDef );
+  // As pointed out in comments, 
+  // it is unnecessary to have to manually call the modal.
+  $('#definitionModal').modal('show');
+});
+</script> 
+
+<script>
+  
+  {% comment %} form_idx = 0;
+  form_vidx = 0
+  form_cidx = 0
+  
+  {% for form in formset %}
+     
+  
+      var form_valueNA='id_form-'+form_idx+'-value_NA';
+      var form_value = 'id_form-'+form_vidx+'-ind_value';
+      var form_comments = 'id_form-'+form_cidx+'-comments'; 
+   
+       document.getElementById(form_valueNA).onchange = function() {
+        alert(form_valueNA)
+        alert(form_value)
+        alert(this.id)
+        document.getElementById(form_value).disabled = this.checked;
+      };     
+      form_idx = form_idx + 1;
+      form_vidx = form_vidx + 1;
+      form_cidx = form_cidx + 1;
+  
+      {%endfor%} {% endcomment %}
+
+</script>
+
+
+
+      
+
+
+
+
+{% endblock content %}
+
+{% comment %} {% block js_scripts %}
+
+
+
+
+{% endblock js_scripts %} {% endcomment %}
+
+{% block extra_js %}
+
+
+
+
+
+<script src="{% static 'js/confirmExit.js' %}"></script>
+
+{% endblock extra_js %}

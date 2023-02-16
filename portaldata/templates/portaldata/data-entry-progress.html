@@ -1,0 +1,436 @@
+{% extends 'base_auth.html' %}
+{% load dataentrytags %}
+{% load showprogress %}
+
+{% load static %}
+
+{% block title %}Data Entry{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+      {% check_within_reporting_period as rep_period %} 
+        <div class="container-fluid">
+
+          <!--begin::Page Title-->
+          <div class="d-sm-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-dark mb-0  fw-boldest">{{user.getUserMemberState}} - Data Entry Progress Dashboard </h4>
+            {% if rep_period   %}
+            <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{% reporting_year %}</span></p>
+            {% endif %}
+            
+          </div>
+          <!--end::Page Title-->
+
+
+         
+ 
+ {% if not rep_period   %}
+ 
+  <div class="col-md-12">
+    <p class=" text-primary  fw-bold" >Data entry is enabled only during Reporting Periods. 
+      Please revisit the page at a later date. </p>
+  </div>
+{% endif %}
+          
+<div class="row g-5 g-xl-10 mb-xl-10">
+
+  <!--Begin Exchange Data Column-->
+  <div class="col-md-6 col-lg-4 col-xl-4 col-xxl-3 ">
+      <a href="{% url 'portaldata:exchange-rate'  %}" class="card-link {% if not rep_period   %} disabled {% endif %}">
+
+    <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90 ">
+    <!--begin::Header-->
+
+   <!--  {% getExchangeDataUnsubmitted user.getUserMemberState as check_submitted %}
+     ######Commented out: Exchange data notification badge  ########
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{check_submitted}}
+        <span class="visually-hidden">For revision</span>
+    </span> 
+    ################################################################-->
+
+        <div class="card-header pt-5">
+            <!--begin::Title-->
+            <div class="card-title d-flex flex-column">
+
+                <!--begin::Main_Title-->
+                <span class="fs-2hx fw-bolder text-white me-1 lh-1 ls-n2">Exchange Rate</span>
+                <!--end::Main_Title-->
+
+                <!--begin::Subtitle-->
+                {% isExchangeDataCompleted user.getUserMemberState as ExchangeDataCompleted%}
+                <span class="text-white opacity-50 pt-1 fw-bold fs-6">{{ExchangeDataCompleted}} of 1 completed</span>
+                    <!--end::Subtitle-->
+            </div>
+            <!--end::Title-->
+        </div>
+        <!--end::Header-->
+        <!--begin::Card body-->
+        <div class="card-body d-flex align-items-end pt-0">
+            <!--begin::Progress-->
+            <div class="d-flex align-items-center flex-column mt-3 w-100">
+                <div class="d-flex justify-content-between fw-bolder small text-white opacity-50 w-100 mt-auto mb-1">
+                    <span>Progress</span>
+                    {% widthratio ExchangeDataCompleted 1 100 as wd %}
+                    <span>{{wd}}%</span>
+                </div>
+
+                {% if  ExchangeDataCompleted == 1   %}
+
+                  <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                    <div class="bg-success rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+
+                {% else %}
+
+                  <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                    <div class="bg-danger rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                {% endif %}
+                                 
+                
+
+        </div>
+        <!--end::Progress-->
+</div>
+<!--end::Card body-->
+</div>
+<!--end::Card widget 7-->
+
+</a>
+          
+  </div>
+  <!--End Exchange Data Column-->
+
+            {% if focusareas %}
+                
+              {% for focusarea in focusareas  %}
+
+                 
+
+                  {% if focusarea.count_indicators > 0 %}
+
+                
+
+                <div class="col-md-6 col-lg-4 col-xl-4 col-xxl-3 ">
+                    {% comment %} <a href="{% url 'data:entry' focusarea.abbreviation %}" class="card-link"> {% endcomment %}
+                    {% comment %} <a href="{% url 'data:DataEntryFormView' focusarea.abbreviation %}" class="card-link"> {% endcomment %}
+                    <a href="{% url 'portaldata:manage_indicatordata' id=focusarea.id %}" class="card-link {% if not rep_period   %} disabled {% endif %}">
+                    {% comment %} <a href="{% url 'data:manage_books' %}" class="card-link"> {% endcomment %}
+                    {% comment %} <a href="{% url 'data:indicatorDataFormSet' %}" class="card-link"> {% endcomment %}
+                    {% comment %} <a href="{% url 'data:single-form' focusarea.id %}" class="card-link"> {% endcomment %}
+                    {% comment %} <a href="{% url 'data:dataentryform' id=focusarea.id %}" class="card-link"> {% endcomment %}
+                    {% comment %} <a href="{% url 'data:indicatordataview' %}" class="card-link"> {% endcomment %}
+                    {% comment %} <a href="{% url 'data:dataupdateform' pk=62 %}" class="card-link"> {% endcomment %}
+
+                            <!--begin::Card widget 7-->
+                      <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90 " >
+                        <!--begin::Header-->
+
+
+                        {% getRevisionRequest focusarea 'M' user.getUserMemberState as revision_request %}
+                        {% comment %} {% getSubmitted focusarea 'M' user.getUserMemberState as check_submitted %}
+                        {{ check_submitted }} {% endcomment %}
+
+                        {% if revision_request %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                         {{revision_request}}
+                          <span class="visually-hidden">For revision</span>
+                        </span>
+                        {% endif %}
+                        
+                        <div class="card-header pt-5">
+                          {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-danger">4</span> {% endcomment %}
+                        
+                        
+                           <!--begin::Title-->
+                          <div class="card-title d-flex flex-column">
+                           
+                            <!--begin::Main_Title-->
+                            <span class="fs-2hx fw-bolder text-white me-1 lh-1 ls-n2">{{ focusarea.title }}</span>
+                            <!--end::Main_Title-->
+                            <!--begin::Subtitle-->
+                              {% getActiveRequiredindicatorsbyassignedto focusarea 'M' as RequiredIndicators  %}
+                              {% getCompletedActiveRequiredindicatorsbyassignedto focusarea 'M' user.getUserMemberState as CompletedIndicators %}
+                              {% comment %} {% calculateprogress focusarea 'M' user.getUserMemberState %} {% endcomment %}
+                              {% calculateprogress focusarea 'M' user.getUserMemberState as calculatepg %}
+                            <span class="text-white opacity-50 pt-1 fw-bold fs-6">{{CompletedIndicators}} 
+                              of {{RequiredIndicators}}
+                              completed
+                            {% comment %} <span class="text-white opacity-50 pt-1 fw-bold fs-6">{{focusarea.count_completed_required_indicators}} of {{ focusarea.count_active_required_indicators }}
+                              completed {% endcomment %}
+
+                              
+                             
+                              {% comment %} {{CompletedIndicators}}
+                              {{RequiredIndicators}}
+                              {{calculatepg}} {% endcomment %}
+
+                             
+
+                              
+                              
+                            </span>
+                            <!--end::Subtitle-->
+                          </div>
+                          <!--end::Title-->
+                        </div>
+                        <!--end::Header-->
+                        <!--begin::Card body-->
+                        <div class="card-body d-flex align-items-end pt-0">
+                          <!--begin::Progress-->
+                          <div class="d-flex align-items-center flex-column mt-3 w-100">
+                            <div class="d-flex justify-content-between fw-bolder small text-white opacity-50 w-100 mt-auto mb-1">
+                              <span>Progress</span>
+{% comment %}                               
+                              {% widthratio focusarea.count_completed_required_indicators focusarea.count_active_required_indicators 100 as wd %}
+                              <span>{{wd}}%</span> {% endcomment %}
+
+                              {% widthratio CompletedIndicators RequiredIndicators 100 as wd %}
+                              <span>{{wd}}%</span>
+                              
+
+
+                            </div>
+                            {% comment %} {{focusarea.calculate_progress}} {% endcomment %}
+
+                           
+                        
+                           
+                                {% if  calculatepg  <= 60 and calculatepg  > 0 %}
+                                  <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                                    <div class="bg-danger rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                {% elif  calculatepg  > 60  and calculatepg  < 100  %}
+                                  <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                                    <div class="bg-warning rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                {% elif calculatepg == 100 %}
+                                  <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                                    <div class="bg-success rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+
+                                  {% else  %}
+                                  <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                                    <div class="bg rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                
+                                
+                              {% endif %} 
+                         
+ 
+                            
+
+                            
+                          </div>
+                          <!--end::Progress-->
+                        </div>
+                        <!--end::Card body-->
+                      </div>
+                      <!--end::Card widget 7-->
+
+                    </a>
+
+                  </div>
+                  
+                  
+                  <!--end::emptyfocusarea-->
+                  {% endif  %}
+
+
+                  <!--end::Focus Area Cards-->
+                  {% endfor  %}
+
+            
+
+                </div>
+                <!--End Cards Row-->
+      
+                <!--Begin: Overall-->
+
+               <hr>
+        <div class="row g-5 g-xl-10 mb-xl-10">
+          
+            <div class="col-md-6 col-lg-4 col-xl-4 col-xxl-3 ">
+              
+  
+                      <!--begin::Card widget 7-->
+                <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90 " >
+                  <!--begin::Header-->
+                  <div class="card-header pt-5">
+                    <!--begin::Title-->
+                    <div class="card-title d-flex flex-column">
+                      <!--begin::Main_Title-->
+                      <span class="fs-2hx fw-bolder text-white me-1 lh-1 ls-n2">Overall</span>
+                      <!--end::Main_Title-->
+                      <!--begin::Subtitle-->
+                              {% countallcompletedindicators 'M' user.getUserMemberState as OveallCompletedIndicators %}
+                              {% countallactiveindicators 'M' as OverallRequiredIndicators  %}
+                              {% comment %} {% calculateprogress focusarea 'M' user.getUserMemberState %} {% endcomment %}
+                              {% calculateoverallprogress 'M' user.getUserMemberState as Overallcalculatepg %}
+                      <span class="text-white opacity-50 pt-1 fw-bold fs-6">{{OveallCompletedIndicators}} of {{OverallRequiredIndicators}}
+                        completed</span>
+
+                              
+                              
+
+                              
+                              
+                              
+                        
+                       
+                      <!--end::Subtitle-->
+                    </div>
+                    <!--end::Title-->
+                  </div>
+                  <!--end::Header-->
+                  <!--begin::Card body-->
+                  <div class="card-body d-flex align-items-end pt-0">
+                    <!--begin::Progress-->
+                    <div class="d-flex align-items-center flex-column mt-3 w-100">
+                      <div class="d-flex justify-content-between fw-bolder small text-white opacity-50 w-100 mt-auto mb-1">
+                        <span>Progress</span>
+                        {% widthratio OveallCompletedIndicators OverallRequiredIndicators 100 as wd %}
+                              <span>{{wd}}%</span>
+                              
+                      </div>
+
+                          {% if  Overallcalculatepg  <= 60 and Overallcalculatepg  > 0 %}
+
+                          <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                            <div class="bg-danger rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        {% elif  Overallcalculatepg > 60  and Overallcalculatepg  < 100  %}
+                          <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                            <div class="bg-warning rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        {% elif Overallcalculatepg == 100 %}
+                          <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                            <div class="bg-success rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+
+                          {% else  %}
+                          <div class="progress h-8px mx-3 w-100 bg-light-primary rounded">
+                            <div class="bg rounded h-8px" role="progressbar" style="width: {{ wd }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        
+                        
+                      {% endif %}
+                              
+
+                    
+                    </div>
+                    <!--end::Progress-->
+                  </div>
+                  <!--end::Card body-->
+                </div>
+                <!--end::Card widget 7-->
+  
+             
+  
+            </div>
+
+          </div>
+          
+
+        </div>
+        
+  
+
+    
+   <div class="container-fluid">
+    <div class="row mb-3 ">
+      <form action="{% url 'portaldata:submitIndicatorData' %}" method="post">
+
+        {% csrf_token %}
+
+      <!--begin::Col-->
+      <div class="col-md-12 pe-lg-10">
+        <!--begin::Form-->
+      
+        {% getOverallToSubmit 'M' user.getUserMemberState as check_overall_submitted %}
+       
+      
+       
+        <button type="submit" class="btn btn-primary btn-lg  btn-block" 
+        id="kt_contact_submit_button"
+         {% if Overallcalculatepg != 100 or check_overall_submitted == 0 %}disabled{% endif %}   > 
+        
+        
+          <!--begin::Indicator-->
+          <span class="indicator-label p-5">
+            Submit</span>
+          {% if check_overall_submitted > 0 and Overallcalculatepg == 100  %}
+            <span class=" badge rounded-pill bg-danger">
+              {{check_overall_submitted}}
+              
+            </span>
+            {% endif %}
+            
+
+          {% comment %} <span class="indicator-progress">Please wait...
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span> {% endcomment %}
+          <!--end::Indicator-->
+        </button>
+        
+        <!--end::Form-->
+      </div>
+      <!--end::Col-->
+      <!--begin::Col-->
+
+      <!--end::Col-->
+    </form>
+    <br>
+
+  
+    <div class="block ">
+        {% if Overallcalculatepg != 100 %}
+        <p class=" mt-3 ">You can submit when data is completed for all required indicators. <br>
+          Currently, <strong> {{OveallCompletedIndicators}} of {{OverallRequiredIndicators}} </strong>completed.
+        
+        </p>
+
+  
+
+        {% elif check_overall_submitted == 0 %}
+
+        <p class=" mt-3 ">You have submitted all data to SADC secretariat. <br>
+          
+        
+        </p>
+        
+        {% endif %}
+
+      
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+
+              <div class="col-md-12">
+                <p>No Focus Areas Available</p>
+              </div>
+                
+            {% endif %}
+    
+    {% comment %} <footer class="bg-white sticky-footer">
+        <div class="container my-auto">
+            <div class="text-center my-auto copyright"><span>Copyright © SADC 2022</span></div>
+        </div>
+    </footer> {% endcomment %}
+
+  
+   
+</div>
+
+{% endblock content %}

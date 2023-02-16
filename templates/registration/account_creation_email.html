@@ -1,0 +1,15 @@
+{% load i18n %}{% autoescape off %}
+{% blocktranslate %}You're receiving this email because an account has been created for you at the SADC ICT Observatory Web-Portal. 
+{{ site_name }}.{% endblocktranslate %}
+
+{% translate "Please go to the following page and to set your password:" %}
+{% block reset_link %}
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+{% endblock %}
+{% comment %} {% translate 'Your username, in case you’ve forgotten:' %} {{ user.get_username }} {% endcomment %}
+
+{% comment %} {% translate "Thanks for using our site!" %} {% endcomment %}
+
+{% blocktranslate %}The {{ site_name }} team{% endblocktranslate %}
+
+{% endautoescape %}
