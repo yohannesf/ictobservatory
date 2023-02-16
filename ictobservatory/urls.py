@@ -31,4 +31,5 @@ urlpatterns = [
     path("portaldata/", include('portaldata.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('core.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# settings.MEDIA_URL, document_root=settings.MEDIA_ROOT changed during deployment
