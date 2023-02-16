@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
 import dotenv
+import sys
 import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,16 +34,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # environment setting from Book: Becoming an Enterprise Django Developer
 
 # Take environment variables from .env file
-dotenv_file = os.path.join(BASE_DIR, ".env")
+# Uncommented for deployment
+# dotenv_file = os.path.join(BASE_DIR, ".env")
+# if os.path.isfile(dotenv_file):
+#     dotenv.load_dotenv(dotenv_file)
 
+# Added for deployment
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
-if os.path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"  # Added for deployment
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
                           "127.0.0.1,localhost").split(",")
@@ -121,17 +127,33 @@ WSGI_APPLICATION = "ictobservatory.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        # "ENGINE": "django.db.backends.postgresql",
-        # "NAME": os.getenv('DB_NAME'),
-        # "USER": os.getenv('DB_USER'),
-        # "PASSWORD": os.getenv('DB_USER_PASSWORD'),
-        # "HOST": os.getenv('DB_HOST'),
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.getenv('DB_NAME'),
+#         "USER": os.getenv('DB_USER'),
+#         "PASSWORD": os.getenv('DB_USER_PASSWORD'),
+#         "HOST": os.getenv('DB_HOST'),
+#         "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
 
+#     }
+# }
+
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL environment variable not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    }
 
 
 # Password validation
