@@ -1,0 +1,20 @@
+@import "https://code.highcharts.com/css/highcharts.css";
+
+.highcharts-title {
+    fill: #434348;
+    font-weight: bold;
+    /* letter-spacing: 0.3em; */
+    /* font-size: 1em; */
+    /* width: 100%;
+    border: 1px solid #434348;
+    padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x); */
+    margin-bottom: 0;
+    padding-bottom: 120px;
+    color: var(--bs-card-cap-color);
+    background-color: var(--bs-card-cap-bg);
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
+}
+
+.highcharts-plot {
+    background-color: aqua;
+}
