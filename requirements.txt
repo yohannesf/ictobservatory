@@ -1,6 +1,7 @@
 asgiref==3.5.2
 autopep8==1.7.0
 crispy-bootstrap5==0.7
+dj-database-url==1.2.0
 Django==4.1
 django-ajax-datatable==4.4.4
 django-appconf==1.0.5

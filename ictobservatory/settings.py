@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 import dotenv
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -122,11 +123,12 @@ WSGI_APPLICATION = "ictobservatory.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('DB_NAME'),
+        # "ENGINE": "django.db.backends.postgresql",
+        # "NAME": os.getenv('DB_NAME'),
         # "USER": os.getenv('DB_USER'),
         # "PASSWORD": os.getenv('DB_USER_PASSWORD'),
-        "HOST": os.getenv('DB_HOST'),
+        # "HOST": os.getenv('DB_HOST'),
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
 
     }
 }
