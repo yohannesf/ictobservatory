@@ -1,0 +1,17 @@
+ 
+            <div  class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"> {{ notice.verb }}</h5> <small>{{ notice.timesince }} ago</small></div>
+                <p class="mb-1"><strong>From:</strong> {{ notice.actor|title }}</p> 
+                <small>{{ notice.description|linebreaksbr }}</small> 
+            
+            
+                <div class="notice-actions">
+                    {% for action in notice.data.actions %}
+                      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+                    {% endfor %}
+                  </div>
+            </div> 
+                
+               
+                      
