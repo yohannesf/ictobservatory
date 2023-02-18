@@ -71,7 +71,7 @@ INSTALLED_APPS = [
     'django_select2',
     'django_pivot',
     "django_tables2",
-    'notifications',
+
     "crispy_forms",
     "crispy_bootstrap5",
     'django_crontab',
@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     "portal.apps.PortalConfig",
     "portaldata.apps.PortaldataConfig",
     "core.apps.CoreConfig",
+    'notifications',
 
 ]
 
