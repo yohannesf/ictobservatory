@@ -189,7 +189,7 @@ class IndicatorListtableView(AjaxDatatableView):
     column_defs = [
         AjaxDatatableView.render_row_tools_column_def(),
         {'name': 'pk', 'visible': False, 'orderable': True, },
-        {'name': 'definition', 'visible': False, },
+
 
         {'name': 'focus_area', 'visible': True, 'searchable': True, 'orderable': True,
             'foreign_field': 'focus_area__title', 'choices': True, 'autofilter': True, },
@@ -199,6 +199,8 @@ class IndicatorListtableView(AjaxDatatableView):
 
         {'name': 'label', 'title': 'Indicator', 'visible': True, 'searchable': True, 'orderable': True,
          'choices': True, 'autofilter': True, },
+
+        {'name': 'definition', 'visible': False, },
 
         {'name': 'data_type', 'visible': True, 'searchable': True, 'orderable': True,
          'choices': True, 'autofilter': True, },
