@@ -1,0 +1,38 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+
+{% block title %}Data Entry{% endblock title %}
+
+{% block content %}
+
+{% include 'partials/_sidebar.html' %}
+
+<div class="d-flex flex-column" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+
+
+     <div class="container-fluid">
+
+
+      <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Notifications</h5>
+            <div class="list-group">
+    {% if notifications %}
+    {% for notice in notifications %}
+      {% include 'notifications/notice_sadc.html' %}
+      <br>
+    {% endfor %}
+    {% else %}
+    <p>There are no notifications to show.</p>
+
+    {% endif %}
+  </div>
+</div>
+</div>
+ {% endblock content  %}
+
+  
