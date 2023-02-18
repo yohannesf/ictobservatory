@@ -21,28 +21,31 @@
         {% comment %} <a  class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"   href=" {% url 'portal:chart' %}">
             <i class="fas fa-download fa-sm text-white-50"></i>Chart</a> {% endcomment %}
 
-
-        <a  class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"   href="{% url 'portal:generate-report' %}">
+            <div class="col-sm-3 text-end" >
+        <a  class="btn btn-primary btn-sm  d-sm-inline-block" role="button"   href="{% url 'portal:generate-report' %}">
             <i class="fas fa-download fa-sm text-white-50"></i>&nbsp;Query Data</a>
+        </div>
       </div>
 
-    <div class="row d-block ">
-     
+    <div class="row d-block  ">
+       
       <form class="row g-3 mb-3" method="GET" >
-            <div class="d-inline-flex mt-2">
+            <div class="d-inline-flex mt-2  ">
 
                 <div class="">
                     <label for="inputEmail3" class="pt-2 me-3">Year: </label>
                 </div>
-                <div class="col-2" >
+                <div class="col-sm-2" >
                     {{form.year_filter|addclass:'form-select'}}
                 </div>
-
-                <input  class="btn btn-primary btn-sm d-none  d-sm-inline-block ms-3" role="button" type="submit" value="Show" >
+               
+                <input  class="btn btn-primary btn-sm   d-sm-inline-block ms-3" role="button" type="submit" value="Show" >
             <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
+              
             </div>
 
         </form>
+   
     </div>
 
 
