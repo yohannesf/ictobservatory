@@ -132,7 +132,7 @@ class GeneralIndicatorUpdateView(UpdateView):
 
 #     context_object_name = "Indicators"
 
-@method_decorator(login_required, name='dispatch')
+@login_required
 def indicator_list_view(request):
     """
     Render the page which contains the table.
