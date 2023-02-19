@@ -33,6 +33,7 @@ def index(request):
     return render(request, 'portaldata/index.html')
 
 
+@login_required
 def documentation(request):
     return render(request, 'portaldata/documentation.html')
 

@@ -26,11 +26,13 @@ from core.decorators import group_required, org_required
 from core.models import User
 import portal
 from ..models import DATA_TYPE, IND_ASSIGNED_TO, ExchangeRateData, FocusArea, GeneralIndicator, Indicator, IndicatorData, MemberState, AssignedIndicator, Published
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from ..forms.admin_forms import (
     IndicatorAssignEditForm, IndicatorAssignEntryForm, IndicatorForm, FocusAreaForm)
 
 
+@method_decorator(login_required, name='dispatch')
 class IndicatorCreateView(CreateView):
 
     model = Indicator
@@ -55,6 +57,7 @@ class IndicatorCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+@method_decorator(login_required, name='dispatch')
 class IndicatorUpdateView(UpdateView):
 
     model = Indicator
@@ -83,6 +86,7 @@ class IndicatorUpdateView(UpdateView):
         # return super().form_valid(form)
 
 
+@method_decorator(login_required, name='dispatch')
 class GeneralIndicatorListView(ListView):
     model = GeneralIndicator
     # model_list.html -> indicator_list.html
@@ -90,6 +94,7 @@ class GeneralIndicatorListView(ListView):
     context_object_name = "GeneralIndicators"
 
 
+@method_decorator(login_required, name='dispatch')
 class GeneralIndicatorCreateView(CreateView):
 
     model = GeneralIndicator
@@ -105,6 +110,7 @@ class GeneralIndicatorCreateView(CreateView):
         return super().form_valid(form)
 
 
+@method_decorator(login_required, name='dispatch')
 class GeneralIndicatorUpdateView(UpdateView):
 
     model = GeneralIndicator
@@ -126,7 +132,7 @@ class GeneralIndicatorUpdateView(UpdateView):
 
 #     context_object_name = "Indicators"
 
-
+@method_decorator(login_required, name='dispatch')
 def indicator_list_view(request):
     """
     Render the page which contains the table.
@@ -249,6 +255,7 @@ class IndicatorListtableView(AjaxDatatableView):
         """
 
 
+@method_decorator(login_required, name='dispatch')
 class FocusAreaCreateView(CreateView):
     model = FocusArea
     # model_form.html -> indicator_form.html
@@ -271,6 +278,7 @@ class FocusAreaCreateView(CreateView):
         return super().form_valid(form)
 
 
+@method_decorator(login_required, name='dispatch')
 class FocusAreaUpdateView(UpdateView):
     model = FocusArea
     form_class = FocusAreaForm
@@ -282,11 +290,13 @@ class FocusAreaUpdateView(UpdateView):
         return super().form_valid(form)
 
 
+@method_decorator(login_required, name='dispatch')
 class FocusAreaListView(ListView):
     model = FocusArea
     context_object_name = "FocusAreas"
 
 
+@method_decorator(login_required, name='dispatch')
 def manage_indicatorassignment(request):
 
     exisiting_indicator_assign_data = AssignedIndicator.objects.prefetch_related('indicator').filter(
