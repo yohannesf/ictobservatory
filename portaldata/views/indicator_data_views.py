@@ -50,6 +50,7 @@ def dataentryprogressorg(request):
     return render(request, 'portaldata/data-entry-progress-org.html', context=context)
 
 
+@login_required
 def manage_general_indicatordata(request):
 
     qs_gen_ind_data = GeneralIndicatorData.objects.filter(
