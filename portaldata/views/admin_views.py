@@ -7,12 +7,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from notifications.signals import notify
 from django.utils.translation import gettext_lazy as _
-from django.template.loader import render_to_string
+
 from ajax_datatable.views import AjaxDatatableView
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import Group
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
 
 
 import datetime

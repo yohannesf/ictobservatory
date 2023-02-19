@@ -25,7 +25,7 @@ from portaldata.views.indicator_data_views import update_currency_indicators_to_
 from ..models import FocusArea, Indicator, IndicatorData, MemberState, AssignedIndicator
 
 
-# @login_required
+@login_required
 def index(request):
     # email_notifications(request)
     # publish_data(request)
