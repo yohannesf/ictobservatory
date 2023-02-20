@@ -1,4 +1,5 @@
 
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -12,6 +13,7 @@ from core.models import SystemUser, User
 from core.views import Get_Reporting_Year
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from ictobservatory import settings
 from portaldata.forms.indicator_data_revision import IndicatorDataRevision
 from django.template.loader import render_to_string
 from notifications.signals import notify
@@ -161,9 +163,13 @@ def SendBack(request, id):
 
             verb = f"Revision Request ({ind_data.indicator.indicator_number})"
 
+            message = comment if comment else f"Please revise indicator {ind_data.indicator.indicator_number}"
+
             notify.send(request.user, recipient=users,
                         verb=verb, description=comment if comment else f"Please revise indicator {ind_data.indicator.indicator_number}")
 
+            email_notifications(
+                subject=verb, recipient_list=users, message=message)
             # return HttpResponseRedirect(
             #     reverse_lazy(
             #         'portaldata:validate-indicator-data',))
@@ -190,6 +196,40 @@ def SendBack(request, id):
     # IndicatorDataValidationHistory.objects.filter(indicator_data=instance).update(
     #     current=Q(pk=latest.pk)
     # )
+
+
+def email_notifications(subject, recipient_list, message):
+
+    #notifications = Notification.objects.filter(emailed=False)
+
+    #subject = 'SADC ICT Observatory - Unread Notifications'
+    email_from = settings.EMAIL_HOST_USER
+    # notifications = Notification.objects.filter(emailed=False)
+
+    # notifications = Notification.objects.filter(emailed=False).values(
+    #     'recipient').annotate(total=Count('id')).order_by()
+
+    # for n in notifications:
+    #     recipient = User.objects.get(id=n.get("recipient"))
+    #     recipient_list = [recipient.email, ]
+
+#     message = f'''
+# Dear {recipient.get_full_name().title()}
+
+# You have {n.get("total")} unread notifications. Please log into your account to read.
+
+# SADC Secretariat
+# http://www.sadc.org
+#         '''
+
+#     print(recipient)
+#     print(message)
+    print(recipient_list)
+    send_mail(subject, message, email_from, recipient_list)
+
+    # Notification.objects.filter(emailed=False).update(emailed=True)
+
+    # return HttpResponse("sent")
 
 
 def indicatordata_list_view(request):
