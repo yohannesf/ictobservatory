@@ -168,8 +168,13 @@ def SendBack(request, id):
             notify.send(request.user, recipient=users,
                         verb=verb, description=comment if comment else f"Please revise indicator {ind_data.indicator.indicator_number}")
 
+            email_address = []
+
+            for i in users:
+                email_address.append(i.email)
+
             email_notifications(
-                subject=verb, recipient_list=users, message=message)
+                subject=verb, recipient_list=email_address, message=message)
             # return HttpResponseRedirect(
             #     reverse_lazy(
             #         'portaldata:validate-indicator-data',))
@@ -224,7 +229,7 @@ def email_notifications(subject, recipient_list, message):
 
 #     print(recipient)
 #     print(message)
-    print(recipient_list)
+    # print(recipient_list)
     send_mail(subject, message, email_from, recipient_list)
 
     # Notification.objects.filter(emailed=False).update(emailed=True)
