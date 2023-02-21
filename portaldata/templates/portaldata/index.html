@@ -78,8 +78,8 @@
               {% endif %}
 
 
-
-              {% if user.is_authenticated and user.is_memberstate %}  
+{% if user.is_authenticated %}
+              {% if   user.is_memberstate or user.is_organisation %}  
 
               <div class="row">
 
@@ -118,6 +118,7 @@
                           </div></div></div>
 
                     {% endif %}
+                    {% endif %}
                   
                   
                     <div class=""><br></div>
@@ -151,9 +152,9 @@
                         {% endif %}
                           
                           <li class="list-group-item"><i class="bi bi-clipboard-data me-1 text-primary"></i> <a class="text-decoration-none text-dark" href= "{% url 'portal:generate-report' %}" > Query / Export Data</a></li>
-                          <li class="list-group-item"><i class="bi bi-bell me-1 text-danger"></i><a class="text-decoration-none text-dark" href="{% url 'notifications:all' %}  " >   View Notifications </a></li>
-                          <li class="list-group-item"><i class="bi bi-person me-1 text-warning"></i><a class="text-decoration-none text-dark" href="{% url 'portaldata:profile' %}  " > Manage Profile</a></li>
-                          <li class="list-group-item"><i class="bi bi-question-octagon me-1 text-primary"></i><a class="text-decoration-none text-dark" href="#  " > Manual</a></li>
+                          <li class="list-group-item"><i class="bi bi-bell me-1 text-danger"></i><a class="text-decoration-none text-dark" href="{% url 'notifications:all' %}" >   View Notifications </a></li>
+                          <li class="list-group-item"><i class="bi bi-person me-1 text-warning"></i><a class="text-decoration-none text-dark" href="{% url 'portaldata:profile' %}" > Manage Profile</a></li>
+                          <li class="list-group-item"><i class="bi bi-question-octagon me-1 text-primary"></i><a class="text-decoration-none text-dark" href="{% url 'portaldata:documentation' %}" > Manual</a></li>
                         
                         <br>
 
