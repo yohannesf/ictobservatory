@@ -408,8 +408,11 @@ def publish_data(request):
                 published_year = Published(
                     reporting_year=reporting_year, published_status=True, updated_by=request.user)
                 published_year.save()
-        os.kill(os.getpid(), signal.SIGINT)
+
+        #os.kill(os.getpid(), signal.SIGINT)
         # comment
+        settings.KILL_OS = 'True'
+        print(settings.KILL_OS)
 
         # messages.success(
         #     request, f'{reporting_year} Data Published Successfully!')

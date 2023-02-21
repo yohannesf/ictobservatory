@@ -1,5 +1,8 @@
 
 
+import signal
+import os
+from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import intcomma
 
 from django_tables2 import RequestConfig
@@ -62,15 +65,18 @@ def index(request):
 
     # t = pivotit()
 
-    year = latest_published_year()
+    if settings.KILL_OS == 'True':
+        os.kill(os.getpid(), signal.SIGINT)
 
-    form = HomePageFilterYear(request.GET or None)
+    year = latest_published_year()
 
     # year = Get_Reporting_Year()
 
     # if request.user.is_authenticated:
     #     us = request.user.getSysUser()
     # print(us.user_organisation)
+
+    form = HomePageFilterYear()
 
     if request.method == "GET":
 
@@ -165,6 +171,7 @@ def index(request):
         'score_cards': score_cards
 
     }
+    settings.KILL_OS = 'False'
     # print(chartitContext)
     return render(request, 'portal/index.html', context=context)
 

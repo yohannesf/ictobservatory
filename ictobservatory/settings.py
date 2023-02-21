@@ -243,6 +243,8 @@ AUTHENTICATION_BACKENDS = [
     'core.backends.ExtendedUserModelBackend',
 ]
 
+KILL_OS = 'False'
+
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "SADC Observatory - Admin",

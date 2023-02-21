@@ -92,6 +92,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "ictobservatory.urls"
 
+KILL_OS = 'False'
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
