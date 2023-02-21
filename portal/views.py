@@ -61,20 +61,7 @@ total_internet_users = ''
 
 def index(request):
 
-    # sadc_mobile_penetration = ''
-
-    # t = pivotit()
-
-    if settings.KILL_OS == 'True':
-        os.kill(os.getpid(), signal.SIGINT)
-
     year = latest_published_year()
-
-    # year = Get_Reporting_Year()
-
-    # if request.user.is_authenticated:
-    #     us = request.user.getSysUser()
-    # print(us.user_organisation)
 
     form = HomePageFilterYear()
 

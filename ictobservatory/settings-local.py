@@ -92,7 +92,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "ictobservatory.urls"
 
-KILL_OS = 'False'
 
 TEMPLATES = [
     {

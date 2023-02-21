@@ -29,79 +29,90 @@ def latest_published_year():
 
 class HomePageFilterYear(forms.Form):
 
-    if published_years():
-        years_qs = published_years()
+    year_filter = forms.ChoiceField(
+        choices=[])
+    # years_qs = None
 
-    else:
-        years_qs = [{'reporting_year': Get_Reporting_Year()}]
+    def __init__(self, *args, **kwargs):
+        super(HomePageFilterYear, self).__init__(*args, **kwargs)
 
-    YEAR_CHOICES = tuple((),)
+        if published_years():
+            years_qs = published_years()
 
-    for i in years_qs:
-        for k, v in i.items():
-            YEAR_CHOICES += ((v, v),)
+        else:
+            years_qs = [{'reporting_year': Get_Reporting_Year()}]
+
+        YEAR_CHOICES = tuple((),)
+
+        for i in years_qs:
+            for k, v in i.items():
+                YEAR_CHOICES += ((v, v),)
+
+        self.fields['year_filter'] = forms.ChoiceField(
+            choices=YEAR_CHOICES)
+        self.fields['year_filter'].required = False
 
     # year_filter = forms.ChoiceField(
     #     choices=YEAR_CHOICES)
 
     # print(YEAR_CHOICES)
 
-    year_filter = forms.ChoiceField(
-        choices=YEAR_CHOICES)
-
     # print(years_qs)
 
     # print(year_filter_field)
 
-    year_filter.required = False
-
     # def __init__(self, *args, **kwargs):
     #     super(HomePageFilterYear, self).__init__(*args, **kwargs)
     # assign a (computed, I assume) default value to the choice field
-    #self.initial['year_filter'] = Get_Reporting_Year()
+    # self.initial['year_filter'] = Get_Reporting_Year()
     # you should NOT do this:
-    #self.fields['year_filter'].initial = Get_Reporting_Year()
+    # self.fields['year_filter'].initial = Get_Reporting_Year()
 
 
 class FilterForm(forms.Form):
 
-    memberstates_qs = MemberState.objects.filter(
-        memberstate_status=True).values().order_by('member_state')
-    # print(memberstates_qs)
-    MEMBERSTATE_CHOICES = sorted(tuple(set(
-        [(q['id'], q['member_state']) for q in memberstates_qs])))
+    year_filter_field = forms.ChoiceField(choices=[])
+    indicator_filter_field = forms.ChoiceField(choices=[])
+    memberstate_filter_field = forms.ChoiceField(choices=[])
 
-    # print(MEMBERSTATE_CHOICES)
+    def __init__(self, *args, **kwargs):
+        super(FilterForm, self).__init__(*args, **kwargs)
 
-    indicators_qs = Indicator.objects.filter(status='Active').values()
-    #INDICATOR_CHOICES = (('all', 'All'),)
-    INDICATOR_CHOICES = sorted(tuple(set(
-        [(q['id'], q['label']) for q in indicators_qs])))
+        memberstates_qs = MemberState.objects.filter(
+            memberstate_status=True).values().order_by('member_state')
 
-   # print(IndicatorData.objects.values('reporting_year').distinct().order_by())
+        MEMBERSTATE_CHOICES = sorted(tuple(set(
+            [(q['id'], q['member_state']) for q in memberstates_qs])))
 
-    if published_years():
-        years_qs = published_years()
+        indicators_qs = Indicator.objects.filter(status='Active').values()
 
-    else:
-        years_qs = [{'reporting_year': Get_Reporting_Year()}]
+        INDICATOR_CHOICES = sorted(tuple(set(
+            [(q['id'], q['label']) for q in indicators_qs])))
 
-    # years_qs = list(IndicatorData.objects.values(
-    #     'reporting_year').distinct().order_by())
+    # print(IndicatorData.objects.values('reporting_year').distinct().order_by())
 
-    YEAR_CHOICES = tuple((),)
-    for i in years_qs:
-        for k, v in i.items():
-            YEAR_CHOICES += ((v, v),)
+        if published_years():
+            years_qs = published_years()
 
-    indicator_filter_field = forms.MultipleChoiceField(
-        choices=INDICATOR_CHOICES, widget=Select2MultipleWidget)
+        else:
+            years_qs = [{'reporting_year': Get_Reporting_Year()}]
 
-    memberstate_filter_field = forms.MultipleChoiceField(
-        choices=MEMBERSTATE_CHOICES, widget=Select2MultipleWidget)
-    year_filter_field = forms.MultipleChoiceField(
-        choices=YEAR_CHOICES, widget=Select2MultipleWidget)
+        # years_qs = list(IndicatorData.objects.values(
+        #     'reporting_year').distinct().order_by())
 
-    indicator_filter_field.required = False
-    memberstate_filter_field.required = False
-    year_filter_field.required = False
+        YEAR_CHOICES = tuple((),)
+        for i in years_qs:
+            for k, v in i.items():
+                YEAR_CHOICES += ((v, v),)
+
+        self.fields['indicator_filter_field'] = forms.MultipleChoiceField(
+            choices=INDICATOR_CHOICES, widget=Select2MultipleWidget)
+
+        self.fields['memberstate_filter_field'] = forms.MultipleChoiceField(
+            choices=MEMBERSTATE_CHOICES, widget=Select2MultipleWidget)
+        self.fields['year_filter_field'] = forms.MultipleChoiceField(
+            choices=YEAR_CHOICES, widget=Select2MultipleWidget)
+
+        self.fields['indicator_filter_field'].required = False
+        self.fields['memberstate_filter_field'].required = False
+        self.fields['year_filter_field'].required = False
