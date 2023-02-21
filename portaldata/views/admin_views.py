@@ -1,4 +1,6 @@
 
+import os
+import signal
 from django.db import transaction
 import json
 from django.contrib import messages
@@ -406,11 +408,11 @@ def publish_data(request):
                 published_year = Published(
                     reporting_year=reporting_year, published_status=True, updated_by=request.user)
                 published_year.save()
+        os.kill(os.getpid(), signal.SIGINT)
+        # comment
 
-                # comment
-
-            # messages.success(
-            #     request, f'{reporting_year} Data Published Successfully!')
+        # messages.success(
+        #     request, f'{reporting_year} Data Published Successfully!')
 
     return render(request, 'portaldata/publish_form.html', context=context)
 

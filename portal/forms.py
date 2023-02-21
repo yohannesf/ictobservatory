@@ -29,8 +29,6 @@ def latest_published_year():
 
 class HomePageFilterYear(forms.Form):
 
-    years_qs = None
-
     if published_years():
         years_qs = published_years()
 
@@ -38,6 +36,7 @@ class HomePageFilterYear(forms.Form):
         years_qs = [{'reporting_year': Get_Reporting_Year()}]
 
     YEAR_CHOICES = tuple((),)
+
     for i in years_qs:
         for k, v in i.items():
             YEAR_CHOICES += ((v, v),)
@@ -65,8 +64,6 @@ class HomePageFilterYear(forms.Form):
 
 
 class FilterForm(forms.Form):
-
-    years_qs = None
 
     memberstates_qs = MemberState.objects.filter(
         memberstate_status=True).values().order_by('member_state')

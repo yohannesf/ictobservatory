@@ -62,9 +62,9 @@ def index(request):
 
     # t = pivotit()
 
-    form = HomePageFilterYear(request.GET or None)
-
     year = latest_published_year()
+
+    form = HomePageFilterYear(request.GET or None)
 
     # year = Get_Reporting_Year()
 
