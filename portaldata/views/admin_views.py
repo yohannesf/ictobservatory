@@ -407,6 +407,8 @@ def publish_data(request):
                     reporting_year=reporting_year, published_status=True, updated_by=request.user)
                 published_year.save()
 
+                # comment
+
             # messages.success(
             #     request, f'{reporting_year} Data Published Successfully!')
 
