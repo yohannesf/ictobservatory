@@ -8,6 +8,7 @@ from portaldata.models import Indicator, IndicatorData, MemberState
 
 def published_years():
     from portaldata.models import Published
+    year = None
     year = list(Published.objects.filter(
         published_status=True).values('reporting_year').order_by('-reporting_year'))
     return year
@@ -15,6 +16,7 @@ def published_years():
 
 def latest_published_year():
     from portaldata.models import Published
+    year = None
     year = list(Published.objects.filter(
         published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
 

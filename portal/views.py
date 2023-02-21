@@ -73,6 +73,7 @@ def index(request):
     # print(us.user_organisation)
 
     if request.method == "GET":
+
         year_filter = request.GET.get('year_filter')
         if year_filter:
             year = year_filter

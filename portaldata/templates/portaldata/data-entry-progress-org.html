@@ -28,16 +28,18 @@
                 <p class="text-end text-primary m-0 fw-bold" style="border-color: var(--bs-green);">Year: <span style="color: rgb(78, 223, 84);">{% reporting_year %}</span></p>
                 {% endif %}
                 </div>
-                {% if not rep_period   %}
+                
+            <div class="card-body">
+
+              {% if not rep_period   %}
             <div class="col-md-12">
-            <div class="alert alert-warning bg-warning border-0"> 
+            <div class=" pt-5 pb-3 rounded ps-3 border alert-warning bg-warning border-0"> 
              
              <p class="   fw-bold" >Data entry is enabled only during Reporting Periods. 
                Please revisit the page at a later date. </p>
            </div>
            </div>
            {% endif %}
-            <div class="card-body">
 
             <!--begin::Page Title and search-->
           
