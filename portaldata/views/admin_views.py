@@ -296,7 +296,7 @@ class FocusAreaListView(ListView):
     context_object_name = "FocusAreas"
 
 
-@method_decorator(login_required, name='dispatch')
+@login_required
 def manage_indicatorassignment(request):
 
     exisiting_indicator_assign_data = AssignedIndicator.objects.prefetch_related('indicator').filter(
