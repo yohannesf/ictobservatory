@@ -239,7 +239,7 @@ def percentage_per_indicator(result_list):
     # percent = [(g + h + i+j+k+l+m+n) / 8 for g, h, i, j, k, l, m, n in
     #            zip(*infra)]
     if result_list:
-        percent = [mean(k) for k in zip(*result_list)]
+        percent = [mean(k)*100 for k in zip(*result_list)]
 
         return percent
     else:
