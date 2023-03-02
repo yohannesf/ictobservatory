@@ -1,21 +1,16 @@
 from django.core.exceptions import NON_FIELD_ERRORS
-from decimal import Decimal
-import json
+
 from typing import List, Tuple
 
 from django import forms
-from django.db.models import Count
+
 from django.core.validators import MaxLengthValidator
-from django.forms import BaseModelFormSet, modelformset_factory
-from core.views import Get_Reporting_Year
 
-from portaldata.admin import IndicatorAssignedAdmin
-from portaldata.widgets import DateEntry
+
 from ..app_settings import DATE_INPUT_FORMAT, SURVEY_FIELD_VALIDATORS
-from ..validators import validate_ratio, PERCENTAGE_VALIDATOR
 
 
-from ..models import AssignedIndicator, Currency, ExchangeRateData, GeneralIndicator, GeneralIndicatorData, Indicator, FocusArea, IndicatorData, DATA_TYPE, Organisation
+from ..models import GeneralIndicatorData, Indicator,  IndicatorData, DATA_TYPE
 
 
 def make_choices(question: Indicator) -> List[Tuple[str, str]]:
@@ -28,6 +23,8 @@ def make_choices(question: Indicator) -> List[Tuple[str, str]]:
 
 
 class IndicatorDataEntryFormOrg(forms.ModelForm):
+
+    '''Form for entering indicator data for organisations'''
 
     class Meta:
         model = IndicatorData
@@ -48,8 +45,7 @@ class IndicatorDataEntryFormOrg(forms.ModelForm):
         self.fields['indicator'].initial = self.indicator
 
         if self.indicator.data_type == DATA_TYPE.select:
-            # pass
-            # print(make_choices(v))
+
             choices = make_choices(self.indicator)
             self.fields['ind_value'] = forms.ChoiceField(
                 choices=choices
@@ -96,7 +92,7 @@ class IndicatorDataEntryFormOrg(forms.ModelForm):
                 {'class': 'form-control'})
         elif self.indicator.data_type == DATA_TYPE.date:
             self.fields['ind_value'] = forms.DateField(
-                # widget=DateSurvey(),
+
                 input_formats=DATE_INPUT_FORMAT
             )
         elif self.indicator.data_type == DATA_TYPE.text_area:
@@ -108,19 +104,16 @@ class IndicatorDataEntryFormOrg(forms.ModelForm):
 
         self.fields['ind_value'].required = False
 
-        # if (self.submitted):
-        #     self.fields['ind_value'].disabled = True
-        #     self.fields['comments'].disabled = True
-        #     self.fields['value_NA'].disabled = True
-
 
 class IndicatorDataEditFormOrg(forms.ModelForm):
 
+    '''Form for editing indicator data for organisations'''
+
     class Meta:
         model = IndicatorData
-        # fields = ['id', 'indicator', 'ind_value', 'comments', 'attachment']
+
         exclude = ('updated_by',)
-        # fields = "__all__"
+
         widgets = {
             'comments': forms.Textarea(attrs={'rows': 1, 'cols': 30}),
             'value_NA': forms.CheckboxInput(),
@@ -133,8 +126,7 @@ class IndicatorDataEditFormOrg(forms.ModelForm):
         v = self.instance  # type: ignore
 
         if v.indicator.data_type == DATA_TYPE.select:
-            # pass
-            # print(make_choices(v))
+
             choices = make_choices(v.indicator)
             self.fields['ind_value'] = forms.ChoiceField(
                 choices=choices
@@ -181,7 +173,7 @@ class IndicatorDataEditFormOrg(forms.ModelForm):
                 {'class': 'form-control'})
         elif v.indicator.data_type == DATA_TYPE.date:
             self.fields['ind_value'] = forms.DateField(
-                # widget=DateSurvey(),
+
                 input_formats=DATE_INPUT_FORMAT
             )
         elif v.indicator.data_type == DATA_TYPE.text_area:
@@ -201,6 +193,8 @@ class IndicatorDataEditFormOrg(forms.ModelForm):
 
 class GeneralIndicatorDataForm(forms.ModelForm):
 
+    '''Form for entering and editing general indicator data for SADC'''
+
     class Meta:
         model = GeneralIndicatorData
         fields = ('general_indicator', 'indicator_value')
@@ -210,9 +204,3 @@ class GeneralIndicatorDataForm(forms.ModelForm):
                 'unique_together': "%(model_name)s's %(field_labels)s are not unique.",
             }
         }
-
-
-# t = GeneralIndicator.objects.all().count()
-# print(t)
-# GeneralIndicatorDataFormSet = modelformset_factory(
-#     GeneralIndicatorData, fields=('general_indicator', 'indicator_value'))

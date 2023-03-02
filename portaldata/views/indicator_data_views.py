@@ -1,28 +1,22 @@
 from django.db import transaction
-from django.core.mail import send_mail, send_mass_mail
+from django.core.mail import send_mail
 from django.conf import settings
 from notifications.signals import notify
 from django.db.models import Q
 from django.contrib import messages
-from django.contrib.auth.models import Group
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
 
-import datetime
-from django import forms
-from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView
-from django.shortcuts import render, redirect
-from django.db.models import Count
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
-from django.forms import formset_factory, model_to_dict, inlineformset_factory, modelformset_factory
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.forms import formset_factory, modelformset_factory
 
-from core.decorators import group_required, org_required
+from core.decorators import group_required
 from core.models import SystemUser, User
 from core.views import Get_Reporting_Year
-from ..models import DATA_TYPE, IND_ASSIGNED_TO, INDICATORDATA_STATUS, ExchangeRateData, FocusArea, GeneralIndicator, GeneralIndicatorData, Indicator, IndicatorData, MemberState
+from ..models import (DATA_TYPE, IND_ASSIGNED_TO, INDICATORDATA_STATUS, ExchangeRateData, FocusArea,
+                      GeneralIndicator, GeneralIndicatorData, Indicator, IndicatorData, MemberState)
 from ..forms.indicator_data_entry_edit_by_ms import IndicatorDataEntryForm, IndicatorDataEditForm
 from ..forms.indicator_data_entry_edit_by_orgs import GeneralIndicatorDataForm, IndicatorDataEntryFormOrg, IndicatorDataEditFormOrg
 
@@ -30,6 +24,7 @@ from ..forms.indicator_data_entry_edit_by_orgs import GeneralIndicatorDataForm, 
 @login_required
 # @group_required('Member State')
 def dataentryprogress(request):
+    '''Data Entry Progress page for Member States'''
 
     focusareas = FocusArea.objects.filter(
         focusarea_status=True)  # type: ignore
@@ -41,6 +36,7 @@ def dataentryprogress(request):
 @login_required
 # @group_required('Organisation')
 def dataentryprogressorg(request):
+    '''Data Entry Progress page for Organisations'''
 
     indicators = Indicator.objects.filter(status='Active', indicator_assigned_to=IND_ASSIGNED_TO.ORGANIZATIONS, focus_area__focusarea_status=True,
                                           assignedindicator__assigned_to_organisation=request.user.getUserOrganisation())
@@ -52,13 +48,12 @@ def dataentryprogressorg(request):
 
 @login_required
 def manage_general_indicatordata(request):
+    '''General Indicator Data View'''
 
     qs_gen_ind_data = GeneralIndicatorData.objects.filter(
         reporting_year=Get_Reporting_Year())
 
     num_gen_ind_data = qs_gen_ind_data.count()
-
-    # print(num_gen_ind_data.count())
 
     num_extra = 0
     num_general_indicators = GeneralIndicator.objects.all().count()
@@ -124,7 +119,7 @@ def manage_indicatordata(request, id):
     IndicatorDataEditFormSet = modelformset_factory(
         IndicatorData, form=IndicatorDataEditForm, can_delete=False, extra=0)
 
-    # if there is an existing data, fetch for edit
+    '''if there is an existing data, fetch for edit'''
     if (exisiting_indicator_data):
 
         formset = IndicatorDataEditFormSet(
@@ -148,7 +143,8 @@ def manage_indicatordata(request, id):
                 return HttpResponseRedirect(
                     reverse_lazy('portaldata:manage_indicatordata', kwargs={'id': id}))
 
-    else:  # there is no exisitng data, fetch all indicators for creating data:
+    else:
+        '''if there are no exisitng data, fetch all indicators for creating data:'''
 
         IndicatorDataEntryFormSet = formset_factory(
             IndicatorDataEntryForm, extra=0)
@@ -159,7 +155,7 @@ def manage_indicatordata(request, id):
         if request.method == 'POST':
 
             formset = IndicatorDataEntryFormSet(request.POST, request.FILES)
-            # print(formset)
+
             if formset.is_valid():
                 for form in formset.forms:
 
@@ -233,7 +229,7 @@ def manage_indicatordata_organisation(request, id):
                 return HttpResponseRedirect(
                     reverse_lazy('portaldata:manage_indicatordata_organisation', kwargs={'id': id}))
 
-    else:  # there is no exisitng data, fetch all indicators for creating data:
+    else:
 
         if request.method == 'POST':
 
@@ -281,6 +277,7 @@ def showdefinition(request, id):
 
 
 def SendNotification(name, submittedby, reporting_year):
+    '''Send Notification to Admin/SADC when data is submitted'''
 
     sadc = list(SystemUser.objects.filter(
         user_organisation__organisation_name__iexact='SADC').values_list('user__id', flat=True))
@@ -310,6 +307,10 @@ def SendNotification(name, submittedby, reporting_year):
 
 
 def update_currency_indicators_to_usd(reporting_year, member_state=''):
+    '''
+    Once data is submitted, all the currency indicators (except GDP and GNI)
+    will be converted from local currency to USD using the exchange rate data
+    '''
 
     if not member_state:
 
@@ -338,6 +339,7 @@ def update_currency_indicators_to_usd(reporting_year, member_state=''):
 @ login_required
 @ group_required('Member State', 'Organisation', 'SADC')
 def submitIndicatorData(request):
+    '''Submit Indicator data (by Member States) and send notification to Admin/SADC'''
 
     ExchangeRateData.objects.filter(currency__member_state=request.user.getUserMemberState(),
                                     reporting_year=Get_Reporting_Year()).update(submitted=True)
@@ -365,6 +367,7 @@ def submitIndicatorData(request):
 @ login_required
 @ group_required('Member State', 'Organisation', 'SADC')
 def submitIndicatorDatabyOrg(request):
+    '''Submit Indicator data (by Organisations) and send notification to Admin/SADC'''
 
     IndicatorData.objects.filter(submitted=False, reporting_year=Get_Reporting_Year(),
                                  indicator__indicator_assigned_to=IND_ASSIGNED_TO.ORGANIZATIONS,

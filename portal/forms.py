@@ -1,12 +1,14 @@
 from django import forms
-from django.forms import Form, ChoiceField, CharField
-from django_select2.forms import Select2MultipleWidget, Select2Widget
+
+from django_select2.forms import Select2MultipleWidget
 from core.views import Get_Reporting_Year
 
-from portaldata.models import Indicator, IndicatorData, MemberState
+from portaldata.models import Indicator, MemberState
 
 
 def published_years():
+    '''Get Published Years from database'''
+
     from portaldata.models import Published
     year = None
     year = list(Published.objects.filter(
@@ -15,6 +17,8 @@ def published_years():
 
 
 def latest_published_year():
+    '''Get Latest Published Year'''
+
     from portaldata.models import Published
     year = None
     year = list(Published.objects.filter(
@@ -28,6 +32,8 @@ def latest_published_year():
 
 
 class HomePageFilterYear(forms.Form):
+
+    '''Year Filter Form on Home Page'''
 
     year_filter = forms.ChoiceField(
         choices=[])
@@ -52,24 +58,10 @@ class HomePageFilterYear(forms.Form):
             choices=YEAR_CHOICES)
         self.fields['year_filter'].required = False
 
-    # year_filter = forms.ChoiceField(
-    #     choices=YEAR_CHOICES)
-
-    # print(YEAR_CHOICES)
-
-    # print(years_qs)
-
-    # print(year_filter_field)
-
-    # def __init__(self, *args, **kwargs):
-    #     super(HomePageFilterYear, self).__init__(*args, **kwargs)
-    # assign a (computed, I assume) default value to the choice field
-    # self.initial['year_filter'] = Get_Reporting_Year()
-    # you should NOT do this:
-    # self.fields['year_filter'].initial = Get_Reporting_Year()
-
 
 class FilterForm(forms.Form):
+
+    '''Year, Indicators and Memberstates filter form on Query Data page'''
 
     year_filter_field = forms.ChoiceField(choices=[])
     indicator_filter_field = forms.ChoiceField(choices=[])
@@ -89,16 +81,11 @@ class FilterForm(forms.Form):
         INDICATOR_CHOICES = sorted(tuple(set(
             [(q['id'], q['label']) for q in indicators_qs])))
 
-    # print(IndicatorData.objects.values('reporting_year').distinct().order_by())
-
         if published_years():
             years_qs = published_years()
 
         else:
             years_qs = [{'reporting_year': Get_Reporting_Year()}]
-
-        # years_qs = list(IndicatorData.objects.values(
-        #     'reporting_year').distinct().order_by())
 
         YEAR_CHOICES = tuple((),)
         for i in years_qs:

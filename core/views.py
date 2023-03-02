@@ -8,12 +8,12 @@ from django.shortcuts import render
 
 
 def Get_Reporting_Year():
+    '''Get the current reporting year'''
+
     from portaldata.models import ReportingPeriod
 
     rpt_end_date = ReportingPeriod.objects.filter(
         current=True).values_list('reporting_end_date', flat=True)
-
-    # latest_published_year()
 
     if rpt_end_date:
         rpt_end_date = rpt_end_date[0]
@@ -23,6 +23,12 @@ def Get_Reporting_Year():
 
 
 def data_by_year_status(reporting_year, validation_status):
+    '''
+    For each year with data, show the number of indicator data by status
+    Status: ready for validation, validated, returned for revision
+
+    '''
+
     from portaldata.models import IndicatorData
 
     indicator_data = list(IndicatorData.objects.all().values('reporting_year', 'validation_status'
@@ -41,6 +47,8 @@ def data_by_year_status(reporting_year, validation_status):
 
 
 def Get_Num_Days_Left():
+    '''Get the number of days left for the current reporting year. '''
+
     from portaldata.models import ReportingPeriod
 
     if Is_Reporting_Period():
@@ -54,7 +62,7 @@ def Get_Num_Days_Left():
 
             num_days_remaining = (rpt_end_date - datetime.date.today()).days
             return num_days_remaining
-           # return 0
+
         else:
             return None
     else:
@@ -62,6 +70,8 @@ def Get_Num_Days_Left():
 
 
 def Is_Reporting_Period():
+    '''Check wheter current date (today) within the reporting perid '''
+
     from portaldata.models import ReportingPeriod
 
     r_start_date = datetime.date.today()

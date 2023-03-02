@@ -1,51 +1,33 @@
 
 
-import signal
-import os
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import intcomma
 
 from django_tables2 import RequestConfig
 
-from django.db.models import Avg, F, Max
+from django.db.models import Max
 from statistics import mean
-from collections import namedtuple
 from datetime import datetime
 from django_tables2.export.export import TableExport
 import django_tables2 as tables
-import random
+
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
-from core.models import SystemUser
-from core.views import Get_Reporting_Year
-from portal.chartsdjsf import SummaryResponse
 from portal.forms import FilterForm, HomePageFilterYear, latest_published_year
-from portaldata.admin import ExchangeRateDataAdmin
+
 
 from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE
-from django.template import loader
-import json
-from django.db.models import Count, Q
+
+
 from django.shortcuts import render
 
-from django.views.generic import TemplateView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormMixin
-# from djf_surveys.mixin import ContextTitleMixin
 from .charts import ColumnChart, LineChart, StackedChart, SpiderWebChart, SunBurstChart
 
 from django_pivot.pivot import pivot
 
-# Create your views here.
 
-# COLORS = [
-#     '#64748b', '#a1a1aa', '#374151', '#78716c', '#d6d3d1', '#fca5a5', '#ef4444', '#7f1d1d',
-#     '#fb923c', '#c2410c', '#fcd34d', '#b45309', '#fde047', '#bef264', '#ca8a04', '#65a30d',
-#     '#86efac', '#15803d', '#059669', '#a7f3d0', '#14b8a6', '#06b6d4', '#155e75', '#0ea5e9',
-#     '#075985', '#3b82f6', '#1e3a8a', '#818cf8', '#a78bfa', '#a855f7', '#6b21a8', '#c026d3',
-#     '#db2777', '#fda4af', '#e11d48', '#9f1239'
-# ]
-
+'''
+Global variables used to populate score cards in the home page
+'''
 sadc_mobile_penetration = ''
 
 sadc_network_coverage = ''
@@ -60,6 +42,10 @@ total_internet_users = ''
 
 
 def index(request):
+    '''
+    Main home page
+    This view renders all the charts and score cards in the home page
+    '''
 
     year = latest_published_year()
 
@@ -70,39 +56,9 @@ def index(request):
         year_filter = request.GET.get('year_filter')
         if year_filter:
             year = year_filter
-        # print(year_filter)
-
-    # chartitContext = highchart()
-
-    # ch = [chartitContext, "GNI per Capita"]
-
-    # gni_gdp = chartGNIGDP(year)
-    # #gni_gdp = chart_population(year)
-    # gni_gdp_line = lineChartGNIGDP()
-    # gni_gdp_stacked = stackedChartGNIGDP()
-    # #gni_gdp_stacked = chart_telecom_revenue(year)
-    # regulation_radar = spiderwebChartRegulations()
-    # regulation_sunburst = SunBurstChartRegulation()
-
-    # chart_pop_male_female = chart_population_male_female(year)
-
-    # print(total_population)
-
-    # if total_population and total_internet_users:
-    #     try:
-    #         avg_internet_penetration = round(
-    #             float(total_internet_users)/float(total_population))
-    #     except:
-    #         avg_internet_penetration = 0
-
-    # print(avg_internet_penetration)
-    # print(sadc_network_coverage)
 
     charts = [
-        #   chart_population(year),
-        #   chart_population_male_female(year),
-        #   chart_gpd_per_capita(year),
-        #   chart_gni_per_capita(year),
+
         chart_telecom_revenue(year),
         chart_ict_contrib_gdp(year),
         chart_telecom_investment(year),
@@ -129,7 +85,7 @@ def index(request):
         chart_existing_ict_regulation(year),
 
 
-        # chart_exchange_rate(year),
+
 
 
         chart_literacy_rate(year),
@@ -141,25 +97,12 @@ def index(request):
         'avg_pop_coverage_3g': avg_pop_coverage_3g,
         'avg_internet_penetration': avg_internet_penetration}
 
-    # ml = [multiple, "title"]
-    # print(multiple)
-    # form = HomePageFilterYear(request.GET)
-    # print(form)
     context = {
         'form': form,
-        # 'gni_gdp': gni_gdp,
-
-        # 'gni': ch,
-        # 'gni_gdp_line': gni_gdp_line,
-        # 'gni_gdp_stacked': gni_gdp_stacked,
-        # 'regulation_radar': regulation_radar,
-        # 'regulation_sunburst': regulation_sunburst,
         'charts': charts,
         'score_cards': score_cards
 
     }
-    settings.KILL_OS = 'False'
-    # print(chartitContext)
     return render(request, 'portal/index.html', context=context)
 
 
@@ -182,10 +125,6 @@ def socio_economic(request):
               chart_exchange_rate(year),
               ]
 
-    # ml = [multiple, "title"]
-    # print(multiple)
-    # form = HomePageFilterYear(request.GET)
-    # print(form)
     context = {
         'form': form,
 
@@ -193,7 +132,7 @@ def socio_economic(request):
 
 
     }
-    # print(chartitContext)
+
     return render(request, 'portal/socio-economic-charts.html', context=context)
 
 
@@ -206,7 +145,6 @@ def sum_val(data_dict, indicator_label):
                     if i != '':
                         total += float(i)
 
-                # print(round(total))
                 return round(total, 2)
             else:
 
@@ -215,7 +153,6 @@ def sum_val(data_dict, indicator_label):
 
             return 0
 
-        # return round(sum(d for d in data_dict[indicator_label] if d != ''), 2)
     else:
 
         return 0
@@ -236,8 +173,6 @@ def mean_val(data_dict, indicator_label):
 
 def percentage_per_indicator(result_list):
 
-    # percent = [(g + h + i+j+k+l+m+n) / 8 for g, h, i, j, k, l, m, n in
-    #            zip(*infra)]
     if result_list:
         percent = [mean(k)*100 for k in zip(*result_list)]
 
@@ -291,7 +226,6 @@ def chart_population(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -315,16 +249,11 @@ def chart_population(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -355,8 +284,6 @@ def chart_population_male_female(year):
     chart = Chart.objects.filter(
         chart_name='chart_population_male_female').first()
 
-    # print(chart)
-
     if chart:
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
@@ -367,8 +294,6 @@ def chart_population_male_female(year):
         if indicators_list:
 
             for item in indicators_list:
-
-                # print(type(indicator.indicator))
 
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
@@ -403,22 +328,14 @@ def chart_population_male_female(year):
             if aggregation == 'sum':
                 categories.append("SADC Total")
 
-                # sum_val = sum(
-                #     d for d in data_dict[indicator_label] if d != '')
-
                 data_dict[indicator_label].append(
                     sum_val(data_dict, indicator_label))
 
             elif aggregation == 'avg':
                 categories.append("SADC Average")
 
-                # mean_val = mean(
-                #     d for d in data_dict[indicator_label] if d != '')
-
                 data_dict[indicator_label].append(
                     mean_val(data_dict, indicator_label))
-
-    # print(data_dict)
 
     recieved = StackedChart(categories=categories, data_dict=data_dict,
                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, stacking='percent', grouped_stack=main_stack_label)  # ,
@@ -454,8 +371,6 @@ def chart_gpd_per_capita(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -464,7 +379,6 @@ def chart_gpd_per_capita(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -536,8 +450,6 @@ def chart_gni_per_capita(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -546,7 +458,6 @@ def chart_gni_per_capita(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -570,16 +481,11 @@ def chart_gni_per_capita(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -591,7 +497,7 @@ def chart_gni_per_capita(year):
 
 
 def chart_telecom_revenue(year):
-    '''For the Telecommunications Revenue'''
+    '''For the Telecommunications Revenue Chart'''
 
     categories = []
 
@@ -617,8 +523,6 @@ def chart_telecom_revenue(year):
         if indicators_list:
 
             for item in indicators_list:
-
-                # print(type(indicator.indicator))
 
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
@@ -701,7 +605,7 @@ def chart_internet_user_penetration(year):
                     population = 0
                     for i in indicator_data:
                         if population_indicator:
-                            # print(type(population_indicator))
+
                             try:
                                 population = IndicatorData.objects.get(
                                     indicator=population_indicator, reporting_year=year, member_state=i.member_state).ind_value
@@ -739,7 +643,6 @@ def chart_internet_user_penetration(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -763,16 +666,10 @@ def chart_internet_user_penetration(year):
             if aggregation == 'sum':
                 categories.append("SADC Total")
 
-                # sum_val = sum(
-                #     d for d in data_dict[indicator_label] if d != '')
-
                 data_dict[indicator_label].append(
                     sum_val(data_dict, indicator_label))
             elif aggregation == 'avg':
                 categories.append("SADC Average")
-
-                # mean_val = mean(
-                #     d for d in data_dict[indicator_label] if d != '')
 
                 data_dict[indicator_label].append(round(
                     mean_val(data_dict, indicator_label), 2))
@@ -813,8 +710,6 @@ def chart_telecom_investment(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -823,7 +718,6 @@ def chart_telecom_investment(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -847,16 +741,11 @@ def chart_telecom_investment(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -868,6 +757,8 @@ def chart_telecom_investment(year):
 
 
 def chart_existing_ict_regulation(year):
+    ''' This is for Existing ICT regulation Spiderweb Chart'''
+
     categories = []
 
     query_list = []
@@ -895,8 +786,6 @@ def chart_existing_ict_regulation(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -905,16 +794,10 @@ def chart_existing_ict_regulation(year):
     data_app = {}
 
     for qs in query_list:
-        # print(qs)
-        data = []
-        # categories.append(entry.indicator.label)
-        for entry in qs:
-            # print(entry)
 
-            # if entry.member_state.member_state_short_name:
-            #     categories.append(entry.member_state.member_state_short_name)
-            # else:
-            #     categories.append(entry.member_state.member_state)
+        data = []
+
+        for entry in qs:
 
             chart_indicator = ChartConfig.objects.filter(
                 indicator=entry.indicator).first()
@@ -930,23 +813,16 @@ def chart_existing_ict_regulation(year):
 
         data_dict[indicator_label] = data
 
-        # print(data_dict)
-
         if aggregation:
             '''if the chart requires aggregation of data across member states'''
             if aggregation == 'sum':
                 categories.append("SADC Total")
 
-                # sum_val = sum(
-                #     d for d in data_dict[indicator_label] if d != '')
                 data_dict[indicator_label].append(
                     sum_val(data_dict, indicator_label))
 
             elif aggregation == 'avg':
                 categories.append("SADC Average")
-
-                # mean_val = mean(
-                #     d for d in data_dict[indicator_label] if d != '')
 
                 data_dict[indicator_label].append(
                     mean_val(data_dict, indicator_label))
@@ -968,6 +844,8 @@ def chart_existing_ict_regulation(year):
 
 
 def chart_existence_of_policy_by_ms(year):
+    '''This is for the existence of policy by member states chart (column chart)'''
+
     categories = []
 
     query_list = []
@@ -997,8 +875,6 @@ def chart_existence_of_policy_by_ms(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1007,11 +883,10 @@ def chart_existence_of_policy_by_ms(year):
     data_app = {}
 
     for qs in query_list:
-        # print(qs)
+
         data = []
-        # categories.append(entry.indicator.label)
+
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(
@@ -1038,33 +913,19 @@ def chart_existence_of_policy_by_ms(year):
 
     data_app[label] = percentage_per_indicator(result_list)
 
-    # for k, v in data_dict[indicator_label].items:
-    #     print(k)
-
-    # data_app['label'] = list(map(lambda x: mean_val))
-
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
 
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
-
             data_app[label].append(
                 mean_val(data_app, label))
-
-    # data_dict = {}
-
-    # data_dict['Existence of policy by Member State'] = spiderweb_data
 
     chart_html = ColumnChart(categories=categories, data_dict=data_app,
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='2')
@@ -1101,8 +962,6 @@ def chart_mobile_penetration_rate(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1111,7 +970,6 @@ def chart_mobile_penetration_rate(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1135,16 +993,11 @@ def chart_mobile_penetration_rate(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1153,10 +1006,6 @@ def chart_mobile_penetration_rate(year):
 
             sadc_mobile_penetration = mean_val(data_dict, indicator_label)
 
-            # sadc_mobile_penetration()
-
-            # print(sadc_mobile_penetration)
-
     chart_html = LineChart(categories=categories, data_dict=data_dict,
                            chart_title=chart_title, y_axis_title=y_axis_title, year=year)
 
@@ -1164,7 +1013,7 @@ def chart_mobile_penetration_rate(year):
 
 
 def chart_fixed_telephone_line(year):
-    ''' This is for Mobile Penetration Rate in the SADC region'''
+    ''' This is for Fixed Telephone Lines chart'''
 
     categories = []
 
@@ -1192,8 +1041,6 @@ def chart_fixed_telephone_line(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1202,7 +1049,6 @@ def chart_fixed_telephone_line(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1226,16 +1072,11 @@ def chart_fixed_telephone_line(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1247,7 +1088,7 @@ def chart_fixed_telephone_line(year):
 
 
 def chart_pop_coveredby_mobl_network(year):
-    ''' This is for Mobile Penetration Rate in the SADC region'''
+    ''' This is for Population Covered by Mobile Network Chart'''
 
     categories = []
 
@@ -1275,8 +1116,6 @@ def chart_pop_coveredby_mobl_network(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1285,7 +1124,6 @@ def chart_pop_coveredby_mobl_network(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1313,32 +1151,16 @@ def chart_pop_coveredby_mobl_network(year):
         avg_pop_coverage_3g = round(
             mean(d for d in pop_coverage_3g if d != ''), )
 
-    # print(
-    #     data_dict['Percentage of population covered by at least a 3G mobile network'])
-
-    # # print(
-    # #     data_dict.get('Percentage of population covered by at least a 3G mobile network'))
-
-    # avg_pop_coverage_3g = mean_val(
-    #     data_dict, indicator_label)
-    # print(indicator_label)
-    # print(avg_pop_coverage_3g)
-
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1351,7 +1173,7 @@ def chart_pop_coveredby_mobl_network(year):
 
 
 def chart_mobl_geog_coverage(year):
-    ''' This is for Mobile Penetration Rate in the SADC region'''
+    ''' This is for Mobile Geographic Coverage Chart'''
 
     categories = []
 
@@ -1379,8 +1201,6 @@ def chart_mobl_geog_coverage(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1389,7 +1209,6 @@ def chart_mobl_geog_coverage(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1411,23 +1230,17 @@ def chart_mobl_geog_coverage(year):
         global sadc_network_coverage
 
         sadc_network_coverage = round(mean_val(data_dict, indicator_label),)
-        # print(sadc_network_coverage)
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1467,8 +1280,6 @@ def chart_inter_internet_bandwidth(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1477,7 +1288,6 @@ def chart_inter_internet_bandwidth(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1501,16 +1311,11 @@ def chart_inter_internet_bandwidth(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1550,8 +1355,6 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1560,7 +1363,6 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1584,16 +1386,11 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1634,8 +1431,6 @@ def chart_inter_internet_bandwidth_per_user(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1674,26 +1469,17 @@ def chart_inter_internet_bandwidth_per_user(year):
             chart_indicator = ChartConfig.objects.filter(
                 indicator=entry.indicator).first()
 
-            # print(chart_indicator.series_name)  # type: ignore
             indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
             if indicator_label != 'Total Internet Subscribers':
                 indicator_label = 'International Internet Bandwidth'
 
-            # print(indicator_label)
-
-            # print(indicator_label)
             if (entry.ind_value_adjusted):
                 data.append(float(entry.ind_value_adjusted))
             else:
                 data.append(entry.ind_value_adjusted)
 
         data_dict[indicator_label] = data
-
-    # print(data_dict)
-
-    # print(data_dict['International Internet Bandwidth'])
-    # print(data_dict['Total Internet Subscribers'])
 
     data_calc = {}
 
@@ -1703,28 +1489,17 @@ def chart_inter_internet_bandwidth_per_user(year):
         data_calc[label] = list(map(
             perUser, data_dict['International Internet Bandwidth'], data_dict['Total Internet Subscribers']))
 
-    # print(data_calc)
-
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
 
             categories.append("SADC Average")  # type: ignore
-
-            # print(categories_single)
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
-
-            # data_dict[indicator_label].append(
-            #     mean_val(data_dict, indicator_label))
 
             total_bandwidth = sum_val(
                 data_dict, 'International Internet Bandwidth')
@@ -1743,9 +1518,6 @@ def chart_inter_internet_bandwidth_per_user(year):
                         total_internet_users)/float(total_population), 2)
                 except:
                     avg_internet_penetration = '-'
-
-            # print(total_bandwidth)
-            # print(total_users)
 
             if total_bandwidth and total_users:
 
@@ -1800,8 +1572,6 @@ def chart_fixed_telephone_tariffs(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1810,7 +1580,6 @@ def chart_fixed_telephone_tariffs(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1834,16 +1603,11 @@ def chart_fixed_telephone_tariffs(year):
             if aggregation == 'sum':
                 categories.append("SADC Total")
 
-                # sum_val = sum(
-                #     d for d in data_dict[indicator_label] if d != '')
                 data_dict[indicator_label].append(
                     sum_val(data_dict, indicator_label))
 
             elif aggregation == 'avg':
                 categories.append("SADC Average")
-
-                # mean_val = mean(
-                #     d for d in data_dict[indicator_label] if d != '')
 
                 data_dict[indicator_label].append(
                     mean_val(data_dict, indicator_label))
@@ -1883,8 +1647,6 @@ def chart_sms_tariff(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1893,7 +1655,6 @@ def chart_sms_tariff(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -1917,16 +1678,11 @@ def chart_sms_tariff(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -1966,8 +1722,6 @@ def chart_literacy_rate(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
@@ -1976,7 +1730,6 @@ def chart_literacy_rate(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.member_state.member_state_short_name:
                 categories.append(entry.member_state.member_state_short_name)
@@ -2000,16 +1753,11 @@ def chart_literacy_rate(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -2049,19 +1797,16 @@ def chart_ict_contrib_gdp(year):
 
             for item in indicators_list:
 
-                # print(type(indicator.indicator))
-
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
 
         for qs in query_list:
-            # print(qs)
+
             data = []
-            # categories.append(entry.indicator.label)
+
             for entry in qs:
-                # print(entry)
 
                 if entry.member_state.member_state_short_name:
                     categories.append(
@@ -2080,27 +1825,17 @@ def chart_ict_contrib_gdp(year):
                     data.append(entry.ind_value_adjusted)
 
             data_dict[indicator_label] = data
-            # print(categories)
-
-            # print(data_dict)
-
-        # print(data_dict)
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -2111,17 +1846,7 @@ def chart_ict_contrib_gdp(year):
             spiderweb_data.append(mean_val(
                 data_dict, indicator_label)*100)
 
-    # print(data_dict[indicator_label])
-
-    '''
-#     Here, zip function is used to create a list of X,Y data
-#     '''
-
     data_dict = dict(zip(categories, data_dict[indicator_label]))
-
-    # data_dict = {}
-
-    # data_dict['Existence of policy'] = spiderweb_data
 
     chart_html = SunBurstChart(categories=categories, data_dict=data_dict,
                                chart_title=chart_title, y_axis_title=y_axis_title, year=year)
@@ -2152,18 +1877,12 @@ def chart_exchange_rate(year):
     for qs in query_list:
         data = []
         for entry in qs:
-            # print(entry)
 
             if entry.currency.member_state.member_state_short_name:
                 categories.append(
                     entry.currency.member_state.member_state_short_name)
             else:
                 categories.append(entry.currency.member_state.member_state)
-
-            # chart_indicator = ChartConfig.objects.filter(
-            #     indicator=entry.indicator).first()
-
-            # indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
             if (entry.exchange_rate):
                 data.append(1/float(entry.exchange_rate))
@@ -2177,16 +1896,11 @@ def chart_exchange_rate(year):
         if aggregation == 'sum':
             categories.append("SADC Total")
 
-            # sum_val = sum(
-            #     d for d in data_dict[indicator_label] if d != '')
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            # mean_val = mean(
-            #     d for d in data_dict[indicator_label] if d != '')
 
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
@@ -2197,30 +1911,10 @@ def chart_exchange_rate(year):
     return chart_html
 
 
-'''
-Report / Query Generator
-'''
-
-
-# class MyTable(tables.Table):
-#     member_state__member_state = tables.Column()
-#     indicator__label = tables.Column()
-#     # order_by=("member_state__member_state"))
-
-#     class Meta:
-#         sequence = ("member_state__member_state",
-#                     "indicator__label", "...")
-#         attrs = {
-#             "class": "table table-striped table-bordered dt-responsive compact nowrap"}
-#         paginator_class = tables.LazyPaginator
-#         empty_text = 'Query did not return any results. Please refine your search.'
-
-
 class IndicatorDataTable(tables.Table):
 
     member_state__member_state = tables.Column()
     indicator__label = tables.Column()
-    # order_by=("member_state__member_state"))
 
     def render_2021(self, value):
         try:
@@ -2262,28 +1956,19 @@ class IndicatorDataTable(tables.Table):
 
 def generate_report(request):
     '''
-    Here, first implement the filter
-
-
+    Report / Query Generator
+    First implement the filter
     '''
 
-    years_qs = list(IndicatorData.objects.values_list(
-        'reporting_year', flat=True).distinct())
-
     form = FilterForm(request.GET or None)
-
-    # tbl = IndicatorDataTable('')
 
     context = {}
 
     dict_values = []
 
-    # tbl = ''
-
     pivot_table = None
 
     if request.method == "GET":
-        # ind_data = IndicatorData()
 
         export_format = request.GET.get('_export', None)
 
@@ -2293,9 +1978,6 @@ def generate_report(request):
 
         if indicators or ms or years:
 
-            # ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated
-            #                                         ).values_list('indicator', 'member_state', 'reporting_year', 'ind_value_adjusted').order_by(
-            #     'member_state__member_state', 'indicator')
             ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated).order_by(
                 'member_state__member_state', 'indicator')
 
@@ -2308,28 +1990,14 @@ def generate_report(request):
             if years:
                 ind_data = ind_data.filter(reporting_year__in=years)
 
-            # print(ind_data)
-
             pivot_table = pivot(ind_data,
                                 ['indicator__label', 'member_state__member_state'],
                                 'reporting_year', 'ind_value_adjusted', aggregation=Max)  # type: ignore
-
-            # print(pivot_table)
-
-            # for record in pivot_table:
-            #     print(record)
 
             for item in list(pivot_table):
                 dict_values = list(item.keys())
 
             dict_values = dict_values[2:]
-
-            # tbl = IndicatorDataTable('')
-
-            # cols = [(k, tables.Column()) for k, v in pivot_table[0].items()]
-
-            # tbl = IndicatorDataTable(
-            #     data=pivot_table, extra_columns=cols, orderable=False)
 
             tbl = IndicatorDataTable('')
 
@@ -2338,9 +2006,6 @@ def generate_report(request):
 
                 # type: ignore
                 tbl.base_columns[colname] = column
-
-            # for i in tbl.columns:
-            #     print(i)
 
             tbl = IndicatorDataTable(pivot_table)
 
@@ -2352,7 +2017,7 @@ def generate_report(request):
 
                 time_now = datetime.now().strftime("%D_%H_%M")
                 file_name = f"{time_now} - SADC ICT Observatory Data"
-                # table = [[your table object]]
+
                 exporter = TableExport(export_format, tbl)
 
                 return exporter.response(f"{file_name}"'.{}'.format(export_format))
@@ -2360,479 +2025,7 @@ def generate_report(request):
             tbl = None
 
             pivot_table = None
-            # IndicatorDataTable = IndicatorDataTable('')
 
     context = {"table": tbl, "form": form}
 
     return render(request, "portal/generatereport.html", context=context)
-
-
-# def chartGNIGDP(year):
-
-#     year = '2021'
-
-#     categories = []
-
-#     indicator_label = ''
-
-#     chart_title = ''
-
-#     data_dict = {}
-
-#     gnipercapita_queryset = IndicatorData.objects.filter(
-#         indicator_id=2, reporting_year=year)
-
-#     gdppercapita_queryset = IndicatorData.objects.filter(
-#         indicator_id=1, reporting_year=year)
-
-#     query_list = [gnipercapita_queryset, gdppercapita_queryset]
-
-#     for qs in query_list:
-#         data = []
-#         for entry in qs:
-#             if entry.member_state.member_state_short_name:
-#                 categories.append(entry.member_state.member_state_short_name)
-#             else:
-#                 categories.append(entry.member_state.member_state)
-
-#             indicator_label = entry.indicator.label
-
-#             if (entry.ind_value_adjusted):
-#                 data.append(float(entry.ind_value_adjusted))
-#             else:
-#                 data.append(entry.ind_value_adjusted)
-#         data_dict[indicator_label] = data
-
-#     chart_title = 'GNI and GDP'
-#     y_axis_title = 'USD'
-
-#     recieved = ColumnChart(categories=categories, data_dict=data_dict,
-#                            chart_title=chart_title, y_axis_title=y_axis_title, year=year)
-
-#     return recieved
-
-
-# def lineChartGNIGDP():
-
-#     categories = []
-
-#     indicator_label = ''
-
-#     chart_title = ''
-
-#     data_dict = {}
-
-#     gnipercapita_queryset = IndicatorData.objects.filter(indicator_id=2)
-#     gdppercapita_queryset = IndicatorData.objects.filter(indicator_id=1)
-#     query_list = [gnipercapita_queryset, gdppercapita_queryset]
-
-#     for qs in query_list:
-#         data = []
-#         for entry in qs:
-#             if entry.member_state.member_state_short_name:
-#                 categories.append(entry.member_state.member_state_short_name)
-#             else:
-#                 categories.append(entry.member_state.member_state)
-
-#             indicator_label = entry.indicator.label
-
-#             if (entry.ind_value_adjusted):
-#                 data.append(float(entry.ind_value_adjusted))
-#             else:
-#                 data.append(entry.ind_value_adjusted)
-#         data_dict[indicator_label] = data
-
-#     chart_title = 'GNI and GDP Line'
-#     y_axis_title = 'USD'
-
-#     recieved = LineChart(categories=categories, data_dict=data_dict,
-#                          chart_title=chart_title, y_axis_title=y_axis_title, year='2022')
-
-#     return recieved
-
-
-# def stackedChartGNIGDP():
-
-#     categories = []
-
-#     indicator_label = ''
-
-#     chart_title = ''
-
-#     data_dict = {}
-
-#     gnipercapita_queryset = IndicatorData.objects.filter(indicator_id=2)
-#     gdppercapita_queryset = IndicatorData.objects.filter(indicator_id=1)
-#     query_list = [gnipercapita_queryset, gdppercapita_queryset]
-
-#     for qs in query_list:
-#         data = []
-#         for entry in qs:
-#             if entry.member_state.member_state_short_name:
-#                 categories.append(entry.member_state.member_state_short_name)
-#             else:
-#                 categories.append(entry.member_state.member_state)
-
-#             indicator_label = entry.indicator.label
-
-#             if (entry.ind_value_adjusted):
-#                 data.append(float(entry.ind_value_adjusted))
-#             else:
-#                 data.append(entry.ind_value_adjusted)
-#         data_dict[indicator_label] = data
-
-#     chart_title = 'GNI and GDP Stacked'
-#     y_axis_title = 'USD'
-
-#     recieved = StackedChart(categories=categories, data_dict=data_dict,
-#                             chart_title=chart_title, y_axis_title=y_axis_title, year='2022')
-
-#     return recieved
-
-
-# def spiderwebChartRegulations():
-
-#     categories = []
-
-#     indicator_label = ''
-
-#     chart_title = ''
-
-#     data_dict = {}
-
-#     # gnipercapita_queryset = IndicatorData.objects.filter(indicator_id=2)
-#     # gdppercapita_queryset = IndicatorData.objects.filter(indicator_id=1)
-#     # query_list = [gnipercapita_queryset, gdppercapita_queryset]
-
-#     # for qs in query_list:
-#     #     data = []
-#     #     for entry in qs:
-#     #         categories.append(entry.member_state.member_state)
-#     #         indicator_label = entry.indicator.label
-
-#     #         if (entry.ind_value):
-#     #             data.append(float(entry.ind_value))
-#     #         else:
-#     #             data.append(entry.ind_value)
-#     #     data_dict[indicator_label] = data
-
-#     categories = ['Infrastructure Sharing', 'Universal Access', 'Precence of Internet Exchange(IEP)',
-#                   'Competion in Local Loop Telecoms', 'Competetion in ISP Market', 'Policy in Broadband', 'Presence of Cyber Security Laws', 'Presence of National CIRT']
-
-#     data = [75, 75, 56.25, 43.75, 65.50, 50, 43.75, 43.75]
-#     data_dict['Existence of policy'] = data
-
-#     print(data_dict)
-
-#     chart_title = 'AVERAGE EXISTENCE OF RELEVANT ICT POLICY REGULATION GUIDELINE INSTITUTIONAL STRUCTURE ACROSS THE SADC REGION'
-#     y_axis_title = 'USD'
-
-#     recieved = SpiderWebChart(categories=categories, data_dict=data_dict,
-#                               chart_title=chart_title, y_axis_title=y_axis_title, year='2022')
-
-#     return recieved
-
-
-# def SunBurstChartRegulation():
-
-#     categories = []
-
-#     indicator_label = ''
-
-#     chart_title = ''
-
-#     data_dict = {}
-
-#     # gnipercapita_queryset = IndicatorData.objects.filter(indicator_id=2)
-#     # gdppercapita_queryset = IndicatorData.objects.filter(indicator_id=1)
-#     # query_list = [gnipercapita_queryset, gdppercapita_queryset]
-
-#     # for qs in query_list:
-#     #     data = []
-#     #     for entry in qs:
-#     #         categories.append(entry.member_state.member_state)
-#     #         indicator_label = entry.indicator.label
-
-#     #         if (entry.ind_value):
-#     #             data.append(float(entry.ind_value))
-#     #         else:
-#     #             data.append(entry.ind_value)
-#     #     data_dict[indicator_label] = data
-
-#     categories = ['Infrastructure Sharing', 'Universal Access', 'Presence of Internet Exchange(IEP)',
-#                   'Competion in Local Loop Telecoms', 'Competetion in ISP Market', 'Policy in Broadband', 'Presence of Cyber Security Laws', 'Presence of National CIRT']
-
-#     data = [75, 75, 56.25, 43.75, 65.50, 50, 43.75, 43.75]
-
-#     '''
-#     Here, zip function is used to create a list of X,Y data
-#     '''
-
-#     data_dict = dict(zip(categories, data))
-
-#     chart_title = 'AVERAGE EXISTENCE OF RELEVANT ICT POLICY REGULATION'
-#     y_axis_title = 'USD'
-
-#     recieved = SunBurstChart(categories=categories, data_dict=data_dict,
-#                              chart_title=chart_title, y_axis_title=y_axis_title, year='2022')
-
-#     return recieved
-
-# def bar_chart(request):
-
-#     labels = []
-#     data = []
-
-#     queryset = IndicatorData.objects.filter(indicator_id=2)
-#     for entry in queryset:
-#         labels.append(entry.member_state.member_state)
-#         data.append(entry.ind_value)
-
-#     context = {
-#         'labels': labels,
-#         'data': data,
-#     }
-
-#     return render(request, 'portal/chart.html', context=context)
-
-
-# def plotchart(request):
-#     print("here")
-#     chart = bar_chart(request)
-#     context = {'thischart': chart}
-#     return render(request, 'portal/index.html', context=context)
-
-    # return JsonResponse(data={
-    #     'labels': labels,
-    #     'data': data,
-    # })
-
-
-# PALETTE = ['#465b65', '#184c9c', '#d33035', '#ffc107', '#28a745', '#6f7f8c',
-#            '#6610f2', '#6e9fa5', '#fd7e14', '#e83e8c', '#17a2b8', '#6f42c1']
-
-
-# def chartIt():
-
-#     thislabels = []
-#     data = []
-#     indicator_label = ''
-
-#     queryset = IndicatorData.objects.filter(indicator_id=2)
-#     query_list = list(queryset)
-#     # print(query_list.__getitem__)
-
-#     for entry in queryset:
-#         thislabels.append(entry.member_state.member_state)
-#         indicator_label = entry.indicator.label
-#         # if entry.ind_value.isnumeric() == True:
-#         #     x = int(entry.ind_value)
-#         #     print(type(x))
-#         data.append(entry.ind_value)
-
-#         # create a charts context to hold all of the charts
-#     # context = {}
-
-#     # every chart is added the same way so I will just document the first one
-#     # create a chart object with a unique chart_id and color palette
-#     # if not chart_id or color palette is provided these will be randomly generated
-#     # the type of charts does need to be identified here and might iffer from the chartjs type
-#     city_payment_bar = Chart(
-#         'bar', chart_id='city_payment_bar', palette=PALETTE)
-#     # create a pandas pivot_table based on the fields and aggregation we want
-#     # stacks are used for either grouping or stacking a certain column
-#     # city_payment_radar.from_df(df, values='total', stacks=[
-#     #                            'payment'], labels=['city'])
-#     # print(len([data]))
-#     # print(len(thislabels))
-#     city_payment_bar.from_lists(
-#         values=data, labels=thislabels, stacks=[indicator_label])
-#     # add the presentation of the chart to the charts context
-#     # print(city_payment_bar.get_presentation())
-#     html_str = []
-#     html_str.append(city_payment_bar.get_presentation())
-#     # print(html_str)
-#     #    .append(city_payment_bar.get_presentation())
-#     return " ".join(html_str)
-
-
-# class Dashboard(TemplateView):
-#     template_name = 'portal/dashboard.html'
-
-#     def get_context_data(self, **kwargs):
-
-#         # get the data from the default method
-#         context = super().get_context_data(**kwargs)
-
-#         # the fields we will use
-#         # df_fields = ['city', 'customer_type', 'gender', 'unit_price', 'quantity',
-#         #     'product_line', 'tax', 'total' , 'date', 'time', 'payment',
-#         #     'cogs', 'profit', 'rating']
-
-#         # fields to exclude
-#         # df_exclude = ['id', 'cogs']
-
-#         # create a datframe with all the records.  chart.js doesn't deal well
-#         # with dates in all situations so our method will convert them to strings
-#         # however we will need to identify the date columns and the format we want.
-#         # I am useing just month and year here.
-#         # df = objects_to_df(Purchase, date_cols=['%Y-%m', 'date'])
-
-#         thislabels = []
-#         data = []
-#         indicator_label = ''
-
-#         queryset = IndicatorData.objects.filter(indicator_id=2)
-#         query_list = list(queryset)
-#         # print(query_list.__getitem__)
-
-#         for entry in queryset:
-#             thislabels.append(entry.member_state.member_state)
-#             indicator_label = entry.indicator.label
-#             # if entry.ind_value.isnumeric() == True:
-#             #     x = int(entry.ind_value)
-#             #     print(type(x))
-#             data.append(entry.ind_value)
-
-#             # create a charts context to hold all of the charts
-#         context['charts'] = []
-
-#         # every chart is added the same way so I will just document the first one
-#         # create a chart object with a unique chart_id and color palette
-#         # if not chart_id or color palette is provided these will be randomly generated
-#         # the type of charts does need to be identified here and might iffer from the chartjs type
-#         city_payment_bar = Chart(
-#             'bar', chart_id='city_payment_bar', palette=PALETTE)
-#         # create a pandas pivot_table based on the fields and aggregation we want
-#         # stacks are used for either grouping or stacking a certain column
-#         # city_payment_radar.from_df(df, values='total', stacks=[
-#         #                            'payment'], labels=['city'])
-#         # print(len([data]))
-#         # print(len(thislabels))
-#         city_payment_bar.from_lists(
-#             values=data, labels=thislabels, stacks=[indicator_label])
-#         # add the presentation of the chart to the charts context
-#         context['charts'].append(city_payment_bar.get_presentation())
-
-#         # exp_polar = Chart('polarArea', chart_id='polar01', palette=PALETTE)
-#         # exp_polar.from_df(df, values='total', labels=['payment'])
-#         # context['charts'].append(exp_polar.get_presentation())
-
-#         # exp_doughnut = Chart(
-#         #     'doughnut', chart_id='doughnut01', palette=PALETTE)
-#         # exp_doughnut.from_df(df, values='total', labels=['city'])
-#         # context['charts'].append(exp_doughnut.get_presentation())
-
-#         # exp_bar = Chart('bar', chart_id='bar01', palette=PALETTE)
-#         # exp_bar.from_df(df, values='total', labels=['city'])
-#         # context['charts'].append(exp_bar.get_presentation())
-
-#         # city_payment = Chart(
-#         #     'groupedBar', chart_id='city_payment', palette=PALETTE)
-#         # city_payment.from_df(df, values='total', stacks=[
-#         #                      'payment'], labels=['date'])
-#         # context['charts'].append(city_payment.get_presentation())
-
-#         # city_payment_h = Chart(
-#         #     'horizontalBar', chart_id='city_payment_h', palette=PALETTE)
-#         # city_payment_h.from_df(df, values='total', stacks=[
-#         #                        'payment'], labels=['city'])
-#         # context['charts'].append(city_payment_h.get_presentation())
-
-#         # city_gender_h = Chart('stackedHorizontalBar',
-#         #                       chart_id='city_gender_h', palette=PALETTE)
-#         # city_gender_h.from_df(df, values='total', stacks=[
-#         #                       'gender'], labels=['city'])
-#         # context['charts'].append(city_gender_h.get_presentation())
-
-#         # city_gender = Chart(
-#         #     'stackedBar', chart_id='city_gender', palette=PALETTE)
-#         # city_gender.from_df(df, values='total', stacks=[
-#         #                     'gender'], labels=['city'])
-#         # context['charts'].append(city_gender.get_presentation())
-
-#         return context
-
-
-# class SummaryResponseSurveyView(DetailView):
-#     model = Indicator
-#     template_name = "portal/summary.html"
-#     title_page = 'Summary'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         indicator = Indicator.objects.get(pk=2)
-#         summary = SummaryResponse(indicator=indicator)  # self.get_object())
-#         context['summary'] = summary
-#         # print(summary.generate)
-#         return context
-
-    # template_name = "django_tables2/bootstrap-responsive.html"
-
-
-# def highchart():
-
-#     thislabels = []
-#     data = []
-#     indicator_label = ''
-
-#     gnipercapita_queryset = IndicatorData.objects.filter(indicator_id=2)
-
-#     query_list = list(gnipercapita_queryset)
-#     # print(query_list.__getitem__)
-
-#     for entry in gnipercapita_queryset:
-#         if entry.member_state.member_state_short_name:
-#             thislabels.append(entry.member_state.member_state_short_name)
-#         else:
-#             thislabels.append(entry.member_state.member_state)
-#         indicator_label = entry.indicator.label
-
-#         if (entry.ind_value_adjusted):
-#             data.append(float(entry.ind_value_adjusted))
-#         else:
-#             data.append(entry.ind_value_adjusted)
-
-#     # dataset = Passenger.objects \
-#     #     .values('ticket_class') \
-#     #     .annotate(survived_count=Count('ticket_class', filter=Q(survived=True)),
-#     #               not_survived_count=Count('ticket_class', filter=Q(survived=False))) \
-#     #     .order_by('ticket_class')
-
-#     categories = thislabels
-#     # survived_series_data = data
-
-#     survived_series = {
-#         'name': indicator_label,
-#         'data': data,
-#         'showInLegend': False,
-#     }
-
-#     chart = {
-
-#         'chart': {'renderTo': 'container', 'type': 'column', 'styledMode': 'true', },
-#         'title': {'text': 'Titanic Survivors by Ticket Class'},
-#         'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
-#         'plotOptions': {'series': {'dataLabels': {'enabled': 'false', 'rotation': 270, 'y': -20,   'crop': 'false', 'overflow': 'none'}}},
-#         'title': {'text': indicator_label},
-#         'yAxis': {'title': {'text': 'USD'}, 'labels': {'overflow': 'wrap'}},
-#         'credits': {'enabled': False},
-
-#         'series': [survived_series]
-#     }
-
-#     dump = json.dumps(chart)
-
-#     container = indicator_label.replace(' ', '')+'_container'
-#     script = f'''
-#     <div id="{container}" class="text-primary chart-area" >
-#     <script>
-#     Highcharts.chart('{container}', { dump });
-#     </script>
-#     </div>
-#     '''
-
-#     # print(script)
-#     return script
-
-#     return render(request, 'portal/highchart.html', {'chart': dump})

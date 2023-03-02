@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from core.views import Get_Reporting_Year
 
@@ -9,9 +9,6 @@ from ..models import ExchangeRateData
 
 def exchange_rate_data(request):
 
-    #reporting_year = '2022'
-    #form = ExchangeRateDataForm(request.POST or None)
-    # print(request.user.getUserMemberState())
     existing = ExchangeRateData.objects.filter(currency__member_state=request.user.getUserMemberState(),
                                                reporting_year=Get_Reporting_Year()).first()
 
@@ -36,7 +33,7 @@ def exchange_rate_data(request):
         if request.method == 'POST':
             form = ExchangeRateDataForm(
                 request.POST, ms=request.user.getUserMemberState())
-            # print(formset)
+
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.reporting_year = Get_Reporting_Year()

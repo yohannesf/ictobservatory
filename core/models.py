@@ -14,8 +14,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
-# Create your models here.
-
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -84,15 +82,6 @@ class AbstractEmailUser(AbstractBaseUser, PermissionsMixin):
 
 
 class User(AbstractEmailUser):
-    # username = models.CharField(
-    #     max_length=200, blank=True, null=True, unique=False)
-    # username = None
-    # email = models.EmailField(unique=True)
-    # first_name = models.CharField(max_length=150)
-    # last_name = models.CharField(max_length=150)
-
-    # REQUIRED_FIELDS = ['first_name', 'last_name']
-    # USERNAME_FIELD = 'email'
 
     def getSysUser(self):
         return SystemUser.objects.get(user=self)
@@ -161,7 +150,7 @@ class SystemUser(models.Model):
 
     def clean(self):
         super().clean()
-        # print(self.user_group.name)
+
         if self.user_member_state is None and self.user_organisation is None:
             if self.user_group.name != 'Admin' and self.user_group.name != 'SADC':
                 raise ValidationError(

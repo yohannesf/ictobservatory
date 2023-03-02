@@ -30,7 +30,7 @@
   <div id="content">
     <div class="container-fluid">
       
-      {% comment %} <div class="d-sm-flex justify-content-between align-items-center mb-4"> {% endcomment %}
+   
        
 
         <div class="card shadow">
@@ -48,9 +48,7 @@
                 
               <a href="{% querystring '_export'='xlsx' %}" class="btn btn-primary btn-esm me-1  ">
                 <i class="bi bi-file-earmark-excel-fill "></i> Excel </a>
-               {% comment %} <a href="{% querystring '_export'='html' %}" class="btn btn-primary btn-esm me-1  ">
-                <span class="bi-pencil-fill" aria-hidden="true"> </span></a> {% endcomment %}
-
+             
               </p>
             </div>
             
@@ -84,13 +82,6 @@
           </div>
           
 
-          {% comment %} <label for="inputName5" class="form-label">Indicator:</label>
-          {{form.indicator_filter_field|addclass:'form-control'}} 
-          Member State: {{form.memberstate_filter_field}}
-          Year: {{form.year_filter_field}}{% endcomment %}
-         
-          
-          {% comment %} <input type="submit" class="btn btn-default" value="Search"> {% endcomment %}
 
           <div class="float-end text-end align-content-end">
           <input  class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" value="Filter" >

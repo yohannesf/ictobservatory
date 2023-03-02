@@ -1,14 +1,8 @@
 
 from django import forms
 from .models import User
-from django.contrib.auth.models import AbstractUser, Group, UserManager
 
-from django.db import models
-from django.conf import settings
-from django.forms import ValidationError
-from portaldata.models import MemberState, Organisation
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+
 from django.utils.translation import gettext as _
 
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserChangeForm as DjangoUserChangeForm
@@ -19,13 +13,7 @@ from django import forms
 
 from django import forms
 from .models import User
-from django.contrib.auth.models import AbstractUser, Group
-from django.db import models
-from django.conf import settings
-from django.forms import ValidationError
-from portaldata.models import MemberState, Organisation
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+
 
 User = get_user_model()
 
@@ -77,7 +65,7 @@ class UserCreationForm(forms.ModelForm):
         #     validate_uniqueness_of_username_field)
 
     def clean_password2(self):
-        # Check that the two password entries match
+        '''Check that the two password entries match'''
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -87,8 +75,7 @@ class UserCreationForm(forms.ModelForm):
 
     def _post_clean(self):
         super(UserCreationForm, self)._post_clean()
-        # Validate the password after self.instance is updated with form data
-        # by super().
+        ''' Validate the password after self.instance is updated with form data by super().'''
         password = self.cleaned_data.get('password2')
         if password:
             try:
@@ -97,7 +84,7 @@ class UserCreationForm(forms.ModelForm):
                 self.add_error('password2', error)
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
+        ''' Save the provided password in hashed format'''
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
@@ -114,14 +101,10 @@ class UserChangeForm(DjangoUserChangeForm):
             '<a href="{}">this form</a>.'
         ),
     )
-    #field['username.required'] = False
 
     class Meta:
         model = User
         fields = "__all__"
-
-        #exclude = ('username',)
-        # field_classes = {"username": UsernameField}
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)

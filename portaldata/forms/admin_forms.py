@@ -1,22 +1,14 @@
 
 from crispy_forms.helper import FormHelper
-from decimal import Decimal
+
 import json
 from typing import List, Tuple
 
 from django import forms
 from django.db.models import Count
-from django.core.validators import MaxLengthValidator
-from django.forms import BaseModelFormSet, modelformset_factory
-from core.views import Get_Reporting_Year
-
-from portaldata.admin import IndicatorAssignedAdmin
-from portaldata.widgets import DateEntry
-from ..app_settings import DATE_INPUT_FORMAT, SURVEY_FIELD_VALIDATORS
-from ..validators import validate_ratio, PERCENTAGE_VALIDATOR
 
 
-from ..models import AssignedIndicator, Currency, ExchangeRateData, GeneralIndicator, GeneralIndicatorData, Indicator, FocusArea, IndicatorData, DATA_TYPE, Organisation
+from ..models import AssignedIndicator,  Indicator, FocusArea,  Organisation
 
 
 def make_choices(question: Indicator) -> List[Tuple[str, str]]:
@@ -28,23 +20,28 @@ def make_choices(question: Indicator) -> List[Tuple[str, str]]:
     return choices
 
 
-# Returns the next indicator number for the selected focus area
-
-
 def next_indicator_number():
+    '''   Returns the next indicator number for the selected focus area'''
 
-    # count the number of indicators per focus area and group them
-    # result = [(id, "Abbreviation",#)] -> [(1,"ICT-ECOM", 4)]
+    ''' 
+    count the number of indicators per focus area and group them
+    result = [(id, "Abbreviation",#)] -> [(1,"ICT-ECOM", 4)]
+    '''
+
     mycount = FocusArea.objects.values_list('id', 'abbreviation').order_by(
         'id').annotate(c=Count('indicator'))
 
-    # Use list comprehension to covert the previous list into a Tuples list then convert it into Dictionary
-    # result = [{id:"ICT-ECON-5"}]
+    '''
+    Use list comprehension to covert the previous list into a Tuples list then convert it into Dictionary
+    result = [{id:"ICT-ECON-5"}]
+    '''
     next_indicator_num = dict(
         [(x[0], x[1] + "-" + str(x[2]+1)) for x in mycount])
 
-    # result = dict(next_indicator_num)
-    # Convert the dictionary to JSON (for use in JavaScript)
+    '''
+    result = dict(next_indicator_num)
+    Convert the dictionary to JSON (for use in JavaScript)
+    '''
     resultJson = json.dumps(next_indicator_num)
 
     return resultJson
@@ -59,7 +56,7 @@ class FocusAreaForm(forms.ModelForm):
         self.sn = FocusArea.next_sn(FocusArea)  # type: ignore
         self.fields['description'] = forms.CharField(
             widget=forms.Textarea(attrs={'rows': 3}), required=False)
-        #self.fields['sn'].widget.attrs['readonly'] = True
+
         self.fields['sn'].widget.attrs['readonly'] = True
         self.fields['sn'].widget.attrs['class'] = 'form-control'
 
@@ -90,8 +87,6 @@ class IndicatorForm(forms.ModelForm):
 
         self.fields['choices'].required = False
 
-        #self.fields['type_of_currency'].required = False
-
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.form_class = 'form-horizontal'
@@ -102,13 +97,6 @@ class IndicatorForm(forms.ModelForm):
         model = Indicator
         exclude = ('type_of_currency', 'created_by',
                    'updated_by',  'attachment')
-
-
-# class BaseFormSet(BaseModelFormSet):
-#     def __init__(self, *args, **kwargs):
-#         super(BaseFormSet, self).__init__(*args, **kwargs)
-#         for form in self.forms:
-#             form.empty_permitted = False
 
 
 class IndicatorAssignEntryForm(forms.ModelForm):
@@ -131,9 +119,8 @@ class IndicatorAssignEditForm(forms.ModelForm):
 
     class Meta:
         model = AssignedIndicator
-        # fields = ['id', 'indicator', 'value', 'comments', 'attachment']
+
         exclude = ('updated_by',)
-        # fields = "__all__"
 
     def __init__(self, *args, **kwargs):
 

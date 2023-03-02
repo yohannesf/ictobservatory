@@ -44,39 +44,34 @@ CHART_TYPE = namedtuple(
 )._make(range(6))
 
 
-def generate_unique_slug(klass, field, id, identifier='slug'):
-    """
-    generate unique slug.
-    """
+# def generate_unique_slug(klass, field, id, identifier='slug'):
+#     """
+#     generate unique slug.
+#     """
 
-    origin_slug = slugify(field)
-    unique_slug = origin_slug
-    numb = 1
-    mapping = {
-        identifier: unique_slug,
-    }
-    obj = klass.objects.filter(**mapping).first()
-    while obj:
-        if obj.id == id:
-            break
-        rnd_string = random.choices(
-            string.ascii_lowercase, k=(len(unique_slug)))
-        unique_slug = '%s-%s-%d' % (origin_slug,
-                                    ''.join(rnd_string[:10]), numb)
-        mapping[identifier] = SafeText(unique_slug)
-        numb += 1
-        obj = klass.objects.filter(**mapping).first()
-    return unique_slug
-
-
-# class FocusAreaManager(models.Manager):
-
-#     def count_indicators(self):
-#         ind_count = Indicator.objects.all().count()
-#         return ind_count
+#     origin_slug = slugify(field)
+#     unique_slug = origin_slug
+#     numb = 1
+#     mapping = {
+#         identifier: unique_slug,
+#     }
+#     obj = klass.objects.filter(**mapping).first()
+#     while obj:
+#         if obj.id == id:
+#             break
+#         rnd_string = random.choices(
+#             string.ascii_lowercase, k=(len(unique_slug)))
+#         unique_slug = '%s-%s-%d' % (origin_slug,
+#                                     ''.join(rnd_string[:10]), numb)
+#         mapping[identifier] = SafeText(unique_slug)
+#         numb += 1
+#         obj = klass.objects.filter(**mapping).first()
+#     return unique_slug
 
 
 class FocusArea(models.Model):
+
+    '''Focus Area Model'''
 
     FOCUSAREA_STATUS_CHOICES = [
         (True, 'Active'),
@@ -171,7 +166,7 @@ class FocusArea(models.Model):
             indicator__focus_area=self, indicator__indicator_assigned_to=assignedto,
             reporting_year=reporting_year,
             member_state=memberstate, submitted=False).count()
-        # print(ind_count)
+
         return ind_count
 
     def get_revision_request(self, assignedto, memberstate, reporting_year):
@@ -183,7 +178,7 @@ class FocusArea(models.Model):
             submitted=False,
             validation_status=INDICATORDATA_STATUS.returned
         ).count()
-        # print(ind_count)
+
         return ind_count
 
     def count_indicators(self):
@@ -192,44 +187,10 @@ class FocusArea(models.Model):
             indicator_assigned_to=IND_ASSIGNED_TO.SADC).count()
         return ind_count
 
-    # def count_completed_indicators(self):
-
-    #     # print(IndicatorData.objects.filter(value__exact=''))
-    #     ind_count = IndicatorData.objects.filter(indicator__focus_area=self
-    #                                              ).exclude(value__exact=''
-    #                                                        ).exclude(value__isnull=True).count()
-    #     return ind_count
-
-    # def count_completed_required_indicators(self):
-    #     # print(IndicatorData.objects.filter(value__exact=''))
-    #     # if (assignedto == 'all'):
-    #     ind_count = IndicatorData.objects.filter(indicator__focus_area=self
-    #                                              ).exclude(value_NA=False, value__exact=''
-    #                                                        ).exclude(value_NA=False, value__isnull=True
-    #                                                                  ).exclude(indicator__required=False).count()
-    #     # ind_count = IndicatorData.objects.filter(indicator__focus_area=self
-    #     #                                          ).exclude(value_NA=True
-    #     #                                                    ).exclude(value__exact=''
-    #     #                                                              ).exclude(value__isnull=True
-    #     #                                                                        ).exclude(indicator__required=False).count()
-
-    #     return ind_count
-
-    # def calculate_progress(self):
-
-    #     if (self.count_active_required_indicators() == 0):
-    #         return 0
-    #     else:
-
-    #         ind_progress = round(
-    #             self.count_completed_required_indicators() / self.count_active_required_indicators() * 100)
-    #         return ind_progress
-
     def next_sn(self):
+        '''Return Serial Number for a new indicator (count + 1)'''
         next_sn = FocusArea.objects.count() + 1
         return next_sn
-
-    #objects = FocusAreaManager()
 
     class Meta:
         ordering = ['sn']
@@ -237,6 +198,8 @@ class FocusArea(models.Model):
 
 
 class MemberState(models.Model):
+
+    '''Model for Member States'''
 
     MEMBERSTATE_STATUS_CHOICES = [
         (True, 'Active'),
@@ -267,6 +230,8 @@ class MemberState(models.Model):
 
 
 class Indicator(models.Model):
+
+    '''Model for Indicators'''
 
     DATA_TYPE = [
         (DATA_TYPE.currency, "Currency"),
@@ -359,8 +324,6 @@ class Indicator(models.Model):
     indicator_assigned_to = models.CharField(
         max_length=1, choices=INDICATOR_ASSIGNED_TO_GROUPS)
 
-    #key = models.CharField(max_length=225, unique=True, null=True, blank=True,)
-
     created_date = models.DateTimeField(
         auto_now_add=True)  # only during the creation
 
@@ -374,7 +337,6 @@ class Indicator(models.Model):
 
     def datatype(self):
         key_list = DATA_TYPE._fields[self.data_type].capitalize()
-        # key_list = getattr(DATA_TYPE, name)
 
         return key_list
 
@@ -401,9 +363,7 @@ class Indicator(models.Model):
         if (ms.count_active() == 0):
             return 0
         else:
-            # active_member_states = ms.count_active()
-            # print(active_member_states)
-            # ind_progress = active_member_states
+
             ind_progress = round(
                 self.count_completed_required_indicators() / ms.count_active() * 100)
             return ind_progress
@@ -411,7 +371,7 @@ class Indicator(models.Model):
     def check_submitted(self):
         ind_count = IndicatorData.objects.filter(reporting_year=Get_Reporting_Year(), indicator__focus_area__focusarea_status=True,
                                                  indicator__focus_area=self, submitted=False).count()
-        # print(ind_count)
+
         return ind_count
 
     def get_revision_request(self, org, reporting_year):
@@ -420,31 +380,28 @@ class Indicator(models.Model):
                                                  indicator=self, submitted=False,
                                                  indicator__assignedindicator__assigned_to_organisation=org,
                                                  validation_status=INDICATORDATA_STATUS.returned).count()
-        # print(ind_count)
+
         return ind_count
 
     def __str__(self):
-        # return self.indicator_number + ' - ' + self.label
+
         return self.label
 
     class Meta:
         ordering = ['pk']
 
-    # def save(self, *args, **kwargs):
-    #     self.key = generate_unique_slug(
-    #         Indicator, FocusArea.abbreviation, self.pk, 'key')
-
-    #     super(Indicator, self).save(*args, **kwargs)
-
 
 class Currency(models.Model):
+
+    '''Model for Currencies to be managed by Admin'''
+
     member_state = models.OneToOneField(
         MemberState, on_delete=models.PROTECT)
     currency_label = models.CharField(max_length=25)
     currency_short_name = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
-        # return self.indicator_number + ' - ' + self.label
+
         return self.currency_label
 
     class Meta:
@@ -453,6 +410,8 @@ class Currency(models.Model):
 
 
 class Organisation(models.Model):
+
+    '''Model for Organisations'''
 
     ORGANISATION_STATUS_CHOICES = [
         (True, 'Active'),
@@ -468,15 +427,17 @@ class Organisation(models.Model):
     )
 
     def __str__(self):
-        # return self.indicator_number + ' - ' + self.label
+
         return self.organisation_name
 
 
-# Indicators are assigned to user types (Member States or Organisations)
 class AssignedIndicator(models.Model):
+    '''
+    Model for Assigning Indicators
+    Indicators are assigned to user types (Member States or Organisations)
+    '''
     indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE)
-    # assigned_to_member_state = models.ForeignKey(
-    #     MemberState, blank=True, null=True, on_delete=models.DO_NOTHING)
+
     assigned_to_organisation = models.ForeignKey(
         Organisation, blank=True, null=True, on_delete=models.CASCADE, verbose_name="Assigned to",)
 
@@ -503,6 +464,8 @@ class AssignedIndicator(models.Model):
 
 class ReportingPeriod(models.Model):
 
+    '''Model for Reporting Periods'''
+
     reporting_start_date = models.DateField()
     reporting_end_date = models.DateField()
     current = models.BooleanField(default=False)
@@ -521,8 +484,9 @@ class ReportingPeriod(models.Model):
         verbose_name_plural = "Reporting Periods"
 
 
-# check all these....
 class IndicatorData(models.Model):
+
+    '''Table / Model that holds all indicator data entered into the system'''
 
     YESNO_CHOICES = [
         (True, 'Yes'),
@@ -539,52 +503,23 @@ class IndicatorData(models.Model):
     ]
 
     reporting_year = models.CharField(
-        max_length=6, blank=False)  # , default=str(Get_Current_Year) check
+        max_length=6, blank=False)
 
     indicator = models.ForeignKey(
         Indicator,
-        # related_name='indicatordata',
+
         on_delete=models.PROTECT,
 
-    )  # check
+    )
 
     member_state = models.ForeignKey(
         MemberState, on_delete=models.DO_NOTHING)
 
     ind_value = models.TextField(verbose_name="Data", blank=True, null=True)
 
-    # ind_value_usd = models.DecimalField(
-    #     max_digits=20, decimal_places=4, blank=True, null=True)
-
     ind_value_adjusted = models.TextField(verbose_name="Data adjusted",
                                           max_length=200, blank=True, null=True)
 
-    # __ind_value = models.TextField(db_column="ind_value")
-
-    # @property
-    # def ind_value(self):
-    #     if self.__ind_value:
-
-    #         if self.indicator.data_type == DATA_TYPE.number or \
-    #                 self.indicator.data_type == DATA_TYPE.currency or \
-    #                 self.indicator.data_type == DATA_TYPE.decimal:
-    #             # return intcomma(self.ind_value)
-    #             return intcomma(self.__ind_value)
-    #         elif self.indicator.data_type == DATA_TYPE.percentage:
-    #             return self.__ind_value+'%'
-
-    #         else:
-    #             return self.__ind_value
-    #     else:
-
-    #         return "N/A"
-
-    # @ind_value.setter
-    # def ind_value(self, value):
-    #     self.__ind_value = value
-
-    # if ind_value is not available, user's will check this checkbox
-    # to ensure they can submit remaining data
     value_NA = models.BooleanField(
         verbose_name="Data N/A",
         default=False, null=True, blank=True)
@@ -601,11 +536,6 @@ class IndicatorData(models.Model):
     validation_status = models.IntegerField(
         choices=INDICATORDATA_STATUS_CHOICES, default=INDICATORDATA_STATUS.draft)
 
-    # validated = models.BooleanField(
-    #     verbose_name="Is validated ? ",
-    #     choices=YESNO_CHOICES,
-    #     default=False, )
-
     created_date = models.DateTimeField(
         auto_now_add=True)  # only during the creation
 
@@ -619,6 +549,7 @@ class IndicatorData(models.Model):
 
     @property
     def thisvalue(self):
+        '''Returns Humanized data (e.g. 1000 -> 1,000)'''
         if self.ind_value_adjusted:
 
             if self.indicator.data_type == DATA_TYPE.number or \
@@ -650,7 +581,6 @@ class IndicatorData(models.Model):
         else:
 
             return "N/A"
-        # return self.__value or 'NA'
 
     def focus_area(self):
         return self.indicator.focus_area
@@ -673,12 +603,9 @@ class IndicatorData(models.Model):
         ordering = ['-reporting_year', 'member_state', 'indicator']
 
 
-# method for updating
-
-
 @receiver(post_save, sender=IndicatorData, dispatch_uid="update_currency_usd")
 def update_usd(sender, instance, **kwargs):
-
+    '''method for updating currency values to USD'''
     if instance.ind_value:
         if instance.indicator.data_type == DATA_TYPE.currency and instance.indicator.type_of_currency != 'usd':
             if get_exchange_rate(instance.member_state, Get_Reporting_Year()) != 0:
@@ -714,6 +641,8 @@ class IndicatorDataValidationHistory(models.Model):
 
 class ExchangeRateData(models.Model):
 
+    '''Model for Exchange Rate Data'''
+
     YESNO_CHOICES = [
         (True, 'Yes'),
         (False, 'No')
@@ -725,10 +654,9 @@ class ExchangeRateData(models.Model):
     )
     exchange_rate = models.FloatField(
         help_text='Exchange rate of 1 USD to local currency')
-    #member_state = models.ForeignKey(MemberState, on_delete=models.PROTECT)
 
     reporting_year = models.CharField(
-        max_length=6)  # , default=str(Get_Current_Year) check
+        max_length=6)
 
     submitted = models.BooleanField(
         verbose_name="Is Submitted ? ",
@@ -744,14 +672,6 @@ class ExchangeRateData(models.Model):
 
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="ExchangeRate_Last_Updated_By", on_delete=models.DO_NOTHING)
-
-    # def exchange_data_completed(self, memberstate, reporting_year):
-    #     existing = ExchangeRateData.objects.filter(currency__member_state=memberstate,
-    #                                                reporting_year=reporting_year)
-    #     if existing:
-    #         return True
-    #     else:
-    #         return False
 
     def is_submitted(self):
         return self.submitted
@@ -773,8 +693,7 @@ class ExchangeRateData(models.Model):
 
 
 def get_exchange_rate(member_state, reporting_year):
-   # exchange_rate =
-
+    '''Given Member State and Reporting year, method will return exchange rate value'''
     try:
         exchange_rate = ExchangeRateData.objects.get(
             currency__member_state=member_state, reporting_year=reporting_year).exchange_rate
@@ -782,12 +701,15 @@ def get_exchange_rate(member_state, reporting_year):
         exchange_rate = None
     if exchange_rate:
         return exchange_rate
-        # ExchangeRateData.objects.get(currency__member_state=member_state, reporting_year=reporting_year).exchange_rate
+
     else:
         return 0
 
 
 class GeneralIndicator(models.Model):
+
+    '''Model for General Indicator'''
+
     indicator_label = models.CharField(
         verbose_name="Indicator", max_length=200)
     definition = models.TextField(blank=True)
@@ -808,11 +730,14 @@ class GeneralIndicator(models.Model):
 
 
 class GeneralIndicatorData(models.Model):
+
+    '''Model for General Indicators Data'''
+
     general_indicator = models.ForeignKey(
         GeneralIndicator, on_delete=models.PROTECT, verbose_name="Indicator")
     indicator_value = models.CharField(verbose_name='Data', max_length=200)
     reporting_year = models.CharField(
-        max_length=6)  # , default=str(Get_Current_Year) check
+        max_length=6)
 
     last_update = models.DateTimeField(auto_now=True)
 
@@ -834,6 +759,8 @@ class GeneralIndicatorData(models.Model):
 
 
 class Published(models.Model):
+
+    '''Model to hold Published years data'''
 
     YESNO_CHOICES = [
         (True, 'Yes'),
@@ -866,6 +793,9 @@ class Published(models.Model):
 
 
 class IndicatorScoreCardConfig(models.Model):
+
+    '''Score cards configuration'''
+
     AGGREGATION_CHOICES = [
         ('avg', "Average"),
         ('sum', "Total"),
@@ -890,6 +820,8 @@ class IndicatorScoreCardConfig(models.Model):
 
 class Chart(models.Model):
 
+    '''Model for Charts '''
+
     AGGREGATION_CHOICES = [
         ('avg', "Average"),
         ('sum', "Total"),
@@ -903,7 +835,7 @@ class Chart(models.Model):
         (CHART_TYPE.stacked100pct, "100% Stacked Column Chart"),
         (CHART_TYPE.spiderweb, "Spiderweb Chart"),
         (CHART_TYPE.sunburst, "Sunburst Chart"),
-        #(CHART_TYPE.pie, "Pie Chart"),
+
     ]
 
     chart_name = models.CharField(max_length=50)
@@ -934,6 +866,8 @@ class Chart(models.Model):
 
 
 class ChartConfig(models.Model):
+
+    '''Charts configuration'''
 
     EXTRA_CALCULATION_CHOICES = [
         ('per100', "Calculate Per 100"),

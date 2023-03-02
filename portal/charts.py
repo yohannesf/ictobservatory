@@ -4,14 +4,9 @@ from dataclasses import dataclass, field
 import json
 from typing import List
 
-# from palettable.colorbrewer.qualitative import Dark2_7 as palette
-# from palettable.cmocean.diverging import Balance_20 as palette
-# from palettable.colorbrewer.qualitative import Paired_12 as palette
-# from palettable.cubehelix import cubehelix3_16 as palette
-# from palettable.lightbartlein.diverging import BlueDarkRed18_6 as palette
+
 from palettable.lightbartlein.diverging import BlueDarkRed12_6 as palette  # type: ignore
-# from palettable.lightbartlein.diverging import BlueDarkRed18_2 as palette
-# from palettable.lightbartlein.diverging import BlueDarkRed18_18 as palette
+
 
 # COLORS = [
 #     '#64748b', '#a1a1aa', '#374151', '#78716c', '#d6d3d1', '#fca5a5', '#ef4444', '#7f1d1d',
@@ -62,13 +57,14 @@ def get_colors():
 
 '''
 HIGH CHARTS IMPLEMENTATION FUNCTIONS
+All charts use HighCharts.com to render various type of charts
 '''
 
 
 def setOptions():
     '''
     Set general options
-    A function to set general options
+    A function to set general options for charts
     '''
 
     return '''Highcharts.setOptions({
@@ -83,8 +79,17 @@ def setOptions():
 def ColumnChart(categories, data_dict, chart_title, y_axis_title, year, valign='bottom', floating=False, layout='horizontal', round='1', width=''):
     '''
     A function to generate column charts.
-        Categories - Categories
-        Data_dict - dictionary of data with series name
+        Categories: Categories (x axis)
+        Data_dict: dictionary of data with series name
+        chart_title: title of the chart
+        y_axis_title: title of y axis (if given)
+        year: Year the chart data is plotted for
+        valign: alignment of the chart legend - default: bottom
+        floating: chart legend floating style
+        layout: chart legend layout vertical / horizontal (default: horizontal)
+        round: digits the data is rounded to - default=1
+        width: width of the lengend
+
     Returns a list with Chart html, chart_title, year, and the chart container
 
     '''
@@ -170,6 +175,17 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year, valign='
 
 
 def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line Charts
+    '''
+    A function to generate line charts.
+        Categories: Categories (x axis)
+        Data_dict: dictionary of data with series name
+        chart_title: title of the chart
+        y_axis_title: title of y axis (if given)
+        year: Year the chart data is plotted for
+
+    Returns a list with Chart html, chart_title, year, and the chart container
+
+    '''
     series = []
     color = get_random_colors((len(data_dict)*5))
 
@@ -236,6 +252,22 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
 
 
 def StackedChart(categories, data_dict, chart_title, y_axis_title, year, stacking='normal', grouped_stack='', valign='bottom', floating=False):  # Stacked
+    '''
+    A function to stackedchart column charts.
+        Categories: Categories (x axis)
+        Data_dict: dictionary of data with series name
+        chart_title: title of the chart
+        y_axis_title: title of y axis (if given)
+        year: Year the chart data is plotted for
+        stacking: normal or 100% stacking (default: normal)
+        grouped_stack: for grouping a column for stacking
+        floating: chart legend floating style
+        valign: chart legend layout vertical / horizontal (default: horizontal)
+
+    Returns a list with Chart html, chart_title, year, and the chart container
+
+    '''
+
     series = []
     color = get_random_colors((len(data_dict)*5), colors=COLORS)
 
@@ -307,6 +339,19 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year, stackin
 
 
 def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # Spiderweb chart
+    '''
+    A function to spiderweb charts.
+        Categories: Categories (x axis)
+        Data_dict: dictionary of data with series name
+        chart_title: title of the chart
+        y_axis_title: title of y axis (if given)
+        year: Year the chart data is plotted for
+
+
+    Returns a list with Chart html, chart_title, year, and the chart container
+
+    '''
+
     series = []
     color = get_random_colors((len(data_dict)*5))
 
@@ -383,6 +428,19 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
 
 
 def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Variable Pie Charts
+    '''
+    A function to SunBurst Charts.
+        Categories: Categories (x axis)
+        Data_dict: dictionary of data with series name
+        chart_title: title of the chart
+        y_axis_title: title of y axis (if given)
+        year: Year the chart data is plotted for
+
+
+    Returns a list with Chart html, chart_title, year, and the chart container
+
+    '''
+
     data = []
     color = get_random_colors((len(data_dict)*5))
 
