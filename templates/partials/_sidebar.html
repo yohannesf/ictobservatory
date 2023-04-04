@@ -17,7 +17,7 @@
                 <ul class="navbar-nav text-light mt-2   " id="accordionSidebar">
 
                     <li class="nav-item"><a class="nav-link {% if url_name == 'index' %}active{% endif %}" href=" {% url 'portaldata:index' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Home</span></a>
+                      <i class="fas fa-home"></i><span> Home</span></a>
                     </li>
 
                     
@@ -27,27 +27,34 @@
                     {% if user.is_authenticated %}
 
                     {% if user.is_sadc or user.is_superuser %}  
+
+                    <li class="nav-heading"></li>
                   
                     <li class="nav-item"><a class="nav-link {% if url_name == 'managefocusarea' %}active{% endif %}" href=" {% url 'portaldata:managefocusarea' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Manage Focus Areas</span></a>
+                      <i class="bi bi-menu-button-wide"></i><span> Manage Focus Areas</span></a>
                     </li>
                 
                     <li class="nav-item"><a class="nav-link {% if url_name == 'manageindicators' %}active{% endif %}" href=" {% url 'portaldata:manageindicators' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Manage Indicators</span></a>
+                      <i class="bi bi-menu-button-wide"></i><span> Manage Indicators</span></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'indicator-assignment' %}active{% endif %}" href=" {% url 'portaldata:indicator-assignment' %}">
+                      <i class="bi bi-menu-button-wide"></i><span> Assign Indicators</span></a>
                     </li>
                     
                     <li class="nav-item"><a class="nav-link {% if url_name == 'managegeneralindicators' %}active{% endif %}" href=" {% url 'portaldata:managegeneralindicators' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Manage General Indicators</span></a>
+                      <i class="bi bi-menu-button-wide"></i><span> Manage General Indicators</span></a>
                     </li>
                     <li class="nav-item"><a class="nav-link {% if url_name == 'validate-indicator-data' %}active{% endif %}" href=" {% url 'portaldata:validate-indicator-data' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Manage Data (Validate)</span></a>
+                      <i class="bi bi-menu-button-wide"></i><span> Manage Data (Validate)</span></a>
                     </li>
                     <li class="nav-item"><a class="nav-link {% if url_name == 'publish-data' %}active{% endif %}" href=" {% url 'portaldata:publish-data' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Publish Data </span></a>
+                      <i class="bi bi-menu-button-wide"></i><span> Publish Data </span></a>
                     </li>
-                    <li class="nav-item"><a class="nav-link {% if url_name == 'indicator-assignment' %}active{% endif %}" href=" {% url 'portaldata:indicator-assignment' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Assign Indicators</span></a>
-                    </li>
+
+
+                    <li class="nav-heading"></li>
+
+
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybysadc' %}active{% endif %}" href=" {% url 'portaldata:dataentrybysadc' %}">
                       <i class="fas fa-tachometer-alt"></i><span> Data Entry - SADC</span></a>
                     </li>
@@ -82,6 +89,9 @@
                     <li class="nav-item"><a class="nav-link {% if url_name == 'generate-report' %}active{% endif %}" href=" {% url 'portal:generate-report' %} ">
                       <i class="fas fa-table"></i><span> Export Data | Report</span></a>
                     </li>
+
+                    <li class="nav-heading"></li>
+
                     <li class="nav-item"><a class="nav-link {% if url_name == 'profile' %}active{% endif %}" href="{% url 'portaldata:profile' %}  ">
                       <i class="fas fa-user"></i><span> Profile</span></a>
                     </li>

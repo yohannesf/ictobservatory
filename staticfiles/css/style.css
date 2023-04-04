@@ -550,3 +550,13 @@ a.disabled {
 .hidden {
     display: none !important;
 }
+
+.sidebar .nav-heading {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #899bbd;
+    font-weight: 600;
+    margin: 3px 0 3px 15px;
+    border-bottom: #0088cc 1px solid;
+    width: 80%;
+}
