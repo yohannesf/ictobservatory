@@ -56,7 +56,7 @@
 
 
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybysadc' %}active{% endif %}" href=" {% url 'portaldata:dataentrybysadc' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Data Entry - SADC</span></a>
+                      <i class="bi bi-journal-text"></i><span> Data Entry - SADC</span></a>
                     </li>
                     {% endif %}
                     {%endif%}
@@ -67,7 +67,7 @@
 
                     {% if user.is_authenticated and user.is_memberstate %}  
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybyms' %}active{% endif %}" href=" {% url 'portaldata:dataentrybyms' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Data Entry</span></a>
+                      <i class="bi bi-journal-text"></i><span> Data Entry</span></a>
                     </li>
                     {% endif %}
                    
@@ -80,7 +80,7 @@
            
 
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybyorg' %}active{% endif %}" href=" {% url 'portaldata:dataentrybyorg' %}">
-                      <i class="fas fa-tachometer-alt"></i><span> Data Entry: {{user.getSysUser.user_organisation}}</span></a>
+                      <i class="bi bi-journal-text"></i><span> Data Entry: {{user.getSysUser.user_organisation}}</span></a>
                     </li>
                     {% endif %}
 
