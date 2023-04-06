@@ -10,9 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
 import dotenv
+import sys
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,18 +34,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # environment setting from Book: Becoming an Enterprise Django Developer
 
 # Take environment variables from .env file
-dotenv_file = os.path.join(BASE_DIR, ".env")
+# Uncommented for deployment
+# dotenv_file = os.path.join(BASE_DIR, ".env")
+# if os.path.isfile(dotenv_file):
+#     dotenv.load_dotenv(dotenv_file)
+
+# Added for deployment
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 
-if os.path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
-
-SECRET_KEY = os.getenv('SECRET_KEY')
+#SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = os.getenv("DEBUG", "True") == "True"  # Added for deployment
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
+                          "127.0.0.1,localhost").split(",")
 
 
 # Application definition
@@ -63,7 +71,7 @@ INSTALLED_APPS = [
     'django_select2',
     'django_pivot',
     "django_tables2",
-    'notifications',
+
     "crispy_forms",
     "crispy_bootstrap5",
     'django_crontab',
@@ -76,6 +84,7 @@ INSTALLED_APPS = [
     "portal.apps.PortalConfig",
     "portaldata.apps.PortaldataConfig",
     "core.apps.CoreConfig",
+    'notifications',
 
 ]
 
@@ -91,7 +100,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "ictobservatory.urls"
-
 
 TEMPLATES = [
     {
@@ -109,27 +117,46 @@ TEMPLATES = [
     },
 ]
 
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
+# INTERNAL_IPS = [
+#     # ...
+#     "127.0.0.1",
+#     # ...
+# ]
 
 WSGI_APPLICATION = "ictobservatory.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('DB_NAME'),
-        "USER": os.getenv('DB_USER'),
-        "PASSWORD": os.getenv('DB_USER_PASSWORD'),
-        "HOST": os.getenv('DB_HOST'),
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.getenv('DB_NAME'),
+#         "USER": os.getenv('DB_USER'),
+#         "PASSWORD": os.getenv('DB_USER_PASSWORD'),
+#         "HOST": os.getenv('DB_HOST'),
+#         "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
 
+#     }
+# }
+
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+
+# if DEVELOPMENT_MODE is True:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+#         }
+#     }
+# el
+
+if len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL environment variable not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
     }
-}
 
 
 # Password validation
@@ -167,9 +194,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # MEDIA folder settings
@@ -204,6 +231,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_USER')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
@@ -214,6 +242,7 @@ EMAIL_PORT = os.getenv('EMAIL_PORT')
 AUTHENTICATION_BACKENDS = [
     'core.backends.ExtendedUserModelBackend',
 ]
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)

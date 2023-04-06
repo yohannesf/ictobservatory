@@ -1957,7 +1957,7 @@ def generate_report(request):
             if indicators:
                 ind_data = ind_data.filter(indicator__in=list(indicators))
 
-            get_published_years_for_query()
+            # get_published_years_for_query()
             if years:
                 ind_data = ind_data.filter(reporting_year__in=years)
             else:
