@@ -1911,49 +1911,6 @@ def chart_exchange_rate(year):
     return chart_html
 
 
-class IndicatorDataTable(tables.Table):
-
-    member_state__member_state = tables.Column()
-    indicator__label = tables.Column()
-
-    def render_2021(self, value):
-        try:
-            value = round(float(value), 2)
-            return intcomma(value)
-        except:
-            return intcomma(value)
-
-    def render_2022(self, value):
-
-        try:
-            value = round(float(value), 2)
-            return intcomma(value)
-        except:
-            return intcomma(value)
-
-    def render_2023(self, value):
-        try:
-            value = round(float(value), 2)
-            return intcomma(value)
-        except:
-            return intcomma(value)
-
-    def render_2024(self, value):
-        try:
-            value = round(float(value), 2)
-            return intcomma(value)
-        except:
-            return intcomma(value)
-
-    class Meta:
-        sequence = ("member_state__member_state",
-                    "indicator__label", "...")
-        attrs = {
-            "class": "table table-striped table-bordered dt-responsive compact nowrap"}
-        paginator_class = tables.LazyPaginator
-        empty_text = 'Query did not return any results. Please refine your search.'
-
-
 def generate_report(request):
     '''
     Report / Query Generator
@@ -1967,6 +1924,8 @@ def generate_report(request):
     dict_values = []
 
     pivot_table = None
+
+    ind_data = None
 
     if request.method == "GET":
 
@@ -1998,6 +1957,48 @@ def generate_report(request):
                 dict_values = list(item.keys())
 
             dict_values = dict_values[2:]
+
+            class IndicatorDataTable(tables.Table):
+
+                member_state__member_state = tables.Column()
+                indicator__label = tables.Column()
+
+                def render_2021(self, value):
+                    try:
+                        value = round(float(value), 2)
+                        return intcomma(value)
+                    except:
+                        return intcomma(value)
+
+                def render_2022(self, value):
+
+                    try:
+                        value = round(float(value), 2)
+                        return intcomma(value)
+                    except:
+                        return intcomma(value)
+
+                def render_2023(self, value):
+                    try:
+                        value = round(float(value), 2)
+                        return intcomma(value)
+                    except:
+                        return intcomma(value)
+
+                def render_2024(self, value):
+                    try:
+                        value = round(float(value), 2)
+                        return intcomma(value)
+                    except:
+                        return intcomma(value)
+
+                class Meta:
+                    sequence = ("member_state__member_state",
+                                "indicator__label", "...")
+                    attrs = {
+                        "class": "table table-striped table-bordered dt-responsive compact nowrap"}
+                    paginator_class = tables.LazyPaginator
+                    empty_text = 'Query did not return any results. Please refine your search.'
 
             tbl = IndicatorDataTable('')
 
