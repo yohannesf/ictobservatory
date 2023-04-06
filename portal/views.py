@@ -15,7 +15,7 @@ from django.shortcuts import render
 from portal.forms import FilterForm, HomePageFilterYear, get_published_years, latest_published_year
 
 
-from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE
+from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE, Published
 
 
 from django.shortcuts import render
@@ -1911,6 +1911,17 @@ def chart_exchange_rate(year):
     return chart_html
 
 
+def get_published_years_for_query():
+    '''Get Published Years from database'''
+
+    #from portaldata.models import Published
+    year = []
+    year = list(Published.objects.filter(
+        published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
+    print(year)
+    return year
+
+
 def generate_report(request):
     '''
     Report / Query Generator
@@ -1937,8 +1948,7 @@ def generate_report(request):
 
         if indicators or ms or years:
 
-            ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated,
-                                                    reporting_year__in=get_published_years()).order_by(
+            ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated).order_by(
                 'member_state__member_state', 'indicator')
 
             if ms:
@@ -1947,8 +1957,12 @@ def generate_report(request):
             if indicators:
                 ind_data = ind_data.filter(indicator__in=list(indicators))
 
+            get_published_years_for_query()
             if years:
                 ind_data = ind_data.filter(reporting_year__in=years)
+            else:
+                ind_data = ind_data.filter(
+                    reporting_year__in=get_published_years_for_query())
 
             pivot_table = pivot(ind_data,
                                 ['indicator__label', 'member_state__member_state'],

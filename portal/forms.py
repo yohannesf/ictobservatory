@@ -13,6 +13,7 @@ def get_published_years():
     year = None
     year = list(Published.objects.filter(
         published_status=True).values('reporting_year').order_by('-reporting_year'))
+    # print(year)
     return year
 
 
