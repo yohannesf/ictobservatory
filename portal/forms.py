@@ -6,7 +6,7 @@ from core.views import Get_Reporting_Year
 from portaldata.models import Indicator, MemberState
 
 
-def published_years():
+def get_published_years():
     '''Get Published Years from database'''
 
     from portaldata.models import Published
@@ -42,8 +42,8 @@ class HomePageFilterYear(forms.Form):
     def __init__(self, *args, **kwargs):
         super(HomePageFilterYear, self).__init__(*args, **kwargs)
 
-        if published_years():
-            years_qs = published_years()
+        if get_published_years():
+            years_qs = get_published_years()
 
         else:
             years_qs = [{'reporting_year': Get_Reporting_Year()}]
@@ -81,8 +81,8 @@ class FilterForm(forms.Form):
         INDICATOR_CHOICES = sorted(tuple(set(
             [(q['id'], q['label']) for q in indicators_qs])))
 
-        if published_years():
-            years_qs = published_years()
+        if get_published_years():
+            years_qs = get_published_years()
 
         else:
             years_qs = [{'reporting_year': Get_Reporting_Year()}]

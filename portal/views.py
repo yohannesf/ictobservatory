@@ -12,7 +12,7 @@ from django_tables2.export.export import TableExport
 import django_tables2 as tables
 
 from django.shortcuts import render
-from portal.forms import FilterForm, HomePageFilterYear, latest_published_year
+from portal.forms import FilterForm, HomePageFilterYear, get_published_years, latest_published_year
 
 
 from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE
@@ -1937,7 +1937,8 @@ def generate_report(request):
 
         if indicators or ms or years:
 
-            ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated).order_by(
+            ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated,
+                                                    reporting_year__in=get_published_years()).order_by(
                 'member_state__member_state', 'indicator')
 
             if ms:
