@@ -231,6 +231,8 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap4.html'
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_USER')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
