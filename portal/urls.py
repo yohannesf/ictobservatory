@@ -15,5 +15,9 @@ urlpatterns = [
     path('query-data/', views.generate_report, name='generate-report'),
 
 
+    #'''About Page'''
+    path('about/', views.about, name='about'),
+
+
 
 ]

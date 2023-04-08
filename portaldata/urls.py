@@ -4,7 +4,7 @@ from portaldata.views.profile_views import manageprofile
 from .views.home_views import documentation, index
 from .views.admin_views import (GeneralIndicatorCreateView, GeneralIndicatorListView,
                                 GeneralIndicatorUpdateView, IndicatorCreateView, IndicatorListtableView, IndicatorUpdateView,
-                                FocusAreaListView, FocusAreaCreateView, FocusAreaUpdateView,
+                                FocusAreaListView, FocusAreaCreateView, FocusAreaUpdateView, ReportingPeriodCreateView, ReportingPeriodListView, ReportingPeriodUpdateView,
                                 indicator_list_view, manage_indicatorassignment, publish_data)
 
 from .views.indicator_data_views import (dataentryprogress, manage_general_indicatordata, manage_indicatordata,
@@ -44,6 +44,15 @@ urlpatterns = [
 
     path('update-focus-area/<int:pk>/', FocusAreaUpdateView.as_view(),
          name='updatefocusarea'),
+
+    path('manage-reporting-period/', ReportingPeriodListView.as_view(),
+         name='managereportingperiod'),
+
+    path('create-reporting-period/', ReportingPeriodCreateView.as_view(),
+         name='createreportingperiod'),
+
+    path('update-reporting-period/<int:pk>/', ReportingPeriodUpdateView.as_view(),
+         name='updatereportingperiod'),
 
     path('indicator-assignment/', manage_indicatorassignment,
          name='indicator-assignment'),

@@ -466,8 +466,9 @@ class ReportingPeriod(models.Model):
 
     '''Model for Reporting Periods'''
 
-    reporting_start_date = models.DateField()
-    reporting_end_date = models.DateField()
+    reporting_start_date = models.DateField(
+        verbose_name="Reporting Start Date")
+    reporting_end_date = models.DateField(verbose_name="Reporting End Date")
     current = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):

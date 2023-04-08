@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}Focus Area Management{% endblock title %}
+{% block title %}Reporting Year Management{% endblock title %}
 
 {% block content %}
 
@@ -18,17 +18,21 @@
 
         <div class="container-fluid">
 
-            <h5 class="text-dark mb-4 fw-bold">{{form.initial.title}} Focus Area</h5>
-
-            
+                    
 
             <div class="card shadow">
+                <div class="card-header py-3">
+                    <h5 class="text-end text-primary m-0 fw-bold">{{form.initial.title}} Reporting Year</h5>
+                    
+                    
+               </div>
                
                 <div class="card-body mt-4">
 
                     <form  method="post">
                         {% csrf_token %}
                       
+                       
 
                        
                         {% crispy form %}     
@@ -36,10 +40,10 @@
 
                    
 
-                    <button id="btncancel" type="button" class="btn btn-dark float-end "  >
-                        <a class="text-decoration-none text-white"  href="{% url 'portaldata:managefocusarea' %}">Close</a></button>
-                    <button id="save" type="submit" class="btn btn-primary  float-end me-4">Save</button>
-                
+                       <button id="save" type="submit" class="btn btn-primary  float-start me-4">Save</button>
+                       <button id="btncancel" type="button" class="btn btn-dark float-start "  >
+                        <a class="text-decoration-none text-white"  href="{% url 'portaldata:managereportingperiod' %}">Close</a></button>
+                 
 
                     </form>
 

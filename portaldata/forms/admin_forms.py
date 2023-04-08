@@ -6,9 +6,10 @@ from typing import List, Tuple
 
 from django import forms
 from django.db.models import Count
+from crispy_forms.layout import Layout, Row, Column
 
 
-from ..models import AssignedIndicator,  Indicator, FocusArea,  Organisation
+from ..models import AssignedIndicator,  Indicator, FocusArea,  Organisation, ReportingPeriod
 
 
 def make_choices(question: Indicator) -> List[Tuple[str, str]]:
@@ -23,7 +24,7 @@ def make_choices(question: Indicator) -> List[Tuple[str, str]]:
 def next_indicator_number():
     '''   Returns the next indicator number for the selected focus area'''
 
-    ''' 
+    '''
     count the number of indicators per focus area and group them
     result = [(id, "Abbreviation",#)] -> [(1,"ICT-ECOM", 4)]
     '''
@@ -132,3 +133,46 @@ class IndicatorAssignEditForm(forms.ModelForm):
             organisation_status=True)
 
         self.fields['assigned_to_organisation'].queryset = filter_active_orgs
+
+
+class ReportingPeriodForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+
+        initial = kwargs.get("initial", {})
+
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.form_class = 'form-horizontal'
+
+        self.helper.layout = Layout(
+            Row(
+                Column('reporting_start_date',
+                       css_class='form-group col-md-2 mb-2 ms-4'),
+                Column('reporting_end_date',
+                       css_class='form-group col-md-2 mb-2 ms-4'),
+
+                css_class='form-row'
+            ), Column('current',
+                      css_class='form-group col-md-2 mb-4 ms-4'),)
+
+        self.fields['reporting_start_date'] = forms.DateField(
+            widget=forms.TextInput(attrs={'type': 'date'}), required=False)
+
+        self.fields['reporting_end_date'] = forms.DateField(
+            widget=forms.TextInput(attrs={'type': 'date'}), required=False)
+
+    class Meta:
+        model = ReportingPeriod
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("reporting_start_date")
+        end_date = cleaned_data.get("reporting_end_date")
+        if end_date and start_date:
+            if end_date < start_date:
+                raise forms.ValidationError(
+                    "End date should be greater than start date.")

@@ -11,6 +11,11 @@ def validate_data(modeladmin, request, queryset):
     queryset.update(validation_status=INDICATORDATA_STATUS.validated)
 
 
+@admin.action(description='Mark selected data as Unsubmitted')
+def unsubmit_data(modeladmin, request, queryset):
+    queryset.update(submitted=False)
+
+
 class IndicatorDataAdmin(admin.ModelAdmin):
     # 'focus_area',
 
@@ -20,7 +25,7 @@ class IndicatorDataAdmin(admin.ModelAdmin):
 
     list_per_page = 25
 
-    actions = [validate_data]
+    actions = [validate_data, unsubmit_data]
 
 
 class CurrencyAdmin(admin.ModelAdmin):

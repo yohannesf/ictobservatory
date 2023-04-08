@@ -29,6 +29,10 @@
                     {% if user.is_sadc or user.is_superuser %}  
 
                     <li class="nav-heading"></li>
+
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'managereportingperiod' %}active{% endif %}" href=" {% url 'portaldata:managereportingperiod' %}">
+                      <i class="bi bi-menu-button-wide"></i><span> Manage Reporting Periods</span></a>
+                    </li>
                   
                     <li class="nav-item"><a class="nav-link {% if url_name == 'managefocusarea' %}active{% endif %}" href=" {% url 'portaldata:managefocusarea' %}">
                       <i class="bi bi-menu-button-wide"></i><span> Manage Focus Areas</span></a>
@@ -44,6 +48,9 @@
                     <li class="nav-item"><a class="nav-link {% if url_name == 'managegeneralindicators' %}active{% endif %}" href=" {% url 'portaldata:managegeneralindicators' %}">
                       <i class="bi bi-menu-button-wide"></i><span> Manage General Indicators</span></a>
                     </li>
+
+                    <li class="nav-heading"></li>
+                    
                     <li class="nav-item"><a class="nav-link {% if url_name == 'validate-indicator-data' %}active{% endif %}" href=" {% url 'portaldata:validate-indicator-data' %}">
                       <i class="bi bi-menu-button-wide"></i><span> Manage Data (Validate)</span></a>
                     </li>

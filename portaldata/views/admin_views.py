@@ -14,11 +14,11 @@ from django.urls import reverse_lazy
 from django.forms import formset_factory,  modelformset_factory
 
 
-from ..models import IND_ASSIGNED_TO, FocusArea, GeneralIndicator, Indicator, IndicatorData,  AssignedIndicator, Published
+from ..models import IND_ASSIGNED_TO, FocusArea, GeneralIndicator, Indicator, IndicatorData,  AssignedIndicator, Published, ReportingPeriod
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from ..forms.admin_forms import (
-    IndicatorAssignEditForm, IndicatorAssignEntryForm, IndicatorForm, FocusAreaForm)
+    IndicatorAssignEditForm, IndicatorAssignEntryForm, IndicatorForm, FocusAreaForm, ReportingPeriodForm)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -43,6 +43,13 @@ class IndicatorCreateView(CreateView):
                 indicator=this_indicator, created_by=self.request.user, updated_by=self.request.user)
 
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_initial(self):
+
+        initial = super(IndicatorCreateView, self).get_initial()
+
+        initial['title'] = "Add"  # type: ignore
+        return initial
 
 
 @method_decorator(login_required, name='dispatch')
@@ -73,6 +80,13 @@ class IndicatorUpdateView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
         # return super().form_valid(form)
 
+    def get_initial(self):
+
+        initial = super(IndicatorUpdateView, self).get_initial()
+
+        initial['title'] = "Update"  # type: ignore
+        return initial
+
 
 @method_decorator(login_required, name='dispatch')
 class GeneralIndicatorListView(ListView):
@@ -98,6 +112,13 @@ class GeneralIndicatorCreateView(CreateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
+    def get_initial(self):
+
+        initial = super(GeneralIndicatorCreateView, self).get_initial()
+
+        initial['title'] = "Add"  # type: ignore
+        return initial
+
 
 @method_decorator(login_required, name='dispatch')
 class GeneralIndicatorUpdateView(UpdateView):
@@ -114,6 +135,13 @@ class GeneralIndicatorUpdateView(UpdateView):
 
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+
+    def get_initial(self):
+
+        initial = super(GeneralIndicatorUpdateView, self).get_initial()
+
+        initial['title'] = "Update"  # type: ignore
+        return initial
 
 
 @login_required
@@ -226,7 +254,7 @@ class IndicatorListtableView(AjaxDatatableView):
 @method_decorator(login_required, name='dispatch')
 class FocusAreaCreateView(CreateView):
     model = FocusArea
-    '''model_form.html -> indicator_form.html'''
+    '''model_form.html -> focusare__form.html'''
 
     form_class = FocusAreaForm
     success_url = reverse_lazy('portaldata:managefocusarea')
@@ -239,6 +267,7 @@ class FocusAreaCreateView(CreateView):
         initial = initial.copy()'''
 
         initial['sn'] = FocusArea.next_sn(FocusArea)  # type: ignore
+        initial['title'] = "Add"  # type: ignore
         return initial
 
     def form_valid(self, form):
@@ -259,11 +288,60 @@ class FocusAreaUpdateView(UpdateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
+    def get_initial(self):
+
+        initial = super(FocusAreaUpdateView, self).get_initial()
+
+        initial['title'] = "Update"  # type: ignore
+        return initial
+
 
 @method_decorator(login_required, name='dispatch')
 class FocusAreaListView(ListView):
     model = FocusArea
     context_object_name = "FocusAreas"
+
+
+@method_decorator(login_required, name='dispatch')
+class ReportingPeriodListView(ListView):
+    model = ReportingPeriod
+    context_object_name = "ReportingPeriods"
+
+
+@method_decorator(login_required, name='dispatch')
+class ReportingPeriodCreateView(CreateView):
+    model = ReportingPeriod
+    '''model_form.html -> reportingperiod_form.html'''
+
+    form_class = ReportingPeriodForm
+    success_url = reverse_lazy('portaldata:managereportingperiod')
+
+    def get_initial(self):
+        '''Get the initial dictionary from the superclass method'''
+        initial = super(ReportingPeriodCreateView, self).get_initial()
+
+        '''Copy the dictionary so we don't accidentally change a mutable dict
+        initial = initial.copy()'''
+
+        initial['title'] = "Add"  # type: ignore
+        return initial
+
+
+@method_decorator(login_required, name='dispatch')
+class ReportingPeriodUpdateView(UpdateView):
+    model = ReportingPeriod
+    '''model_form.html -> reportingperiod_form.html'''
+
+    form_class = ReportingPeriodForm
+
+    success_url = reverse_lazy('portaldata:managereportingperiod')
+
+    def get_initial(self):
+
+        initial = super(ReportingPeriodUpdateView, self).get_initial()
+
+        initial['title'] = "Update"  # type: ignore
+        return initial
 
 
 @login_required

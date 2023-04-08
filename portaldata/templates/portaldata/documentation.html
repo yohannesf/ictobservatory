@@ -31,78 +31,238 @@
            
 
           </div>
-            <section class="section dashboard">
+        
 
+                <section class="section faq">
+                    <div class="row">
+                      <div class="col-lg-6">
               
+                        <div class="card basic">
+                          <div class="card-body">
+
+
+                            {% if user.is_authenticated %}
+                                {% if user.is_sadc or user.is_superuser %}  
+               
+                                    <h5 class="card-title">Administration</h5>
+
+                                    <br>
+                                        <p class="mb-2 pb-2">Administration Manual - Complete <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
+                                   
+
+                                    <hr>
+
+                                   
+                                        <p class="mb-2 pb-2" >Manage Users <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                  
+                                        <p class="mb-2 pb-2" >Manage Focus Area, Indicators, Reporting Periods and General Indicators <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                   
+                                        <p class="mb-2 pb-2" >Review Data <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                    
+                                    <p class="mb-2 pb-2" >Publish Data <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+                   
+                   
+                  
+                                {% endif %}
+                            {% endif %}
+
+                            {% if user.is_authenticated and user.is_memberstate %}  
+                                <h5 class="card-title">Member States</h5>
+                
+                                    <br >
+                                        <p class="mb-2 pb-2" >Log-in <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                   
+                                        <p class="mb-2 pb-2" >Data Entry <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                  
+                                        <p class="mb-2 pb-2" >Data Submission <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                   
+                                        <p class="mb-2 pb-2" >Revising Data <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+                                
+                        
+                            {% endif %}
+
+                            {% if user.is_authenticated and user.is_organisation %}
+                                <h5 class="card-title">Organisations</h5>
+        
+                                <br >
+                                        <p class="mb-2 pb-2" >Log-in <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                           
+                                        <p class="mb-2 pb-2" >Data Entry <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                   
+                                        <p class="mb-2 pb-2" >Data Submission <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+
+                                   
+                                        <p class="mb-2 pb-2" >Revising Data <span class="pull-right float-end">
+                                        <button type="button" class="btn btn-primary " name="submit" id="submit">Download</button></span></p>
+                                   
+                                 
+                                    <hr>
+                       
+                     
+
+                            {% endif %}
+                            
+              
+                          </div>
+                        </div>
+              
+                     
+                      </div>
+                   
                 {% if user.is_authenticated %}
 
-                {% if user.is_sadc or user.is_superuser %}  
-                <div class="col-lg-9 ms-4 center-block">
+                    {% if user.is_memberstate or user.is_organisation %}
 
-                    
+                      <div class="col-lg-6">
+              
+                      
+                        <div class="card">
+                          <div class="card-body">
+                            <h5 class="card-title">Frequently Asked Questions</h5>
+              
+                            <div class="accordion accordion-flush" id="faq-group-2">
+              
+                              <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                  <button class="accordion-button collapsed" data-bs-target="#faqsTwo-1" type="button" data-bs-toggle="collapse">
+                                    The Submit button is disabled
+                                  </button>
+                                </h2>
+                                <div id="faqsTwo-1" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                  <div class="accordion-body">
+                                    The Submit button will only be enabled and active when you have completed data entry for all required indicators.
+                                  </div>
+                                </div>
+                              </div>
+              
+                              <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                  <button class="accordion-button collapsed" data-bs-target="#faqsTwo-2" type="button" data-bs-toggle="collapse">
+                                    I submitted data but I wanted to make changes, but the data entry fields are not active.
+                                  </button>
+                                </h2>
+                                <div id="faqsTwo-2" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                  <div class="accordion-body">
+                                    Once data is submitted, you cannot make any changes. Contact SADC Secretariat to enable editing.
+                                  </div>
+                                </div>
+                              </div>
+              
+                              <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                  <button class="accordion-button collapsed" data-bs-target="#faqsTwo-3" type="button" data-bs-toggle="collapse">
+                                    I get a message saying "Data entry is enabled only during Reporting Periods..."
+                                  </button>
+                                </h2>
+                                <div id="faqsTwo-3" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                  <div class="accordion-body">
+                                    Data entry is allowed only during reporting periods. If the current data is within the reporting period and you are seeing this message, please contact SADC Secretariat.
+                                  </div>
+                                </div>
+                              </div>
+              
+                              <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                  <button class="accordion-button collapsed" data-bs-target="#faqsTwo-4" type="button" data-bs-toggle="collapse">
+                                    I donot see the "Data Entry" link on the left pane
+                                  </button>
+                                </h2>
+                                <div id="faqsTwo-4" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                  <div class="accordion-body">
+                                    This is probably because data entry roles are not assigned for you, please contact SADC Secretariat.
+                                  </div>
+                                </div>
+                              </div>
+              
+                              <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                  <button class="accordion-button collapsed" data-bs-target="#faqsTwo-5" type="button" data-bs-toggle="collapse">
+                                    I do not receive any emails from the ICT Observatory Portal
+                                  </button>
+                                </h2>
+                                <div id="faqsTwo-5" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                  <div class="accordion-body">
+                                    Please check your spam folder as well and don't forget to add the ICT Observatory email address to your contacts.
+                                  </div>
+                                </div>
+                            </div>
+              
+                            </div>
+              
+                          </div>
+                        </div>
+              
+                        
+              
+                      </div>
 
-                <div class="card mb-5"><div class="card-body">
-                    <h5 class="card-title">Administration</h5>
-
-                    <br>
-     <p>Administration Manual <span class="pull-right float-end">
-     <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
-     <br>
-                   
-                   
-                    </div></div>
-
-                </div>
-                {% endif %}
-                {% endif %}
-
-                {% if user.is_authenticated and user.is_memberstate %}  
-
-                <div class="col-lg-9 ms-4 center-block">
-
-                    
-
-                    <div class="card mb-5"><div class="card-body">
-                        <h5 class="card-title">Member States</h5>
-    
-                        <br>
-         <p>Log-in <span class="pull-right float-end">
-         <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
-         <br>
-                       
-                       
-                        </div></div>
-    
+                      {% endif %}
+                      {% endif %}
+              
                     </div>
+                  </section>
 
-                {% endif %}
-
-                {% if user.is_organisation %}
-
-                <div class="col-lg-9 ms-4 center-block">
-
-                    
-
-                    <div class="card mb-5"><div class="card-body">
-                        <h5 class="card-title">Organisations</h5>
-    
-                        <br>
-         <p>Log-in <span class="pull-right float-end">
-         <button type="button" class="btn btn-primary" name="submit" id="submit">Download</button></span></p>
-         <br>
-                       
-                       
-                        </div></div>
-    
-                    </div>
-
-                {% endif %}
+              
+                
 
               
 
           
             
-                </section>
+              
          
         </div>
     </div>

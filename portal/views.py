@@ -106,6 +106,11 @@ def index(request):
     return render(request, 'portal/index.html', context=context)
 
 
+def about(request):
+    print("in about")
+    return render(request, 'portal/about.html')
+
+
 def socio_economic(request):
 
     form = HomePageFilterYear(request.GET or None)
@@ -1958,6 +1963,7 @@ def generate_report(request):
                 ind_data = ind_data.filter(indicator__in=list(indicators))
 
             # get_published_years_for_query()
+            #this is not needed
             if years:
                 ind_data = ind_data.filter(reporting_year__in=years)
             else:

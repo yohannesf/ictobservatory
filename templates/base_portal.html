@@ -67,8 +67,8 @@
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'portal:index' %}">Home</a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Main Site</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'portal:about' %}">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://www.sadc.int/">Main Site</a></li>
 
             {% if user.is_authenticated %}
             <li class="nav-item dropdown no-arrow">
