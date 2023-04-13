@@ -84,7 +84,10 @@
 
 
           <div class="float-end text-end align-content-end">
-          <input  class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" value="Filter" >
+          <input  class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" name="filter_usd" value="Load (data in USD)" >
+            <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
+
+          <input  class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" name="filter_lc" value="Load (data in Local Currency)" >
             <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
 
           <a  class="btn btn-primary btn-sm  d-sm-inline-block " role="button"    href="{% url 'portal:generate-report' %}">

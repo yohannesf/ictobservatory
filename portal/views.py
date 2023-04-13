@@ -107,7 +107,7 @@ def index(request):
 
 
 def about(request):
-    print("in about")
+    #print("in about")
     return render(request, 'portal/about.html')
 
 
@@ -167,7 +167,10 @@ def mean_val(data_dict, indicator_label):
     if data_dict:
         if indicator_label in data_dict:
             if data_dict[indicator_label]:
-                return round(mean(d for d in data_dict[indicator_label] if d != ''), 2)
+                try:
+                    return round(mean(d for d in data_dict[indicator_label] if d != ''), 2)
+                except:
+                    return 0
             else:
                 return 0
         else:
@@ -675,6 +678,8 @@ def chart_internet_user_penetration(year):
                     sum_val(data_dict, indicator_label))
             elif aggregation == 'avg':
                 categories.append("SADC Average")
+
+                # print(data_dict)
 
                 data_dict[indicator_label].append(round(
                     mean_val(data_dict, indicator_label), 2))
@@ -1923,7 +1928,7 @@ def get_published_years_for_query():
     year = []
     year = list(Published.objects.filter(
         published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
-    print(year)
+    # print(year)
     return year
 
 
@@ -1970,9 +1975,17 @@ def generate_report(request):
                 ind_data = ind_data.filter(
                     reporting_year__in=get_published_years_for_query())
 
-            pivot_table = pivot(ind_data,
-                                ['indicator__label', 'member_state__member_state'],
-                                'reporting_year', 'ind_value_adjusted', aggregation=Max)  # type: ignore
+            if 'filter_usd' in request.GET:
+
+                pivot_table = pivot(ind_data,
+                                    ['indicator__label',
+                                        'member_state__member_state'],
+                                    'reporting_year', 'ind_value_adjusted', aggregation=Max)  # type: ignore
+            else:
+                pivot_table = pivot(ind_data,
+                                    ['indicator__label',
+                                        'member_state__member_state'],
+                                    'reporting_year', 'ind_value', aggregation=Max)  # type: ignore
 
             for item in list(pivot_table):
                 dict_values = list(item.keys())

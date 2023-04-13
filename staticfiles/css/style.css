@@ -560,3 +560,69 @@ a.disabled {
     border-bottom: #0088cc 1px solid;
     width: 80%;
 }
+
+/* .validation-status {
+
+    --bs-badge-padding-x: 0.65em;
+    --bs-badge-padding-y: 0.35em;
+    --bs-badge-font-size: 0.8em;
+    --bs-badge-font-weight: 700;
+    --bs-badge-color: #fff;
+    --bs-badge-border-radius: 0.35rem;
+    display: inline-block;
+    padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+    font-size: var(--bs-badge-font-size);
+    font-weight: var(--bs-badge-font-weight);
+    line-height: 1.5;
+    color: var(--bs-badge-color);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--bs-badge-border-radius);
+} */
+
+.validation-status-4 {
+
+    --bs-bg-opacity: 1;
+    --bs-badge-font-size: 0.8em;
+    line-height: 1.5;
+
+    padding-right: 5.65em;
+    background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+
+}
+
+.validation-status-3 {
+
+    --bs-bg-opacity: 1;
+    --bs-badge-font-size: 0.8em;
+    line-height: 1.5;
+    background-color: #C9404D !important;
+
+
+}
+
+.validation-status-2 {
+
+    --bs-bg-opacity: 1;
+    --bs-badge-font-size: 0.8em;
+    line-height: 1.5;
+    background-color: #000 !important;
+
+}
+
+.validation-status-1 {
+
+    --bs-bg-opacity: 1;
+    --bs-badge-font-size: 0.8em;
+    line-height: 1.5;
+    background-color: #000 !important;
+
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    --bs-table-accent-bg: var(--bs-table-striped-bg);
+    /* font-size: 1.1em; */
+
+    color: #000 !important;
+}

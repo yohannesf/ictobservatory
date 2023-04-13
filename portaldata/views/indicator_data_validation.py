@@ -221,6 +221,12 @@ class IndicatorDatatableView(AjaxDatatableView):
     ]
 
     def customize_row(self, row, obj):
+
+        row['validation_status'] = '<span class="badge validation-status-%s" >%s</span>' % (
+            obj.validation_status, row['validation_status']
+
+        ),
+
         row['validate'] = """
             <button  class="btn btn-primary btn-esm" 
                onclick = "Validate(this.closest('tr').id.substr(4))"

@@ -36,6 +36,7 @@ def getInputDecorator(indicator):
         return '%'
     elif indicator.data_type == DATA_TYPE.currency:
         return '$'
+
     # elif indicator.data_type == DATA_TYPE.decimal:
     #     return '#'
     elif indicator.data_type == DATA_TYPE.url or indicator.data_type == DATA_TYPE.email:
@@ -48,3 +49,10 @@ def getInputDecorator(indicator):
         return '...'
     else:
         return ''
+
+    '''
+    elif indicator.data_type == DATA_TYPE.currency and indicator.type_of_currency == 'usd':
+        return '$'
+    elif indicator.data_type == DATA_TYPE.currency:
+        return 'LC'
+    '''
