@@ -1940,6 +1940,8 @@ def generate_report(request):
 
     form = FilterForm(request.GET or None)
 
+    currency_data_type = ''
+
     context = {}
 
     dict_values = []
@@ -1977,11 +1979,19 @@ def generate_report(request):
 
             if 'filter_usd' in request.GET:
 
+                currency_data_type = '''
+                Data for all currency types is convered to USD.
+                '''
+
                 pivot_table = pivot(ind_data,
                                     ['indicator__label',
                                         'member_state__member_state'],
                                     'reporting_year', 'ind_value_adjusted', aggregation=Max)  # type: ignore
             else:
+
+                currency_data_type = '''Data for all currency types is in Local Currency 
+               '''
+
                 pivot_table = pivot(ind_data,
                                     ['indicator__label',
                                         'member_state__member_state'],
@@ -2061,6 +2071,7 @@ def generate_report(request):
 
             pivot_table = None
 
-    context = {"table": tbl, "form": form}
+    context = {"table": tbl, "form": form,
+               "currency_data_type": currency_data_type}
 
     return render(request, "portal/generatereport.html", context=context)
