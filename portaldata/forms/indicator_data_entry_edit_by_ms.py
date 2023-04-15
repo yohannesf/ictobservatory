@@ -1,3 +1,5 @@
+from datetime import date
+import datetime
 from crispy_forms.helper import FormHelper
 
 from typing import List, Tuple
@@ -225,3 +227,12 @@ class ExchangeRateDataForm(forms.ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-4'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        exchange_rate_date = cleaned_data.get("exchange_rate_date")
+
+        if exchange_rate_date:
+            if datetime.date.today() < exchange_rate_date:
+                raise forms.ValidationError(
+                    "Date cannot be in the future.")
