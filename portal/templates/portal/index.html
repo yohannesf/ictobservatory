@@ -59,7 +59,7 @@
             <div class="card shadow border-start-primary py-2">
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
-                        <div class="col me-2">
+                        <div class="col me-1">
                             <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Average SADC MOBILE PENETRATION&nbsp; &nbsp;&nbsp;</span></div>
                             <div class="text-dark fw-bold h5 mb-0"><span>{{score_cards.sadc_mobile_penetration|floatformat}}</span></div>
                         </div>
@@ -69,10 +69,10 @@
             </div>
         </div>
         <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-success py-2" style="height: 93.2px;">
+            <div class="card shadow border-start-success py-2" >
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
-                        <div class="col me-2">
+                        <div class="col me-1">
                             <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>Average SADC INTERNET PENETRATION</span></div>
                             <div class="text-dark fw-bold h5 mb-0"><span>22.1%</span></div>
                         </div>
@@ -82,10 +82,10 @@
             </div>
         </div>
         <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-info py-2">
+            <div class="card shadow border-start-info ">
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
-                        <div class="col me-2">
+                        <div class="col me-1">
                             <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>AVG SADC MOBILE NETWORK Geographical COVERAGE</span></div>
                             <div class="row g-0 align-items-center">
                                 <div class="col-auto">
@@ -104,10 +104,10 @@
             </div>
         </div>
         <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-warning py-2">
-                <div class="card-body" style="height: 74.6px;">
+            <div class="card shadow border-start-warning ">
+                <div class="card-body" >
                     <div class="row align-items-center no-gutters">
-                        <div class="col me-2">
+                        <div class="col me-1">
                             <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>AVG SADC % Population Coverage by at least 3G</span></div>
                             <div class="text-dark fw-bold h5 mb-0"><span>{{score_cards.avg_pop_coverage_3g}}%</span></div>
                         </div>
@@ -189,8 +189,8 @@
                     chart.print();
                     break;
                 case "viewinfullscreen":
-                chart.fullscreen.toggle()
-                break;
+                    chart.fullscreen.toggle()
+                    break;
                 case "png":
                     
                     chart.exportChart();

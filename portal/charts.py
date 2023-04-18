@@ -124,7 +124,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
         'series': series,
         'exporting':  {'chartOptions':
                        {
-                           'title': {'text': chart_title},
+                           'title': {'text': chart_title, 'enabled': False},
                            'subtitle': {'text': 'Year: ' + year},
                            #    'plotOptions': {'series': {'dataLabels': {
                            #        'enabled': 'true', 'rotation': 270, 'y': -25, 'crop': False, 'overflow': 'none'}}}
