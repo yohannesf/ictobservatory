@@ -47,9 +47,9 @@ def index(request):
     This view renders all the charts and score cards in the home page
     '''
 
-    year = latest_published_year()
+    form = HomePageFilterYear(request.GET or None)
 
-    form = HomePageFilterYear()
+    year = latest_published_year()
 
     if request.method == "GET":
 
@@ -1956,22 +1956,26 @@ def generate_report(request):
 
         indicators = request.GET.getlist('indicator_filter_field')
         ms = request.GET.getlist('memberstate_filter_field')
+
         years = request.GET.getlist('year_filter_field')
+
+        print(ms)
 
         if indicators or ms or years:
 
             ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated).order_by(
                 'member_state__member_state', 'indicator')
 
-            if ms:
+            if ms and ms != ['all'] and 'all' not in ms:
                 ind_data = ind_data.filter(member_state__in=list(ms))
 
-            if indicators:
+            if indicators and indicators != ['all'] and 'all' not in indicators:
                 ind_data = ind_data.filter(indicator__in=list(indicators))
 
             # get_published_years_for_query()
             #this is not needed
-            if years:
+
+            if years and years != ['Select All'] and 'Select All' not in years:
                 ind_data = ind_data.filter(reporting_year__in=years)
             else:
                 ind_data = ind_data.filter(

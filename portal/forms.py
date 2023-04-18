@@ -41,6 +41,7 @@ class HomePageFilterYear(forms.Form):
     # years_qs = None
 
     def __init__(self, *args, **kwargs):
+
         super(HomePageFilterYear, self).__init__(*args, **kwargs)
 
         if get_published_years():
@@ -82,16 +83,25 @@ class FilterForm(forms.Form):
         INDICATOR_CHOICES = sorted(tuple(set(
             [(q['id'], q['label']) for q in indicators_qs])))
 
+        years_qs = []
+
         if get_published_years():
             years_qs = get_published_years()
 
         else:
             years_qs = [{'reporting_year': Get_Reporting_Year()}]
 
+        years_qs.insert(0, {'reporting_year': 'Select All'})
+
         YEAR_CHOICES = tuple((),)
         for i in years_qs:
             for k, v in i.items():
                 YEAR_CHOICES += ((v, v),)
+
+        MEMBERSTATE_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
+
+        # YEAR_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
+        INDICATOR_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
 
         self.fields['indicator_filter_field'] = forms.MultipleChoiceField(
             choices=INDICATOR_CHOICES, widget=Select2MultipleWidget)
