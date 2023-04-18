@@ -76,7 +76,9 @@ def setOptions():
                     );'''
 
 
-def ColumnChart(categories, data_dict, chart_title, y_axis_title, year, valign='bottom', floating=False, layout='horizontal', round='1', width=''):
+def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
+                valign='bottom', floating=False, layout='horizontal', round='1', width='',
+                max_value=None):
     '''
     A function to generate column charts.
         Categories: Categories (x axis)
@@ -114,7 +116,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year, valign='
         'chart': {'renderTo': 'container', 'type': 'column', },
         'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
         'title': {'text': None},
-        'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, },
+        'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, 'max': max_value if max_value else None},
         'credits': {'enabled': False},
 
         'legend': {'verticalAlign': valign,  'align': 'center', 'floating': floating,  'layout': layout, 'itemStyle': {'width': width}},
@@ -159,6 +161,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year, valign='
     container_title = container_title.replace(')', '')
     container_title = container_title.replace('/', '')
     container_title = container_title.replace('%', '')
+    container_title = container_title.replace(',', '')
 
     container = container_title.replace(' ', '')+'_container'
 
@@ -236,6 +239,7 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
     container_title = container_title.replace(')', '')
     container_title = container_title.replace('/', '')
     container_title = container_title.replace('%', '')
+    container_title = container_title.replace(',', '')
 
     container = container_title.replace(' ', '')+'_container'
 
@@ -323,6 +327,7 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year, stackin
     container_title = container_title.replace(')', '')
     container_title = container_title.replace('/', '')
     container_title = container_title.replace('%', '')
+    container_title = container_title.replace(',', '')
 
     container = container_title.replace(' ', '')+'_container'
 
@@ -412,6 +417,7 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
     container_title = container_title.replace(')', '')
     container_title = container_title.replace('/', '')
     container_title = container_title.replace('%', '')
+    container_title = container_title.replace(',', '')
 
     container = container_title.replace(' ', '')+'_container'
 
@@ -501,6 +507,7 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
     container_title = container_title.replace(')', '')
     container_title = container_title.replace('/', '')
     container_title = container_title.replace('%', '')
+    container_title = container_title.replace(',', '')
 
     container = container_title.replace(' ', '')+'_container'
 

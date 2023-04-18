@@ -938,7 +938,7 @@ def chart_existence_of_policy_by_ms(year):
                 mean_val(data_app, label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_app,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='2')
+                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='2', max_value=100)
 
     return chart_html
 
@@ -1773,7 +1773,7 @@ def chart_literacy_rate(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='0')
+                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='0', max_value=100)
 
     return chart_html
 

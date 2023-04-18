@@ -60,10 +60,10 @@
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
                         <div class="col me-2">
-                            <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>sadc MOBILE PENETRATION&nbsp; &nbsp;&nbsp;</span></div>
+                            <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Average SADC MOBILE PENETRATION&nbsp; &nbsp;&nbsp;</span></div>
                             <div class="text-dark fw-bold h5 mb-0"><span>{{score_cards.sadc_mobile_penetration|floatformat}}</span></div>
                         </div>
-                        <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                        {% comment %} <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div> {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
                         <div class="col me-2">
-                            <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>AVG INTERNET PENETRATION</span></div>
+                            <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>Average SADC INTERNET PENETRATION</span></div>
                             <div class="text-dark fw-bold h5 mb-0"><span>22.1%</span></div>
                         </div>
                        
@@ -86,19 +86,19 @@
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
                         <div class="col me-2">
-                            <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>MOBILE NETWORK COVERAGE</span></div>
+                            <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>AVG SADC MOBILE NETWORK Geographical COVERAGE</span></div>
                             <div class="row g-0 align-items-center">
                                 <div class="col-auto">
                                     <div class="text-dark fw-bold h5 mb-0 me-3"><span>{{score_cards.sadc_network_coverage}}%</span></div>
                                 </div>
-                                <div class="col">
+                                {% comment %} <div class="col">
                                     <div class="progress progress-sm">
                                         <div class="progress-bar bg-info" aria-valuenow="{{score_cards.sadc_network_coverage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{score_cards.sadc_network_coverage}}%;"><span class="visually-hidden">50%</span></div>
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                         </div>
-                        <div class="col-auto"><i class="fas fa-wifi fa-2x text-gray-300"></i></div>
+                        {% comment %} <div class="col-auto"><i class="fas fa-wifi fa-2x text-gray-300"></i></div> {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                 <div class="card-body" style="height: 74.6px;">
                     <div class="row align-items-center no-gutters">
                         <div class="col me-2">
-                            <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>average Population Coverage by at least 3G</span></div>
+                            <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>AVG SADC % Population Coverage by at least 3G</span></div>
                             <div class="text-dark fw-bold h5 mb-0"><span>{{score_cards.avg_pop_coverage_3g}}%</span></div>
                         </div>
                         {% comment %} <div class="col-auto"><i class="fas fa-wifi fa-2x text-gray-300"></i></div> {% endcomment %}
