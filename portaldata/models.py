@@ -196,6 +196,8 @@ class FocusArea(models.Model):
         ordering = ['sn']
         verbose_name_plural = "Focus Areas"
 
+        verbose_name = "Focus Area"
+
 
 class MemberState(models.Model):
 
@@ -728,6 +730,9 @@ class GeneralIndicator(models.Model):
 
     def __str__(self):
         return self.indicator_label
+
+    class Meta:
+        verbose_name = "General Indicator"
 
 
 class GeneralIndicatorData(models.Model):
