@@ -264,10 +264,10 @@ JAZZMIN_SETTINGS = {
     "site_logo": "/img/sadc-logo-circle.svg",
 
     # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
-    "login_logo": "/img/sadc_logo_2.png",
+    "login_logo": "/img/SADC_logo_2.png",
 
     # Logo to use for login form in dark themes (defaults to login_logo)
-    "login_logo_dark": "/img/sadc_logo_2.png",
+    "login_logo_dark": "/img/SADC_logo_2.png",
 
     # # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
