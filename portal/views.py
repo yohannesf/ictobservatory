@@ -24,6 +24,18 @@ from .charts import ColumnChart, LineChart, StackedChart, SpiderWebChart, SunBur
 
 from django_pivot.pivot import pivot
 
+color_blue = ['#2C318A']
+color_green = ['#02B052']
+color_yellow = ['#C49801']
+color_lightblue = ['#3A40B8']
+color_lightgreen = ['#02CE5E']
+
+color_lightblue_lightgreen = [color_lightblue[0], color_lightgreen[0]]
+
+tricolors = [color_blue[0], color_green[0], color_yellow[0]]
+sixcolors = ['#2C318A', '#02B052',  '#C49801',
+             '#BFDB38', '#3C84AB',   '#493801']
+
 
 '''
 Global variables used to populate score cards in the home page
@@ -345,8 +357,13 @@ def chart_population_male_female(year):
                 data_dict[indicator_label].append(
                     mean_val(data_dict, indicator_label))
 
-    recieved = StackedChart(categories=categories, data_dict=data_dict,
-                            chart_title=chart_title, y_axis_title=y_axis_title, year=year, stacking='percent', grouped_stack=main_stack_label)  # ,
+    recieved = StackedChart(categories=categories,
+                            data_dict=data_dict,
+                            chart_title=chart_title,
+                            y_axis_title=y_axis_title,
+                            year=year, stacking='percent',
+                            grouped_stack=main_stack_label,
+                            chart_color=color_lightblue_lightgreen)  # ,
 
     return recieved
 
@@ -687,7 +704,7 @@ def chart_internet_user_penetration(year):
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year,
                              valign='bottom', floating=False, layout='horizontal',
-                             width='120')
+                             width='120', chart_color=sixcolors)
 
     return chart_html
 
@@ -761,7 +778,8 @@ def chart_telecom_investment(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                             chart_title=chart_title, y_axis_title=y_axis_title,
+                             year=year, chart_color=tricolors)
 
     return chart_html
 
@@ -937,8 +955,13 @@ def chart_existence_of_policy_by_ms(year):
             data_app[label].append(
                 mean_val(data_app, label))
 
-    chart_html = ColumnChart(categories=categories, data_dict=data_app,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='2', max_value=100)
+    chart_html = ColumnChart(categories=categories,
+                             data_dict=data_app,
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title,
+                             year=year, round='2',
+                             max_value=100,
+                             chart_color=color_lightblue)
 
     return chart_html
 
@@ -1091,8 +1114,12 @@ def chart_fixed_telephone_line(year):
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
 
-    chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+    chart_html = ColumnChart(categories=categories,
+                             data_dict=data_dict,
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title,
+                             year=year,
+                             chart_color=color_blue)
 
     return chart_html
 
@@ -1175,9 +1202,12 @@ def chart_pop_coveredby_mobl_network(year):
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
 
-    chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title,
-                             year=year)
+    chart_html = ColumnChart(categories=categories,
+                             data_dict=data_dict,
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title,
+                             year=year,
+                             chart_color=tricolors)
 
     return chart_html
 
@@ -1255,8 +1285,12 @@ def chart_mobl_geog_coverage(year):
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
 
-    chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+    chart_html = ColumnChart(categories=categories,
+                             data_dict=data_dict,
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title,
+                             year=year,
+                             chart_color=color_green)
 
     return chart_html
 
@@ -1330,8 +1364,12 @@ def chart_inter_internet_bandwidth(year):
             data_dict[indicator_label].append(
                 mean_val(data_dict, indicator_label))
 
-    chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+    chart_html = ColumnChart(categories=categories,
+                             data_dict=data_dict,
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title,
+                             year=year,
+                             chart_color=color_blue)
 
     return chart_html
 
@@ -1623,7 +1661,9 @@ def chart_fixed_telephone_tariffs(year):
                     mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='3')
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title, year=year,
+                             round='3', chart_color=sixcolors)
 
     return chart_html
 

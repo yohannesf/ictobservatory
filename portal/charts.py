@@ -78,7 +78,7 @@ def setOptions():
 
 def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
                 valign='bottom', floating=False, layout='horizontal', round='1', width='',
-                max_value=None):
+                max_value=None, chart_color=None):
     '''
     A function to generate column charts.
         Categories: Categories (x axis)
@@ -97,19 +97,24 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
     '''
 
     series = []
-    color = get_random_colors((len(data_dict)*5), colors=COLORS)
+
+    # get_random_colors((len(data_dict)*5), colors=COLORS)
+    color = chart_color if chart_color else COLORS
 
     percent_value = '%' if y_axis_title == '%' else ''
+
+    i = 0
 
     for k, v in data_dict.items():
 
         series.append({
             'name': k,
             'data': v,
-            'color': color[random.randint(0, len(color)-1)],
+            'color': color[i] if chart_color else color[random.randint(0, len(color)-1)],
             'showInLegend': False if len(data_dict) == 1 else True
 
         })
+        i = i+1
 
     chart = {
 
@@ -255,7 +260,8 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
     return [html, chart_title, year, container]
 
 
-def StackedChart(categories, data_dict, chart_title, y_axis_title, year, stacking='normal', grouped_stack='', valign='bottom', floating=False):  # Stacked
+def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
+                 stacking='normal', grouped_stack='', valign='bottom', floating=False, chart_color=None):  # Stacked
     '''
     A function to stackedchart column charts.
         Categories: Categories (x axis)
@@ -274,16 +280,19 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year, stackin
 
     series = []
     color = get_random_colors((len(data_dict)*5), colors=COLORS)
+    i = 0
 
     for k, v in data_dict.items():
 
         series.append({
             'name': k,
             'data': v,
-            # 'color': color[random.randint(0, len(color)-1)],
+            # color[random.randint(0, len(color)-1)],
+            'color': chart_color[i] if chart_color else None,
             'stack': 'Main' if k == grouped_stack else 'Other',
             'showInLegend': False if len(data_dict) == 1 else True
         })
+        i = i+1
 
     percent_value = '%' if (
         y_axis_title == '%' or y_axis_title == 'Percent') else ''
