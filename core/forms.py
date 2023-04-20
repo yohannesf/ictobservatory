@@ -93,6 +93,8 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(DjangoUserChangeForm):
+    is_superuser = forms.BooleanField(
+        label='Superuser Status', help_text='Designates that this user has all permissions without explicitly assigning them.', initial=False, required=False)
     password = ReadOnlyPasswordHashField(
         label=_("Password"),
         help_text=_(

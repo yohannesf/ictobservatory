@@ -33,8 +33,6 @@ class UserManager(BaseUserManager):
         if kwargs.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        print("here")
-
         return self.create_user(email, password, **kwargs)
 
     def get_by_natural_key(self, email):
@@ -43,18 +41,18 @@ class UserManager(BaseUserManager):
 
 
 class AbstractEmailUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), max_length=255, unique=True)
+    email = models.EmailField(_('Email Address'), max_length=255, unique=True)
 
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=150, verbose_name="First Name")
+    last_name = models.CharField(max_length=150, verbose_name="Last Name")
 
-    is_staff = models.BooleanField(_('staff status'), default=False,
+    is_staff = models.BooleanField(_('Staff Status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin '
                                                'site.'))
-    is_active = models.BooleanField(_('active'), default=True,
+    is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this user should be treated as '
                                                 'active. Unselect this instead of deleting accounts.'))
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_('Date Joined'), default=timezone.now)
 
     objects = UserManager()
 
@@ -131,9 +129,11 @@ class SystemUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
 
-    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="Phone Number")
     role = models.CharField(max_length=150, blank=True)
-    organisation_name = models.CharField(max_length=150, blank=True)
+    organisation_name = models.CharField(
+        max_length=150, blank=True, verbose_name="Organisation Name")
     user_group = models.ForeignKey(
         Group, on_delete=models.PROTECT, verbose_name='User Group')
 
