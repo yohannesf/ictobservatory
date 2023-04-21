@@ -803,30 +803,31 @@ class Published(models.Model):
         ordering = ['-reporting_year']
 
 
-class IndicatorScoreCardConfig(models.Model):
+# class IndicatorScoreCardConfig(models.Model):
 
-    '''Score cards configuration'''
+#     '''Score cards configuration'''
 
-    AGGREGATION_CHOICES = [
-        ('avg', "Average"),
-        ('sum', "Total"),
-    ]
-    scorecard_title = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    indicator = models.ForeignKey(
-        Indicator, on_delete=models.CASCADE, verbose_name="Indicator")
-    aggregation = models.CharField(
-        max_length=10,
-        choices=AGGREGATION_CHOICES,
-        blank=True
+#     AGGREGATION_CHOICES = [
+#         ('avg', "Average"),
+#         ('sum', "Total"),
+#     ]
+#     #scorecard_name = models.CharField(max_length=100)
+#     scorecard_title = models.CharField(max_length=100)
+#     description = models.TextField(blank=True)
+#     indicator = models.ForeignKey(
+#         Indicator, on_delete=models.CASCADE, verbose_name="Indicator")
+#     aggregation = models.CharField(
+#         max_length=10,
+#         choices=AGGREGATION_CHOICES,
+#         blank=True
 
-    )
+#     )
 
-    def __str__(self):
-        return self.scorecard_title
+#     def __str__(self):
+#         return self.scorecard_title
 
-    class Meta:
-        verbose_name_plural = "Indicator Scorecard Configuration"
+#     class Meta:
+#         verbose_name_plural = "Indicator Scorecard Configuration"
 
 
 class Chart(models.Model):

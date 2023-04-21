@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import (INDICATORDATA_STATUS, FocusArea, GeneralIndicator, GeneralIndicatorData, Chart, Indicator, ChartConfig, IndicatorData, IndicatorScoreCardConfig,
+from .models import (INDICATORDATA_STATUS, FocusArea, GeneralIndicator,
+                     GeneralIndicatorData, Chart, Indicator, ChartConfig, IndicatorData,
                      MemberState, Published, ReportingPeriod,
                      Organisation, Currency, AssignedIndicator, ExchangeRateData, IndicatorDataValidationHistory)
 
