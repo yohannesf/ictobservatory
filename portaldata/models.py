@@ -23,6 +23,7 @@ import random
 import string
 from django.utils.safestring import SafeText, mark_safe
 from django.contrib.humanize.templatetags.humanize import intcomma
+from django.utils.translation import gettext_lazy as _
 
 from core.views import Get_Reporting_Year
 
@@ -275,17 +276,19 @@ class Indicator(models.Model):
     ]
 
     focus_area = models.ForeignKey(
-        FocusArea,  on_delete=models.PROTECT)
+        FocusArea,  on_delete=models.PROTECT, verbose_name="Focus Area")
 
     indicator_number = models.CharField(
         max_length=50,
         unique=True,
+        verbose_name="Indicator Number"
     )
 
     label = models.CharField("Indicator", max_length=255,
                              help_text='Enter the indicator here')
 
-    data_type = models.PositiveSmallIntegerField(choices=DATA_TYPE)
+    data_type = models.PositiveSmallIntegerField(
+        choices=DATA_TYPE, verbose_name="Data Type")
 
     choices = models.TextField(
         blank=True,
@@ -303,12 +306,14 @@ class Indicator(models.Model):
         max_length=8,
         choices=INDICATOR_TYPE_CHOICES,
         default='Core',
+        verbose_name="Indicator Type"
     )
 
     status = models.CharField(
         max_length=10,
         choices=INDICATOR_STATUS_CHOICES,
         default='Active',
+        verbose_name="Status"
     )
 
     required = models.BooleanField(
@@ -505,22 +510,22 @@ class IndicatorData(models.Model):
 
     ]
 
-    reporting_year = models.CharField(
-        max_length=6, blank=False)
+    reporting_year = models.CharField(_('Reporting Year'),
+                                      max_length=6, blank=False)
 
     indicator = models.ForeignKey(
         Indicator,
 
-        on_delete=models.PROTECT,
+        on_delete=models.PROTECT, verbose_name="Indicator"
 
     )
 
     member_state = models.ForeignKey(
-        MemberState, on_delete=models.DO_NOTHING)
+        MemberState, on_delete=models.DO_NOTHING, verbose_name="Member State")
 
     ind_value = models.TextField(verbose_name="Data", blank=True, null=True)
 
-    ind_value_adjusted = models.TextField(verbose_name="Data adjusted",
+    ind_value_adjusted = models.TextField(verbose_name="Data Converted (local currency data converted to USD)",
                                           max_length=200, blank=True, null=True)
 
     value_NA = models.BooleanField(

@@ -18,14 +18,22 @@ def unsubmit_data(modeladmin, request, queryset):
 
 class IndicatorDataAdmin(admin.ModelAdmin):
     # 'focus_area',
+    model = IndicatorData
 
-    list_display = ('indicator', 'focus_area',  'reporting_year', 'member_state',  'ind_value',  'ind_value_adjusted',
+    list_display = ('indicator', 'get_focusarea',  'reporting_year', 'member_state',  'ind_value',  'ind_value_adjusted',
                     'value_NA', 'comments', 'submitted', 'validation_status', 'created_by', 'updated_by')
-    list_filter = ('indicator', 'member_state', 'reporting_year',)
+    list_filter = ('indicator__focus_area', 'indicator',
+                   'member_state', 'reporting_year',)
 
     list_per_page = 25
 
     actions = [validate_data, unsubmit_data]
+
+    def get_focusarea(self, obj):
+        return obj.indicator.focus_area
+
+    get_focusarea.admin_order_field = "indicator__focus_area"
+    get_focusarea.short_description = 'Focus Area'
 
 
 class CurrencyAdmin(admin.ModelAdmin):
@@ -74,7 +82,7 @@ class IndicatorAdmin(admin.ModelAdmin):
 
     list_display = ['label', 'indicator_number', 'focus_area',  'data_type',
                     'indicator_type', 'status', 'required', 'indicator_assigned_to']
-    list_filter = ['focus_area', 'label', 'indicator_type', ]
+    list_filter = ['focus_area', 'label', 'indicator_type', 'status']
 
     list_per_page = 10
 
