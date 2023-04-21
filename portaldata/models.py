@@ -803,31 +803,76 @@ class Published(models.Model):
         ordering = ['-reporting_year']
 
 
-# class IndicatorScoreCardConfig(models.Model):
+class ScoreCard(models.Model):
 
-#     '''Score cards configuration'''
+    '''Score cards configuration'''
 
-#     AGGREGATION_CHOICES = [
-#         ('avg', "Average"),
-#         ('sum', "Total"),
-#     ]
-#     #scorecard_name = models.CharField(max_length=100)
-#     scorecard_title = models.CharField(max_length=100)
-#     description = models.TextField(blank=True)
-#     indicator = models.ForeignKey(
-#         Indicator, on_delete=models.CASCADE, verbose_name="Indicator")
-#     aggregation = models.CharField(
-#         max_length=10,
-#         choices=AGGREGATION_CHOICES,
-#         blank=True
+    AGGREGATION_CHOICES = [
+        ('avg', "Average"),
+        ('sum', "Total"),
+    ]
+    scorecard_name = models.CharField(max_length=100)
+    scorecard_title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
 
-#     )
+    indicator_list = models.ManyToManyField(
+        Indicator, through='ScoreCardConfig')
 
-#     def __str__(self):
-#         return self.scorecard_title
+    aggregation = models.CharField(
+        max_length=10,
+        choices=AGGREGATION_CHOICES,
+        blank=True
 
-#     class Meta:
-#         verbose_name_plural = "Indicator Scorecard Configuration"
+    )
+
+    def __str__(self):
+        return self.scorecard_title
+
+    class Meta:
+        verbose_name_plural = "Scorecards"
+        ordering = ['pk']
+
+
+class ScoreCardConfig(models.Model):
+
+    '''Scorecard configuration'''
+
+    AGGREGATION_CHOICES = [
+        ('avg', "Average"),
+        ('sum', "Total"),
+    ]
+
+    CALCULATION_CHOICES = [
+
+        ('num', 'Numerator'),
+        ('denom', 'Denominator')
+    ]
+
+    scorecard = models.ForeignKey(ScoreCard, on_delete=models.CASCADE)
+
+    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE)
+
+    num_denom = models.CharField(
+        max_length=50,
+        choices=CALCULATION_CHOICES,
+        blank=True,
+        verbose_name="Numerator / Denominator"
+
+    )
+
+    aggregation = models.CharField(
+        max_length=50,
+        choices=AGGREGATION_CHOICES,
+        blank=True
+
+    )
+
+    def __str__(self):
+        return self.indicator.label
+
+    class Meta:
+        verbose_name_plural = "Scorecard Configuration"
+        ordering = ['scorecard__pk', 'pk']
 
 
 class Chart(models.Model):

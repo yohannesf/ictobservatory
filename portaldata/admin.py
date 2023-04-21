@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (INDICATORDATA_STATUS, FocusArea, GeneralIndicator,
                      GeneralIndicatorData, Chart, Indicator, ChartConfig, IndicatorData,
-                     MemberState, Published, ReportingPeriod,
+                     MemberState, Published, ReportingPeriod, ScoreCard, ScoreCardConfig,
                      Organisation, Currency, AssignedIndicator, ExchangeRateData, IndicatorDataValidationHistory)
 
 # Register your models here.
@@ -47,9 +47,22 @@ class GeneralIndicatorDataAdmin(admin.ModelAdmin):
 
     list_display = ('general_indicator', 'indicator_value',
                     'reporting_year',  'updated_by')
-    #search_fields = ('indicator', 'member_state', 'reporting_year',)
+    # search_fields = ('indicator', 'member_state', 'reporting_year',)
 
     list_per_page = 10
+
+
+class ScorecardAdmin(admin.ModelAdmin):
+    list_display = ('scorecard_name', 'scorecard_title', 'description',
+                    'aggregation')
+
+    list_filter = ['scorecard_title']
+
+
+class ScorecardConfigAdmin(admin.ModelAdmin):
+    list_display = ('scorecard', 'indicator',
+                    'num_denom', 'aggregation')
+    list_filter = ['scorecard']
 
 
 class ChartAdmin(admin.ModelAdmin):
@@ -62,11 +75,6 @@ class ChartAdmin(admin.ModelAdmin):
 class ChartConfigAdmin(admin.ModelAdmin):
     list_display = ('chart', 'indicator', 'series_name', 'extra_calculation')
     list_filter = ['chart']
-
-
-class IndicatorScoreCardConfigAdmin(admin.ModelAdmin):
-    list_display = ('scorecard_title', 'description',
-                    'indicator',   'aggregation')
 
 
 class ExchangeRateDataAdmin(admin.ModelAdmin):
@@ -134,5 +142,6 @@ admin.site.register(GeneralIndicator, GeneralIndicatorAdmin)
 admin.site.register(GeneralIndicatorData, GeneralIndicatorDataAdmin)
 admin.site.register(Published, PublishedAdmin)
 admin.site.register(Chart, ChartAdmin)
-#admin.site.register(IndicatorScoreCardConfig, IndicatorScoreCardConfigAdmin)
 admin.site.register(ChartConfig, ChartConfigAdmin)
+admin.site.register(ScoreCard, ScorecardAdmin)
+admin.site.register(ScoreCardConfig, ScorecardConfigAdmin)

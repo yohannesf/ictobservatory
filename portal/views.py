@@ -15,7 +15,7 @@ from django.shortcuts import render
 from portal.forms import FilterForm, HomePageFilterYear, get_published_years, latest_published_year
 
 
-from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE, Published
+from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE, Published, ScoreCard, ScoreCardConfig
 
 
 from django.shortcuts import render
@@ -40,7 +40,7 @@ sixcolors = ['#2C318A', '#02B052',  '#C49801',
 '''
 Global variables used to populate score cards in the home page
 '''
-sadc_mobile_penetration = ''
+#sadc_mobile_penetration = ''
 
 sadc_network_coverage = ''
 
@@ -104,10 +104,10 @@ def index(request):
     ]
 
     score_cards = {
-        'sadc_mobile_penetration': sadc_mobile_penetration,
+        'sadc_mobile_penetration': scorecard_sadc_mobile_penetration(year),
         'sadc_network_coverage': sadc_network_coverage,
         'avg_pop_coverage_3g': avg_pop_coverage_3g,
-        'avg_internet_penetration': avg_internet_penetration}
+        'avg_internet_penetration': scorecard_avg_internet_penetration(year)}
 
     context = {
         'form': form,
@@ -119,7 +119,7 @@ def index(request):
 
 
 def about(request):
-    #print("in about")
+
     return render(request, 'portal/about.html')
 
 
@@ -208,6 +208,121 @@ def perUser(bandwidth, internet_user):
         return ''
 
 
+def scorecard_sadc_mobile_penetration(year):
+    "This is for the Average SADC Mobile Penetration Scorecard"
+
+    scorecard = ScoreCard.objects.filter(
+        scorecard_name='sadc_mobile_penetration').first()
+
+    if scorecard:
+
+        return scorecard_calculation(scorecard, year)
+    else:
+        return "-"
+
+
+def scorecard_avg_internet_penetration(year):
+    "This is for the Average SADC Internet Penetration Scorecard"
+
+    scorecard = ScoreCard.objects.filter(
+        scorecard_name='avg_internet_penetration').first()
+
+    if scorecard:
+
+        return scorecard_calculation(scorecard, year)
+    else:
+        return "-"
+
+
+def scorecard_calculation(scorecard, year):
+    query_list_num = []
+    query_list_denom = []
+
+    query_list = []
+
+    indicators_list = ScoreCardConfig.objects.filter(scorecard=scorecard)
+
+    if indicators_list:
+
+        for item in indicators_list:
+
+            item_option = item.indicator.label
+
+            indicator_data = list(IndicatorData.objects.filter(
+                indicator=item.indicator, reporting_year=year).values_list("ind_value_adjusted", flat=True))
+
+            if item.num_denom:
+                if item.num_denom == 'num':
+                    item_option = "num"
+                    query_list_num.append(indicator_data)
+                elif item.num_denom == 'denom':
+                    item_option = "denom"
+                    query_list_denom.append(indicator_data)
+                else:
+                    #item_option = "other"
+                    query_list.append(indicator_data)
+            else:
+                query_list.append(indicator_data)
+
+    query_list_num = (query_list_num[0]
+                      if query_list_num else query_list_num)
+    query_list_denom = (
+        query_list_denom[0] if query_list_denom else query_list_denom)
+
+    num = 0
+    denom = 0
+
+    if len(query_list_num) == len(query_list_denom):
+
+        for i in range(len(query_list_num)):
+            if query_list_num[i] and query_list_denom[i]:
+
+                try:
+                    num += float(query_list_num[i])
+                    denom += float(query_list_denom[i])
+                except ValueError:
+                    pass
+    else:
+        if query_list_num:
+            if any(isinstance(el, list) for el in query_list_num):
+                ls = [item for sublist in query_list_num for item in sublist]
+
+                for item in ls:
+                    try:
+                        num += float(item)
+                    except ValueError:
+                        pass
+            else:
+                for item in query_list_num:
+                    try:
+                        num += float(item)
+                    except ValueError:
+                        pass
+
+        if query_list_denom:
+            if any(isinstance(el, list) for el in query_list_denom):
+                ls = [item for sublist in query_list_denom for item in sublist]
+
+                for item in ls:
+                    try:
+                        denom += float(item)
+                    except ValueError:
+                        pass
+            else:
+                for item in query_list_denom:
+                    try:
+                        denom += float(item)
+                    except ValueError:
+                        pass
+
+    try:
+        return (num/denom)*100
+    except:
+        return "-"
+
+    # return True
+
+
 def chart_population(year):
     ''' This is for Population Chart'''
 
@@ -235,8 +350,6 @@ def chart_population(year):
         if indicators_list:
 
             for item in indicators_list:
-
-                # print(type(indicator.indicator))
 
                 indicator_data = IndicatorData.objects.filter(
                     indicator=item.indicator, reporting_year=year)
@@ -650,20 +763,20 @@ def chart_internet_user_penetration(year):
 
                 query_list.append(indicator_data)
 
-    global total_population
+    # global total_population
 
-    if population_list:
-        total_population = round(sum(float(d)
-                                 for d in population_list if d != ''), 2)
+    # if population_list:
+    #     total_population = round(sum(float(d)
+    #                              for d in population_list if d != ''), 2)
 
-    global avg_internet_penetration
+    # global avg_internet_penetration
 
-    if total_internet_users and total_population:
-        try:
-            avg_internet_penetration = round(float(
-                total_internet_users)/float(total_population), 2)
-        except:
-            avg_internet_penetration = '-'
+    # if total_internet_users and total_population:
+    #     try:
+    #         avg_internet_penetration = round(float(
+    #             total_internet_users)/float(total_population), 2)
+    #     except:
+    #         avg_internet_penetration = '-'
 
     for qs in query_list:
         data = []
@@ -695,8 +808,6 @@ def chart_internet_user_penetration(year):
                     sum_val(data_dict, indicator_label))
             elif aggregation == 'avg':
                 categories.append("SADC Average")
-
-                # print(data_dict)
 
                 data_dict[indicator_label].append(round(
                     mean_val(data_dict, indicator_label), 2))
@@ -1032,12 +1143,12 @@ def chart_mobile_penetration_rate(year):
         elif aggregation == 'avg':
             categories.append("SADC Average")
 
+            # data_dict[indicator_label].append(
+            #     mean_val(data_dict, indicator_label))
+
+            # Implementation through score card confiuration
             data_dict[indicator_label].append(
-                mean_val(data_dict, indicator_label))
-
-            global sadc_mobile_penetration
-
-            sadc_mobile_penetration = mean_val(data_dict, indicator_label)
+                scorecard_sadc_mobile_penetration(year))
 
     chart_html = LineChart(categories=categories, data_dict=data_dict,
                            chart_title=chart_title, y_axis_title=y_axis_title, year=year)
@@ -1179,14 +1290,17 @@ def chart_pop_coveredby_mobl_network(year):
 
         data_dict[indicator_label] = data
 
+    global avg_pop_coverage_3g
     if 'Percentage of population covered by at least a 3G mobile network' in data_dict:
 
         pop_coverage_3g = data_dict['Percentage of population covered by at least a 3G mobile network']
 
-        global avg_pop_coverage_3g
-
         avg_pop_coverage_3g = round(
-            mean(d for d in pop_coverage_3g if d != ''), )
+            mean(d for d in pop_coverage_3g if d != ''), 1)
+
+    else:
+
+        avg_pop_coverage_3g = "-"
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
@@ -1269,7 +1383,7 @@ def chart_mobl_geog_coverage(year):
 
         global sadc_network_coverage
 
-        sadc_network_coverage = round(mean_val(data_dict, indicator_label),)
+        sadc_network_coverage = round(mean_val(data_dict, indicator_label), 1)
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
@@ -1555,17 +1669,17 @@ def chart_inter_internet_bandwidth_per_user(year):
             total_users = sum_val(
                 data_dict, 'Total Internet Subscribers')
 
-            global total_internet_users
-            global avg_internet_penetration
+            # global total_internet_users
+            # global avg_internet_penetration
 
-            total_internet_users = total_users
+            # total_internet_users = total_users
 
-            if total_internet_users and total_population:
-                try:
-                    avg_internet_penetration = round(float(
-                        total_internet_users)/float(total_population), 2)
-                except:
-                    avg_internet_penetration = '-'
+            # if total_internet_users and total_population:
+            #     try:
+            #         avg_internet_penetration = round(float(
+            #             total_internet_users)/float(total_population), 2)
+            #     except:
+            #         avg_internet_penetration = '-'
 
             if total_bandwidth and total_users:
 
@@ -1968,7 +2082,7 @@ def get_published_years_for_query():
     year = []
     year = list(Published.objects.filter(
         published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
-    # print(year)
+
     return year
 
 
@@ -1998,8 +2112,6 @@ def generate_report(request):
         ms = request.GET.getlist('memberstate_filter_field')
 
         years = request.GET.getlist('year_filter_field')
-
-        print(ms)
 
         if indicators or ms or years:
 

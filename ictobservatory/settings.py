@@ -341,7 +341,7 @@ JAZZMIN_SETTINGS = {
     "order_with_respect_to": ["core", "portaldata", "portaldata.reportingperiod", "portaldata.focusarea", "portaldata.indicator",
                               "portaldata.generalindicator",
                               "portaldata.assignedindicator", "portaldata.currency", "portaldata.chart",
-                              "portaldata.chartconfig", "portaldata.memberstate", "portaldata.organisation",
+                              "portaldata.chartconfig", "portaldata.scorecard", "portaldata.scorecardconfig", "portaldata.memberstate", "portaldata.organisation",
                               "portaldata.indicatordata", "portaldata.exchangerate", "admin", "auth", ],
 
     # # Custom links to append to app groups, keyed on app name

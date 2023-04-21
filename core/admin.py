@@ -70,7 +70,7 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
     inlines = (SystemUserInline,)
-    list_display = ['email', 'first_name', 'last_name',
+    list_display = ['email', 'first_name', 'last_name', 'is_active',
                     'getUserGroup', 'getUserOrganisation', 'getUserMemberState']
 
     ordering = ('email',)
@@ -108,6 +108,7 @@ class UserAdmin(BaseUserAdmin):
     # inlines = (SystemUserInline,)
     # list_display = ['first_name', 'last_name',
     #                 'username', 'email', 'getUserGroup', 'getUserOrganisation', 'getUserMemberState']
+
 
     # Re-register UserAdmin
 admin.site.unregister(User)
