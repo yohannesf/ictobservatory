@@ -87,6 +87,14 @@ class IndicatorAssignedAdmin(admin.ModelAdmin):
     list_display = ('indicator', 'assigned_to_organisation')
 
 
+class FocusAreaAdmin(admin.ModelAdmin):
+
+    list_display = ['title', 'abbreviation', 'focusarea_status', ]
+    list_filter = ['title', 'abbreviation', 'focusarea_status', ]
+
+    list_per_page = 10
+
+
 class IndicatorAdmin(admin.ModelAdmin):
 
     list_display = ['label', 'indicator_number', 'focus_area',  'data_type',
@@ -126,7 +134,7 @@ class PublishedAdmin(admin.ModelAdmin):
                     'last_update', 'updated_by')
 
 
-admin.site.register(FocusArea)
+admin.site.register(FocusArea, FocusAreaAdmin)
 admin.site.register(ReportingPeriod, ReportingPeriodAdmin)
 
 admin.site.register(MemberState, MemberStateAdmin)
