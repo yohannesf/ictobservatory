@@ -76,7 +76,7 @@ class AbstractEmailUser(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Sends an email to this User."""
 
-        send_mail(subject, message, from_email, [self.email], **kwargs)
+        #send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
 class User(AbstractEmailUser):
@@ -108,11 +108,20 @@ class User(AbstractEmailUser):
     def getUserOrganisation(self):
         return self.getSysUser().user_organisation
 
+    getUserOrganisation.admin_order_field = "systemuser__user_organisation"
+    getUserOrganisation.short_description = 'User Organisation'
+
     def getUserMemberState(self):
         return self.getSysUser().user_member_state
 
+    getUserMemberState.admin_order_field = "systemuser__user_memberstate"
+    getUserMemberState.short_description = 'Member State'
+
     def getUserGroup(self):
         return self.getSysUser().user_group
+
+    getUserGroup.admin_order_field = "systemuser__user_group"
+    getUserGroup.short_description = 'User Group'
 
     def __str__(self):
         return self.get_full_name()
