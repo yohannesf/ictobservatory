@@ -19,8 +19,8 @@ def make_choices(question: Indicator) -> List[Tuple[str, str]]:
     choices = []
     for choice in question.choices.split(','):  # type: ignore
         choice = choice.strip()
-        choices.append((choice.replace(' ', '_').lower(), choice))
-    choices.insert(0, ('', 'Choose..'))
+        choices.append((choice.replace(' ', '_'), choice))
+    choices.insert(0, ('', '------'))
     return choices
 
 
