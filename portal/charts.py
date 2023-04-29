@@ -120,7 +120,8 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
 
         'chart': {'renderTo': 'container', 'type': 'column', },
         'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
-        'title': {'text': None},
+        'title': {'text': chart_title + ' (' + year + ')'},
+        # 'subtitle': {'text': 'Year: ' + year},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, 'max': max_value if max_value else None},
         'credits': {'enabled': False},
 
@@ -129,13 +130,18 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
         'series': series,
         'exporting':  {'chartOptions':
                        {
-                           'title': {'text': chart_title, 'enabled': True},
-                           'subtitle': {'text': 'Year: ' + year},
+                           'title': {'text': chart_title + ' (' + year + ')', 'style': {
+                               'fontWeight': 'bold',
+                               'fontSize': '12px',
+
+                               'color': '#6b77bd'
+                           }},
+                           # 'subtitle': {'text': 'Year: ' + year},
                            #    'plotOptions': {'series': {'dataLabels': {
                            #        'enabled': 'true', 'rotation': 270, 'y': -25, 'crop': False, 'overflow': 'none'}}}
                        },
                        'filename': chart_title + '_' + year,
-                       'sourceWidth': 1000,
+                       # 'sourceWidth': 1000,
 
                        'csv': {
 
@@ -218,7 +224,7 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
 
         'chart': {'renderTo': 'container', 'type': 'line', },
         'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
-        'title': {'text': None},
+        'title': {'text': chart_title + ' (' + year + ')'},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, },
         'credits': {'enabled': False},
         'legend': {'verticalAlign': 'top',  'align': 'right', 'floating': True,  'layout': 'vertical'},
@@ -226,13 +232,17 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
         'series': series,
         'exporting':  {'chartOptions':
                        {
-                           'title': {'text': chart_title},
-                           'subtitle': {'text': 'Year: ' + year},
+                           'title': {'text': chart_title + ' (' + year + ')', 'style': {
+                               'fontWeight': 'bold',
+                               'fontSize': '12px',
+                               'color': '#6b77bd'
+                           }},
+                           # 'subtitle': {'text': 'Year: ' + year},
                            #    'plotOptions': {'series': {'dataLabels': {
                            #        'enabled': 'true', 'rotation': 270, 'y': -25, 'crop': False, 'overflow': 'none'}}}
                        },
                        'filename': chart_title + '_' + year,
-                       'sourceWidth': 1000,
+                       # 'sourceWidth': 1000,
 
                        'buttons': {'contextButton': {'enabled': False}}
                        },
@@ -305,7 +315,7 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
 
         'chart': {'renderTo': 'container', 'type': 'column', },
         'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
-        'title': {'text': None},
+        'title': {'text': chart_title + ' (' + year + ')'},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'},
                   'stackLabels': {'enabled': False, 'style': {'fontSize': '9px', 'textOutline': 'none'}}, },
         'credits': {'enabled': False},
@@ -316,13 +326,17 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
         'series': series,
         'exporting':  {'chartOptions':
                        {
-                           'title': {'text': chart_title},
-                           'subtitle': {'text': 'Year: ' + year},
+                           'title': {'text': chart_title + ' (' + year + ')', 'style': {
+                               'fontWeight': 'bold',
+                               'fontSize': '12px',
+                               'color': '#6b77bd'
+                           }},
+                           # 'subtitle': {'text': 'Year: ' + year},
                            #    'plotOptions': {'series': {'dataLabels': {
                            #        'enabled': 'true',  'crop': False, 'overflow': 'none'}}}
                        },
                        'filename': chart_title + '_' + year,
-                       'sourceWidth': 1000,
+                       # 'sourceWidth': 1000,
 
                        'buttons': {'contextButton': {'enabled': False}}
                        },
@@ -387,14 +401,15 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
 
         # https://jsfiddle.net/fv374ssL/14/
 
-        'chart': {'renderTo': 'container', 'polar': 'true', 'type': 'area', 'spacing': [20, 5, 20, 5], },
+        'chart': {'renderTo': 'container',
+                  'polar': 'true', 'type': 'area', 'marginTop': 33, },  # 'spacing': [20, 5, 20, 5], },
         'xAxis': {'categories': categories, 'tickmarkPlacement': 'on', 'lineWidth': '0',
                   'labels': {'allowOverlap': False, 'style': {
                       'whiteSpace': 'nowrap',
 
                       'fontSize': '10px'
                   }, }},
-        'title': {'text': None},
+        'title': {'text': chart_title + ' (' + year + ')'},
         'pane': {'size': '95%'},
         'yAxis': {'gridLineInterpolation': 'polygon',  'lineWidth': 2,  'min': 0,
                   'labels': {'format': '{value}%'}},
@@ -406,13 +421,20 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
         # 'caption': {'text': 'AVERAGE EXISTENCE OF RELEVANT ICT POLICY, REGULATION, GUIDELINE INSTITUTIONAL STRUCTURE ACROSS THE SADC REGION'},
         'exporting':  {'chartOptions':
                        {
-                           'title': {'text': chart_title},
-                           'subtitle': {'text': 'Year: ' + year},
-                           #    'plotOptions': {'series': {'dataLabels': {
-                           #        'enabled': 'true', 'style': {'fontSize': '9px'}, 'crop': False, 'overflow': 'none'}}}
+                           'title': {'text': chart_title + ' (' + year + ')', 'style': {
+                               'fontWeight': 'bold',
+                               'fontSize': '12px',
+                               'color': '#6b77bd',
+
+
+                           }},
+
+
                        },
                        'filename': chart_title + '_' + year,
-                       'sourceWidth': 1000,
+                       'sourceWidth': 800,
+
+
 
                        'buttons': {'contextButton': {'enabled': False}}
                        },
@@ -476,9 +498,9 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
 
     chart = {
 
-        'chart': {'renderTo': 'container', 'type': 'variablepie', },
+        'chart': {'renderTo': 'container', 'type': 'variablepie', 'marginTop': 20, },
         'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
-        'title': {'text': None},
+        'title': {'text': chart_title + ' (' + year + ')'},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, },
         'credits': {'enabled': False},
         'legend': {'verticalAlign': 'top',  'align': 'right', 'floating': True,  'layout': 'vertical'},
@@ -496,13 +518,17 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
 
         'exporting':  {'chartOptions':
                        {
-                           'title': {'text': chart_title},
-                           'subtitle': {'text': 'Year: ' + year},
+                           'title': {'text': chart_title + ' (' + year + ')', 'style': {
+                               'fontWeight': 'bold',
+                               'fontSize': '12px',
+                               'color': '#6b77bd'
+                           }},
+                           # 'subtitle': {'text': 'Year: ' + year},
                            #    'plotOptions': {'series': {'dataLabels': {
                            #        'enabled': 'true', }}},  # 'rotation': 270, 'y': -25, 'crop': False, 'overflow': 'none'}}}
                        },
                        'filename': chart_title + '_' + year,
-                       'sourceWidth': 1000,
+                       # 'sourceWidth': 1000,
 
                        'buttons': {'contextButton': {'enabled': False}}
                        },

@@ -62,3 +62,40 @@
 .highcharts-data-table tr:hover {
     background: #eff;
 }
+
+.highcharts-title {
+
+    font-size: 0.85em;
+
+}
+
+:fullscreen .highcharts-title {
+
+    display: block;
+
+}
+
+:fullscreen .highcharts-subtitle {
+
+    display: block;
+
+}
+
+@media screen {
+    .highcharts-title {
+        display: none;
+
+    }
+
+    .highcharts-subtitle {
+        display: none;
+
+    }
+}
+
+/* @media print {
+    .highcharts-subtitle {
+        display: block;
+        margin-top: 5px;
+    }
+} */

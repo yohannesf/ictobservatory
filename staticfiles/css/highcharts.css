@@ -62,3 +62,28 @@
 .highcharts-data-table tr:hover {
     background: #eff;
 }
+
+
+:fullscreen .highcharts-title {
+
+    display: block;
+
+}
+
+:fullscreen .highcharts-subtitle {
+
+    display: block;
+
+}
+
+@media screen {
+    .highcharts-title {
+        display: none;
+
+    }
+
+    .highcharts-subtitle {
+        display: none;
+
+    }
+}
