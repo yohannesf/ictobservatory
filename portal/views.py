@@ -309,13 +309,13 @@ def scorecard_calculation(scorecard, year):
                 for item in ls:
                     try:
                         denom += float(item)
-                    except ValueError:
+                    except:
                         pass
             else:
                 for item in query_list_denom:
                     try:
                         denom += float(item)
-                    except ValueError:
+                    except:
                         pass
 
     try:
