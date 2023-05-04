@@ -1298,8 +1298,11 @@ def chart_pop_coveredby_mobl_network(year):
 
         pop_coverage_3g = data_dict['Percentage of population covered by at least a 3G mobile network']
 
-        avg_pop_coverage_3g = round(
-            mean(d for d in pop_coverage_3g if d != ''), 1)
+        try:
+            avg_pop_coverage_3g = round(
+                mean(d for d in pop_coverage_3g if d != ''), 1)
+        except:
+            avg_pop_coverage_3g = "-"
 
     else:
 
