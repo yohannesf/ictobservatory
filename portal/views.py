@@ -158,11 +158,14 @@ def sum_val(data_dict, indicator_label):
     if data_dict:
         if indicator_label in data_dict:
             if data_dict[indicator_label]:
-                for i in data_dict[indicator_label]:
-                    if i != '':
-                        total += float(i)
+                try:
+                    for i in data_dict[indicator_label]:
+                        if i != '':
+                            total += float(i)
 
-                return round(total, 2)
+                    return round(total, 2)
+                except:
+                    return 0
             else:
 
                 return 0
