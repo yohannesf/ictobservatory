@@ -615,10 +615,15 @@ class IndicatorData(models.Model):
 def update_usd(sender, instance, **kwargs):
     '''method for updating currency values to USD'''
     if instance.ind_value:
+
         if instance.indicator.data_type == DATA_TYPE.currency and instance.indicator.type_of_currency != 'usd':
+            print(get_exchange_rate(
+                instance.member_state, Get_Reporting_Year()))
             if get_exchange_rate(instance.member_state, Get_Reporting_Year()) != 0:
+
                 instance.ind_value_adjusted = round(float(
                     instance.ind_value) / float(get_exchange_rate(instance.member_state, Get_Reporting_Year())), 4)
+                print(instance.ind_value_adjusted)
 
         else:
             instance.ind_value_adjusted = instance.ind_value
@@ -702,6 +707,7 @@ class ExchangeRateData(models.Model):
 
 def get_exchange_rate(member_state, reporting_year):
     '''Given Member State and Reporting year, method will return exchange rate value'''
+
     try:
         exchange_rate = ExchangeRateData.objects.get(
             currency__member_state=member_state, reporting_year=reporting_year).exchange_rate

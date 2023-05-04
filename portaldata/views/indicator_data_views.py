@@ -303,7 +303,7 @@ def SendNotification(name, submittedby, reporting_year):
     for u in users:
         recipient_list.append(u.email)
 
-    send_mail('Data Submission', description, email_from, recipient_list)
+    #send_mail('Data Submission', description, email_from, recipient_list)
 
 
 def update_currency_indicators_to_usd(reporting_year, member_state=''):
@@ -311,7 +311,7 @@ def update_currency_indicators_to_usd(reporting_year, member_state=''):
     Once data is submitted, all the currency indicators (except GDP and GNI)
     will be converted from local currency to USD using the exchange rate data
     '''
-
+    print("here")
     if not member_state:
 
         exchange_rate = dict(list(ExchangeRateData.objects.filter(
@@ -328,9 +328,10 @@ def update_currency_indicators_to_usd(reporting_year, member_state=''):
             if data.ind_value:
                 if data.indicator.data_type == DATA_TYPE.currency and data.indicator.type_of_currency != 'usd':
                     if exchange_rate.get(data.member_state.member_state):
+                        print(data.member_state.member_state)
 
-                        IndicatorData.objects.filter(pk=data.pk).update(ind_value_adjusted=round(float(
-                            data.ind_value) / float(exchange_rate.get(data.member_state.member_state)), 4))  # type: ignore
+                        IndicatorData.objects.filter(pk=data.pk).update(ind_value_adjusted=(float(
+                            data.ind_value) / float(exchange_rate.get(data.member_state.member_state))))  # type: ignore
                 else:
                     IndicatorData.objects.filter(pk=data.pk).update(
                         ind_value_adjusted=data.ind_value)

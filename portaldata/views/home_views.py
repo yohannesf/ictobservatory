@@ -2,12 +2,15 @@
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+
+from portaldata.views.indicator_data_views import update_currency_indicators_to_usd
 from ..models import Indicator, IndicatorData
 
 
 @login_required
 def index(request):
     '''Backend Home Page (a landing page when user is logged in)'''
+    #update_currency_indicators_to_usd(2022, member_state='')
 
     return render(request, 'portaldata/index.html')
 

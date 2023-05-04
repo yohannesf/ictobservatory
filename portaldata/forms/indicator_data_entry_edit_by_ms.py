@@ -58,6 +58,7 @@ class IndicatorDataEntryForm(forms.ModelForm):
 
                 self.fields['ind_value'] = forms.DecimalField(max_digits=5,
                                                               decimal_places=2)  # type: ignore
+
                 self.fields['ind_value'].widget.attrs.update(
                     {'class': 'form-control'})
             elif v.data_type == DATA_TYPE.currency:
