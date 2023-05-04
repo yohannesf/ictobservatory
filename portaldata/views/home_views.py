@@ -10,7 +10,7 @@ from ..models import Indicator, IndicatorData
 @login_required
 def index(request):
     '''Backend Home Page (a landing page when user is logged in)'''
-    # update_currency_indicators_to_usd('2022')
+    update_currency_indicators_to_usd('2022')
 
     return render(request, 'portaldata/index.html')
 
