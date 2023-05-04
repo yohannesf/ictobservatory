@@ -112,8 +112,8 @@ def SendBack(request, id):
             for i in users:
                 email_address.append(i.email)
 
-            email_notifications(
-                subject=verb, recipient_list=email_address, message=message)
+            # email_notifications(
+            #     subject = verb, recipient_list = email_address, message = message)
 
             return HttpResponse(status=200)
 
