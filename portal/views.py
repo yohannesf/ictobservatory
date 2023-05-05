@@ -2142,7 +2142,7 @@ def generate_report(request):
             if 'filter_usd' in request.GET:
 
                 currency_data_type = '''
-                Data for all currency types is convered to USD.
+                Data for all currency types is converted to USD.
                 '''
 
                 pivot_table = pivot(ind_data,
