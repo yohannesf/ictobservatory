@@ -197,16 +197,22 @@ def mean_val(data_dict, indicator_label):
 def percentage_per_indicator(result_list):
 
     if result_list:
-        percent = [mean(k)*100 for k in zip(*result_list)]
+        try:
+            percent = [mean(k)*100 for k in zip(*result_list)]
 
-        return percent
+            return percent
+        except:
+            return 0
     else:
         return 0
 
 
 def perUser(bandwidth, internet_user):
     if internet_user and bandwidth:
-        return round(float(bandwidth) / float(internet_user), 2)
+        try:
+            return round(float(bandwidth) / float(internet_user), 2)
+        except:
+            return ''
     else:
         return ''
 
@@ -283,7 +289,7 @@ def scorecard_calculation(scorecard, year):
                 try:
                     num += float(query_list_num[i])
                     denom += float(query_list_denom[i])
-                except ValueError:
+                except:
                     pass
     else:
         if query_list_num:
