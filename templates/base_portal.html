@@ -74,7 +74,10 @@
             {% if user.is_authenticated %}
            
             <li class="nav-item dropdown no-arrow">
-              <li class="nav-item"><a class="fas fa-arrow-circle-right mt-1 me-2  text-sm nav-link" href="{% url 'portaldata:index' %}"> Backend</a></li>
+              <li class="nav-item">
+                <a class=" nav-link" 
+                href="{% url 'portaldata:index' %}"><i
+                class="fas fa-arrow-circle-right mt-1 text-sm"></i> Backend</a></li>
           
               <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link"
                       aria-expanded="false" data-bs-toggle="dropdown"  href="#">
