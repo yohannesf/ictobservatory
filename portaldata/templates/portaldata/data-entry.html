@@ -24,7 +24,7 @@
           <div class="card-body">
             <form method="post">
             
-              
+              {% include 'partials/_messages.html'%} 
               {% csrf_token %}
 
             
@@ -213,7 +213,7 @@
               {% endif %}
             </table>
 
-            {% include 'partials/_messages.html'%}     
+                
                
             <button id="btncancel" type="button" class="btn btn-dark float-end "  >
               <a class="text-decoration-none text-white"  href="{% url 'portaldata:dataentrybyms' %}">Close</a></button>
