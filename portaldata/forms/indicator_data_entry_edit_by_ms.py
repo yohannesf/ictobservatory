@@ -41,7 +41,8 @@ class IndicatorDataEntryForm(forms.ModelForm):
 
         super(IndicatorDataEntryForm, self).__init__(*args, **kwargs)
 
-        self.fields['value_NA'].widget.attrs['onclick'] = "javascript:toggleIndValue();"
+        self.fields['value_NA'].widget.attrs[
+            'onclick'] = "javascript:toggleIndValue(this.id);"
 
         for k, v in initial.items():
             if v.data_type == DATA_TYPE.select:
