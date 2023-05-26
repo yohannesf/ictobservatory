@@ -41,6 +41,8 @@ class IndicatorDataEntryForm(forms.ModelForm):
 
         super(IndicatorDataEntryForm, self).__init__(*args, **kwargs)
 
+        self.fields['value_NA'].widget.attrs['onclick'] = "javascript:toggleIndValue();"
+
         for k, v in initial.items():
             if v.data_type == DATA_TYPE.select:
                 choices = make_choices(v)
@@ -123,6 +125,9 @@ class IndicatorDataEditForm(forms.ModelForm):
 
         v = self.instance  # type: ignore
 
+        self.fields['value_NA'].widget.attrs[
+            'onclick'] = "javascript:toggleIndValue(this.id);"
+
         if v.indicator.data_type == DATA_TYPE.select:
 
             choices = make_choices(v.indicator)
@@ -185,6 +190,9 @@ class IndicatorDataEditForm(forms.ModelForm):
                 {'class': 'form-control'})
 
         self.fields['ind_value'].required = False
+
+        if v.value_NA == True:
+            self.fields['ind_value'].disabled = True
 
         if (v.submitted):
             self.fields['ind_value'].disabled = True
