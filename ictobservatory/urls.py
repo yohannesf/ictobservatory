@@ -23,13 +23,14 @@ import notifications.urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
     path("select2/", include("django_select2.urls")),
-    re_path('^inbox/notifications/',
-            include(notifications.urls, namespace='notifications')),
-    path("", include('portal.urls')),
-    path("portaldata/", include('portaldata.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('core.urls')),
+    re_path(
+        "^inbox/notifications/", include(notifications.urls, namespace="notifications")
+    ),
+    path("", include("portal.urls")),
+    path("portaldata/", include("portaldata.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("", include("core.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # settings.MEDIA_URL, document_root=settings.MEDIA_ROOT changed during deployment

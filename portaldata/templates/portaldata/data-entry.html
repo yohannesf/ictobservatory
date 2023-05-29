@@ -65,28 +65,38 @@
                      
                   <td tooltip="Required"> 
 
-                     <!--Reuqired notifier (and also revision request)-->
+                     <!--If indicators are required, there will be an information icon to notify that they are 
+                      Required -->
                    
                     {{form.instance.indicator.indicator_number}}
                     {% if form.instance.indicator.required %}
                     
-                    <span data-toggle="tooltip" title="Required indicator!" style="color: blue;"  
-                    class=" bi-info-circle  small ">
+                      <span data-toggle="tooltip" title="Required indicator!" style="color: blue;"  
+                      class=" bi-info-circle  small ">
+                      </span>
 
-                    </span>{% endif %}
+                    {% endif %}
+
+                     <!--If indicators are sent back for revision, there will be an exclamation icon to notify that they are 
+                      returned for revision -->
 
                     {% if form.instance.is_returned_for_revision %}
-                                            <span data-toggle="tooltip" title="Returned for revision!" style="color: red;"  
-                                            class="bi-exclamation-circle-fill ms-1  "> </span>
 
-                                            {% endif %}
-                  </td>
-                    <td >
-                      <!--Indicator Name-->
-                      <span class="d-none">
-                      {{form.indicator}}
+                      <span data-toggle="tooltip" title="Returned for revision!" style="color: red;"  
+                                              class="bi-exclamation-circle-fill ms-1  "> 
                       </span>
-                     
+
+                    {% endif %}
+                  </td>
+
+
+                    <td >
+                      <!--Indicator ID - needed here to send the ID during Save operation-->
+                      <span class="d-none">
+                        {{form.indicator}}
+                      </span>
+
+                      <!--Indicator Name-->
                       {{form.instance}}
                     </td>
 
@@ -265,8 +275,8 @@
     function toggleIndValue(clicked_id) {
 
       var value_NA = document.getElementById(clicked_id);
-      console.log(value_NA);
-      console.log(value_NA.checked);
+      //console.log(value_NA);
+      //console.log(value_NA.checked);
       
       //to get the initial 10 strings of the cheked id e.g. form_0-
       var id_value = clicked_id.substring(0,10); //to get the initial 10 strings of the cheked id e.g. form_0-
@@ -296,8 +306,7 @@ $(document).on("click", ".open-Definition", function () {
   var myDef = $(this).data('id');
  
   $(".modal-body #indDefinition").html( myDef );
-  // As pointed out in comments, 
-  // it is unnecessary to have to manually call the modal.
+  
   $('#definitionModal').modal('show');
 });
 </script> 
@@ -307,10 +316,6 @@ $(document).on("click", ".open-Definition", function () {
 
 
 {% block extra_js %}
-
-
-
-
 
 <script src="{% static 'js/confirmExit.js' %}"></script>
 
