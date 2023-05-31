@@ -70,11 +70,15 @@
 
                   
                  
-                 
+                    <li class="nav-heading"></li>
 
                     {% if user.is_authenticated and user.is_memberstate %}  
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybyms' %}active{% endif %}" href=" {% url 'portaldata:dataentrybyms' %}">
                       <i class="bi bi-journal-text"></i><span> Data Entry</span></a>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'view-indicator-data' %}active{% endif %}" href=" {% url 'portaldata:view-indicator-data' %} ">
+                      <i class="fas fa-table"></i><span> View | Export Data ({{reporting_year}})  </span></a>
                     </li>
                     {% endif %}
                    
@@ -92,7 +96,11 @@
                     {% endif %}
 
                   
+                   
                     
+
+                    <li class="nav-heading"></li>
+
                     <li class="nav-item"><a class="nav-link {% if url_name == 'generate-report' %}active{% endif %}" href=" {% url 'portal:generate-report' %} ">
                       <i class="fas fa-table"></i><span> Export Data | Report</span></a>
                     </li>

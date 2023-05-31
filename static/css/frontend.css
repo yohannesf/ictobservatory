@@ -69,8 +69,14 @@ table.simpletable td {
     font-size: 14px;
 }
 
+table.dataTable tbody td {
+    word-break: break-word;
+    vertical-align: top;
+}
+
 .dataTable {
     border: 1px solid #2b338e;
+
 }
 
 .dataTable td:last-child {

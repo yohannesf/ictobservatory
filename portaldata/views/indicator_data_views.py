@@ -6,11 +6,13 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-
+from ajax_datatable.views import AjaxDatatableView
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.forms import formset_factory, modelformset_factory
+from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
 
 from core.decorators import group_required
 from core.models import SystemUser, User
@@ -43,7 +45,8 @@ from ..forms.indicator_data_entry_edit_by_orgs import (
 def dataentryprogress(request):
     """Data Entry Progress page for Member States"""
 
-    focusareas = FocusArea.objects.filter(focusarea_status=True)  # type: ignore
+    focusareas = FocusArea.objects.filter(
+        focusarea_status=True)  # type: ignore
 
     context = {"focusareas": focusareas}
     return render(request, "portaldata/data-entry-progress.html", context=context)
@@ -174,13 +177,15 @@ def manage_indicatordata(request, id):
                         instance.save()
                 messages.success(request, "Saved")
                 return HttpResponseRedirect(
-                    reverse_lazy("portaldata:manage_indicatordata", kwargs={"id": id})
+                    reverse_lazy("portaldata:manage_indicatordata",
+                                 kwargs={"id": id})
                 )
 
     else:
         """if there are no exisitng data, fetch all indicators for creating data:"""
 
-        IndicatorDataEntryFormSet = formset_factory(IndicatorDataEntryForm, extra=0)
+        IndicatorDataEntryFormSet = formset_factory(
+            IndicatorDataEntryForm, extra=0)
 
         formset = IndicatorDataEntryFormSet(request.POST or None)
 
@@ -200,7 +205,8 @@ def manage_indicatordata(request, id):
                         instance.save()
                 messages.success(request, "Saved")
                 return HttpResponseRedirect(
-                    reverse_lazy("portaldata:manage_indicatordata", kwargs={"id": id})
+                    reverse_lazy("portaldata:manage_indicatordata",
+                                 kwargs={"id": id})
                 )
 
         else:
@@ -213,6 +219,137 @@ def manage_indicatordata(request, id):
         "focusarea_title": focusarea_title,
     }
     return render(request, "portaldata/data-entry.html", context=context)
+
+
+@login_required
+# @group_required('Member State')
+def view_indicatordata(request):
+    """
+    Function to show Member States their indicator data on backend. Submitted or in draft status.
+    """
+    """
+    Render the page which contains the table.
+    That will in turn invoke (via Ajax) object_datatable_view(), to fill the table content
+    """
+
+    # print(type(request.user.getUserMemberState()))
+
+    template_name = "portaldata/view_indicator_data_by_ms.html"
+
+    context = {"reporting_year": Get_Reporting_Year(
+    ), "member_state": request.user.getUserMemberState()}
+
+    return render(request, template_name, context=context)
+
+
+class ViewIndicatorDatatableView(AjaxDatatableView):
+
+    # TO DO: Update queryset to filter all data entered by member states
+    # for the current reporting year
+
+    def get_initial_queryset(self, request=None):
+
+        try:
+
+            if 'member_state' in request.REQUEST:
+                member_state = request.REQUEST.get('member_state')
+
+                queryset = IndicatorData.objects.filter(
+                    # indicator__status="Active",
+                    member_state__member_state__exact=member_state,
+                    # indicator__focus_area__focusarea_status=True,
+                    reporting_year="2022"  # Get_Reporting_Year(),
+                )
+
+                return queryset
+            else:
+                return None
+        except:
+            return None
+
+    def render_row_details(self, pk, request=None):
+        ind_data = self.model.objects.get(pk=pk)
+
+        context = {"ind_data": ind_data}
+
+        return render_to_string("portaldata/render_row_details_member_states.html", context)
+
+    model = IndicatorData
+    code = "indicatordata"
+    title = _("IndicatorData")
+    initial_order = []  # [["member_state", "asc"], ["indicator", "asc"]]
+    length_menu = [[-1], ["All"]]
+    search_values_separator = "+"
+    show_date_filters = False
+
+    qs = (
+        IndicatorData.objects.filter(
+            reporting_year=Get_Reporting_Year(),
+            indicator__status="Active",
+            indicator__focus_area__focusarea_status=True,
+        )
+        .values("indicator__label", "indicator__focus_area__title")
+        .exclude(validation_status=INDICATORDATA_STATUS.draft)
+        .distinct()
+    )
+
+    """converts ValuesQuerySet into Python list"""
+    indicators_list = tuple(
+        set([(q["indicator__label"], q["indicator__label"]) for q in qs])
+    )
+
+    focusareas_list = tuple(
+        set([(q["indicator__focus_area__title"],
+            q["indicator__focus_area__title"]) for q in qs])
+    )
+
+    column_defs = [
+        AjaxDatatableView.render_row_tools_column_def(),
+        {
+            "name": "pk", "visible": False,
+        },
+        {
+            "name": "reporting_year", "visible": False,
+        },
+
+        {
+            "name": "Focus Area", "visible": True, "searchable": True, "orderable": True,
+            "foreign_field": "indicator__focus_area__title", "choices": True, "autofilter": True,
+            "width": 35
+
+        },
+        {
+            "name": "S/N", "title": "S/N", "visible": True, "searchable": True, "orderable": True,
+            "foreign_field": "indicator__indicator_number", "choices": True, "autofilter": True,
+            "sort_field": "indicator__pk", "max_length": 15,
+        },
+        {
+            "name": "indicator", "visible": True, "searchable": True, "orderable": True,
+            "sort_field": "indicator__pk", "foreign_field": "indicator__label", "choices": True,
+            "autofilter": True,
+        },
+        {
+            "name": "format_value", "title": "&nbsp;&nbsp;Data&nbsp;&nbsp;", "visible": True,
+            "searchable": False,  "className": "text-center",
+            "width": 130,
+        },
+        {
+            "name": "comments", "title": "Comment", "visible": True,
+            "searchable": False,
+            # "width": 300,
+        },
+        {
+            "name": "format_submitted_status", "title": "Status", "searchable": False,
+            "visible": True,  "max_length": 50, "width": 60, "orderable": False,
+            # "autofilter": True,"choices": True, 'boolean': True,
+        },
+        {
+            "name": "last_update", "visible": False,
+        },
+        {
+            "name": "updated_by", "visible": False,
+        },
+    ]
 
 
 @login_required
@@ -241,7 +378,8 @@ def manage_indicatordata_organisation(request, id):
         IndicatorData, form=IndicatorDataEditFormOrg, can_delete=False, extra=0
     )
 
-    IndicatorDataEntryFormSet = formset_factory(IndicatorDataEntryFormOrg, extra=0)
+    IndicatorDataEntryFormSet = formset_factory(
+        IndicatorDataEntryFormOrg, extra=0)
 
     if exisiting_indicator_data:
         formset = IndicatorDataEditFormSet(
@@ -317,7 +455,6 @@ def showdefinition(request, id):
     return render(request, "portaldata/_definition.html", {"indicator": indicator})
 
 
-##### TO DO: When data is sbumitted, it should also notify (Notification + Email) the Member States that have submitted the data
 def SendNotification_to_admins(name, submittedby, reporting_year):
     """Send Notification to Admin/SADC when data is submitted"""
 
@@ -453,7 +590,8 @@ def update_currency_indicators_to_usd(reporting_year, member_state=""):
                             ind_value_adjusted=(
                                 float(data.ind_value)
                                 / float(
-                                    exchange_rate.get(data.member_state.member_state)
+                                    exchange_rate.get(
+                                        data.member_state.member_state)
                                 )
                             )
                         )  # type: ignore
@@ -488,7 +626,8 @@ def submitIndicatorData(request):
     """Here, the function call below ensures local currencies are converted to USD values"""
     update_currency_indicators_to_usd(Get_Reporting_Year(), ms.member_state)
 
-    SendNotification_to_admins(ms.member_state, request.user, Get_Reporting_Year())
+    SendNotification_to_admins(
+        ms.member_state, request.user, Get_Reporting_Year())
     SendNotification_to_self(ms, request.user, Get_Reporting_Year())
 
     return HttpResponseRedirect(

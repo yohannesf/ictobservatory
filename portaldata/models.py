@@ -88,7 +88,8 @@ class FocusArea(models.Model):
         choices=FOCUSAREA_STATUS_CHOICES,
         default=True,
     )
-    created_date = models.DateTimeField(auto_now_add=True)  # only during the creation
+    created_date = models.DateTimeField(
+        auto_now_add=True)  # only during the creation
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -123,19 +124,22 @@ class FocusArea(models.Model):
 
     def count_active_indicators(self):
         ind_count = (
-            Indicator.objects.filter(focus_area=self).filter(status="Active").count()
+            Indicator.objects.filter(focus_area=self).filter(
+                status="Active").count()
         )
         return ind_count
 
     def count_archived_indicators(self):
         ind_count = (
-            Indicator.objects.filter(focus_area=self).filter(status="Archived").count()
+            Indicator.objects.filter(focus_area=self).filter(
+                status="Archived").count()
         )
         return ind_count
 
     def count_required_indicators(self):
         ind_count = (
-            Indicator.objects.filter(focus_area=self).filter(required=True).count()
+            Indicator.objects.filter(focus_area=self).filter(
+                required=True).count()
         )
         return ind_count
 
@@ -149,7 +153,8 @@ class FocusArea(models.Model):
 
     def count_optional_indicators(self):
         ind_count = (
-            Indicator.objects.filter(focus_area=self).filter(required=False).count()
+            Indicator.objects.filter(focus_area=self).filter(
+                required=False).count()
         )
         return ind_count
 
@@ -356,7 +361,8 @@ class Indicator(models.Model):
         max_length=1, choices=INDICATOR_ASSIGNED_TO_GROUPS
     )
 
-    created_date = models.DateTimeField(auto_now_add=True)  # only during the creation
+    created_date = models.DateTimeField(
+        auto_now_add=True)  # only during the creation
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -487,7 +493,8 @@ class AssignedIndicator(models.Model):
         verbose_name="Assigned to",
     )
 
-    created_date = models.DateTimeField(auto_now_add=True)  # only during creation
+    created_date = models.DateTimeField(
+        auto_now_add=True)  # only during creation
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -515,7 +522,8 @@ class ReportingPeriod(models.Model):
 
     """Model for Reporting Periods"""
 
-    reporting_start_date = models.DateField(verbose_name="Reporting Start Date")
+    reporting_start_date = models.DateField(
+        verbose_name="Reporting Start Date")
     reporting_end_date = models.DateField(verbose_name="Reporting End Date")
     current = models.BooleanField(default=False)
 
@@ -544,7 +552,8 @@ class IndicatorData(models.Model):
         (INDICATORDATA_STATUS.validated, "Validated"),
     ]
 
-    reporting_year = models.CharField(_("Reporting Year"), max_length=6, blank=False)
+    reporting_year = models.CharField(
+        _("Reporting Year"), max_length=6, blank=False)
 
     indicator = models.ForeignKey(
         Indicator, on_delete=models.PROTECT, verbose_name="Indicator"
@@ -581,7 +590,8 @@ class IndicatorData(models.Model):
         choices=INDICATORDATA_STATUS_CHOICES, default=INDICATORDATA_STATUS.draft
     )
 
-    created_date = models.DateTimeField(auto_now_add=True)  # only during the creation
+    created_date = models.DateTimeField(
+        auto_now_add=True)  # only during the creation
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -617,20 +627,36 @@ class IndicatorData(models.Model):
 
     @property
     def format_value(self):
-        if self.ind_value:
-            if (
-                self.indicator.data_type == DATA_TYPE.number
-                or self.indicator.data_type == DATA_TYPE.currency
-                or self.indicator.data_type == DATA_TYPE.decimal
-            ):
-                return intcomma(self.ind_value)
-            elif self.indicator.data_type == DATA_TYPE.percentage:
-                return self.ind_value + "%"
 
-            else:
-                return self.ind_value
-        else:
+        if self.value_NA == True:
+
             return "N/A"
+        else:
+
+            if self.ind_value:
+
+                if (
+                    self.indicator.data_type == DATA_TYPE.number
+                    or self.indicator.data_type == DATA_TYPE.currency
+                    or self.indicator.data_type == DATA_TYPE.decimal
+                ):
+                    return intcomma(self.ind_value)
+                elif self.indicator.data_type == DATA_TYPE.percentage:
+                    return self.ind_value + "%"
+
+                else:
+                    return self.ind_value
+            else:
+
+                return ""
+
+    @property
+    def format_submitted_status(self):
+        if self.submitted:
+            return "Submitted"
+
+        else:
+            return "Draft"
 
     def focus_area(self):
         return self.indicator.focus_area
@@ -665,7 +691,8 @@ def update_usd(sender, instance, **kwargs):
                 instance.ind_value_adjusted = round(
                     float(instance.ind_value)
                     / float(
-                        get_exchange_rate(instance.member_state, Get_Reporting_Year())
+                        get_exchange_rate(
+                            instance.member_state, Get_Reporting_Year())
                     ),
                     4,
                 )
@@ -778,7 +805,8 @@ class GeneralIndicator(models.Model):
 
     """Model for General Indicator"""
 
-    indicator_label = models.CharField(verbose_name="Indicator", max_length=200)
+    indicator_label = models.CharField(
+        verbose_name="Indicator", max_length=200)
     definition = models.TextField(blank=True)
 
     include_in_chart = models.ForeignKey(
@@ -887,7 +915,8 @@ class ScoreCard(models.Model):
     scorecard_title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
 
-    indicator_list = models.ManyToManyField(Indicator, through="ScoreCardConfig")
+    indicator_list = models.ManyToManyField(
+        Indicator, through="ScoreCardConfig")
 
     aggregation = models.CharField(
         max_length=10, choices=AGGREGATION_CHOICES, blank=True
