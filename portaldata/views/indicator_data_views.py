@@ -258,7 +258,7 @@ class ViewIndicatorDatatableView(AjaxDatatableView):
                     # indicator__status="Active",
                     member_state__member_state__exact=member_state,
                     # indicator__focus_area__focusarea_status=True,
-                    reporting_year="2022"  # Get_Reporting_Year(),
+                    reporting_year=Get_Reporting_Year(),
                 )
 
                 return queryset
@@ -314,19 +314,19 @@ class ViewIndicatorDatatableView(AjaxDatatableView):
 
         {
             "name": "Focus Area", "visible": True, "searchable": True, "orderable": True,
-            "foreign_field": "indicator__focus_area__title", "choices": True, "autofilter": True,
-            "width": 35
+            "foreign_field": "indicator__focus_area__title", "choices": True, "autofilter": True, "width": 100
+
 
         },
         {
             "name": "S/N", "title": "S/N", "visible": True, "searchable": True, "orderable": True,
             "foreign_field": "indicator__indicator_number", "choices": True, "autofilter": True,
-            "sort_field": "indicator__pk", "max_length": 15,
+            "sort_field": "indicator__pk",  "width": 100
         },
         {
             "name": "indicator", "visible": True, "searchable": True, "orderable": True,
             "sort_field": "indicator__pk", "foreign_field": "indicator__label", "choices": True,
-            "autofilter": True,
+            "autofilter": True, "className": "wrapit",
         },
         {
             "name": "format_value", "title": "&nbsp;&nbsp;Data&nbsp;&nbsp;", "visible": True,
@@ -335,7 +335,7 @@ class ViewIndicatorDatatableView(AjaxDatatableView):
         },
         {
             "name": "comments", "title": "Comment", "visible": True,
-            "searchable": False,
+            "searchable": False, "width": 200,
             # "width": 300,
         },
         {

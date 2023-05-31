@@ -17,7 +17,7 @@ def index(request):
     # TO DO -> to be replaced by a button on the backend for admins with year selection dropdown
     update_currency_indicators_to_usd("2022")
 
-    return render(request, "portaldata/index.html", {"reporting_year": Get_Reporting_Year()})
+    return render(request, "portaldata/index.html")
 
 
 @login_required
