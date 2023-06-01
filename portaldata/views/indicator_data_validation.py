@@ -186,6 +186,8 @@ class IndicatorDatatableView(AjaxDatatableView):
 
     validation_status = ((INDICATORDATA_STATUS.ready, 'Ready for validation'), (
         INDICATORDATA_STATUS.returned, 'Returned for revision'), (INDICATORDATA_STATUS.validated, 'Validated'))
+    v_status = ((INDICATORDATA_STATUS.ready, 'Ready for validation'), (
+        INDICATORDATA_STATUS.returned, 'Returned for revision'), (INDICATORDATA_STATUS.validated, 'Validated'))
 
     column_defs = [
         AjaxDatatableView.render_row_tools_column_def(),
@@ -206,8 +208,12 @@ class IndicatorDatatableView(AjaxDatatableView):
 
 
         {'name': 'format_value', 'title': '&nbsp;&nbsp;&nbsp;&nbsp;Data&nbsp;&nbsp;&nbsp;&nbsp;',
-            'visible': True, 'width': 300, 'className': 'text-center'},
+            'visible': True,  'className': 'text-center'},
 
+
+
+        {'name': 'get_validation_status', 'title': 'Validation Status', 'choices': v_status, 'autofilter': True,
+            'visible': False, 'width': 50, 'orderable': False, },
 
         {'name': 'validation_status', 'title': 'Validation Status', 'choices': validation_status, 'autofilter': True,
             'visible': True, 'width': 50, 'orderable': False, },

@@ -149,7 +149,27 @@
                
 
                 dom: 'lBfrtip',
-                buttons: ['copy', 'csv', 'excel', 'pdf', ],
+                //buttons: ['copy', 'csv', 'excel', ],
+                buttons: [
+                        {
+                            extend: 'copy',
+                            exportOptions: {
+                                    columns: [2,3,4,5,6,7]
+                                }
+                        },
+                        {
+                            extend: 'csv',
+                            exportOptions: {
+                                    columns: [2,3,4,5,6,7]
+                                }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                    columns: [2,3,4,5,6,7]
+                                }
+                        },
+                ],
                 
                 rowCallback: function (table,row, data) {
                   
@@ -186,6 +206,16 @@
     });
 
 </script> 
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#sidebarToggleTop').on('click', function () {
+            $('.navbar').toggleClass('active');
+        });
+
+        $("#sidebarToggleTop").trigger('click');
+    });
+</script>
     
 
 {% endblock content %}

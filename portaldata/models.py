@@ -658,6 +658,13 @@ class IndicatorData(models.Model):
         else:
             return "Draft"
 
+    @property
+    def get_validation_status(self):
+
+        choices_dict = dict(self.INDICATORDATA_STATUS_CHOICES)
+
+        return (choices_dict[self.validation_status])
+
     def focus_area(self):
         return self.indicator.focus_area
 
@@ -678,7 +685,7 @@ class IndicatorData(models.Model):
         ordering = ["-reporting_year", "member_state", "indicator"]
 
 
-@receiver(post_save, sender=IndicatorData, dispatch_uid="update_currency_usd")
+@ receiver(post_save, sender=IndicatorData, dispatch_uid="update_currency_usd")
 def update_usd(sender, instance, **kwargs):
     """method for updating currency values to USD"""
     if instance.ind_value:
