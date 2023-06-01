@@ -32,7 +32,8 @@
     function SendBack() {
       const id = document.getElementById('indDataID').innerHTML;
       const comment = document.getElementById('comment').value;
-     
+      table = $("#datatable").closest('table.dataTable');
+      
           $.ajax({
             url: "/portaldata/sendback/"+id+"/",
             data: {
@@ -41,12 +42,10 @@
             },
             
             type: "POST",
-            
-              }).done(function(data, textStatus, jqXHR) {
+            }).done(function(data, textStatus, jqXHR) {
                   table.DataTable().ajax.reload(null, false);
         
-          });
-    }
+          })};
 
     
         

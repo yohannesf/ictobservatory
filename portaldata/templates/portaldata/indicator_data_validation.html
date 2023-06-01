@@ -146,6 +146,9 @@
                 autoWidth: false,
                 full_row_select: false,
                 scrollX: false,
+              
+                //bStateSave: true,
+               
                
 
                 dom: 'lBfrtip',
@@ -188,11 +191,12 @@
                 // extra_data
                 // ...
             },
+            
         );
         });
 
 
-    $('#datatable').on('click', 'button', function( ) {
+    $('#datatable').on('click', 'button', function() {
         if (this.name=='send-back') {
             var table = $('#datatable').DataTable();
         
@@ -200,21 +204,35 @@
         
             $('.modal-body #indDataID').html(data['pk']);
             $('#sendRevision').modal('show');
+            
+           
        
         }
+        
       
     });
+    //;
 
 </script> 
 
+
+
+
+
 <script type="text/javascript">
+
+  
     $(document).ready(function () {
         $('#sidebarToggleTop').on('click', function () {
             $('.navbar').toggleClass('active');
         });
 
         $("#sidebarToggleTop").trigger('click');
-    });
+    }
+    
+   
+    
+    );
 </script>
     
 

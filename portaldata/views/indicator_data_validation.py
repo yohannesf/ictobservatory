@@ -124,6 +124,8 @@ def SendBack(request, id):
     context = {
         'form': form
     }
+    return HttpResponse(status=200)
+    # return HttpResponse('')
     return render(request, 'portaldata/indicator_data_revision.html', context)
 
 

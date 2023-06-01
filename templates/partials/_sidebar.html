@@ -75,9 +75,10 @@
 
                   
                  
-                    <li class="nav-heading"></li>
+                   
 
                     {% if user.is_authenticated and user.is_memberstate %}  
+                    <li class="nav-heading"></li>
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybyms' %}active{% endif %}" href=" {% url 'portaldata:dataentrybyms' %}">
                       <i class="bi bi-journal-text"></i><span> Data Entry</span></a>
                     </li>

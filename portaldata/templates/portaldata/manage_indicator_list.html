@@ -188,6 +188,7 @@
                 autoWidth: false,
                 full_row_select: false,
                 scrollX: false,
+                //stateSave: true,
                 dom: 'lBfrtip',
                 buttons: [ 'csv', 'excel',  ],  //'copy','pdf',
             
@@ -223,6 +224,22 @@
     
 
 </script> 
+
+<script type="text/javascript">
+
+  
+    $(document).ready(function () {
+        $('#sidebarToggleTop').on('click', function () {
+            $('.navbar').toggleClass('active');
+        });
+
+        $("#sidebarToggleTop").trigger('click');
+    }
+    
+   
+    
+    );
+</script>
     
 
 {% endblock content %}
