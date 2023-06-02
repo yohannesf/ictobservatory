@@ -41,11 +41,11 @@
     Please revisit the page at a later date. </p>
 </div>
 </div>
- 
-  
-   
+    
   
 {% endif %}
+
+{% include 'partials/_messages.html' %}
           
 <div class="row g-5 g-xl-10 mb-xl-10">
 
@@ -355,46 +355,47 @@
     
    <div class="container-fluid">
     <div class="row mb-3 ">
-      <form action="{% url 'portaldata:submitIndicatorData' %}" method="post">
+      {% comment %} <form action="{% url 'portaldata:submitIndicatorData' %}" method="post"> {% endcomment %}
+      <form  method="post">
 
         {% csrf_token %}
+
+      </form>
 
       <!--begin::Col-->
       <div class="col-md-12 pe-lg-10">
         <!--begin::Form-->
       
-        {% getOverallToSubmit 'M' user.getUserMemberState as check_overall_submitted %}
+        {% getOverallToSubmit 'M' user.getUserMemberState as get_number_to_submit %}
        
       
        
-        <button type="submit" class="btn btn-primary btn-lg  btn-block" 
-        id="kt_contact_submit_button"  
-         {% if Overallcalculatepg != 100 or check_overall_submitted == 0 %}disabled{% endif %}   > 
+        <button type="submit" class="btn btn-primary btn-lg  btn-block" id="kt_contact_submit_button"  
+         {% if Overallcalculatepg != 100 or get_number_to_submit == 0 %}disabled{% endif %}
+         onclick="Submit()"
+
+         
+         > 
         
         
-          <!--begin::Indicator-->
-          <span class="indicator-label p-5">
-            Submit</span>
-          {% if check_overall_submitted > 0 and Overallcalculatepg == 100  %}
+        
+          <span class="indicator-label p-5">Submit</span>
+
+          {% if get_number_to_submit > 0 and Overallcalculatepg == 100  %}
             <span class=" badge rounded-pill bg-danger">
-              {{check_overall_submitted}}
+              {{get_number_to_submit}}
               
             </span>
-            {% endif %}
-            
-
-          {% comment %} <span class="indicator-progress">Please wait...
-            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span> {% endcomment %}
-          <!--end::Indicator-->
+          {% endif %}
+         
         </button>
-        
-        <!--end::Form-->
-      </div>
-      <!--end::Col-->
-      <!--begin::Col-->
 
-      <!--end::Col-->
-    </form>
+        
+        
+       
+      </div>
+      
+   
     <br>
 
   
@@ -407,9 +408,18 @@
 
   
 
-        {% elif check_overall_submitted == 0 %}
+        {% elif get_number_to_submit == 0 %}
 
-        <p class=" mt-3 ">You have submitted all data to SADC secretariat. <br>
+      <br>
+        <div class="col-md-12 badge bg-success">
+          <div class="  border-0"  > 
+           
+           <h6 class="fw-bold align-center ps-2 pt-2 text-start" >You have submitted all data to SADC secretariat. </h6>
+         </div>
+         </div>
+       
+
+      
           
         
         </p>
@@ -438,6 +448,60 @@
   
    
 </div>
+
+<div class="modal fade" id="submitmodal" tabindex="-1" aria-labelledby="submitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-start">
+      <div class="modal-header">
+        <h5 class="modal-title card-title" id="submitModalLabel">You are about to Submit your data</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body justify-content-end text-justify ">
+        
+        <form action="{% url 'portaldata:submitIndicatorData' %}" method="post">
+       
+          {% csrf_token %}
+          <div class="col-md-12">
+
+            <div class="card ">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <strong> You are about to Submit your data to SADC secretariat.</strong>
+                <br><br>
+                <strong>
+                  Please note that once you submit your data, you cannot make any changes.
+
+                </strong>
+                <br><br>
+               <em> If you want to make any changes after submission, you will need to contact SADC Secretariat to request data to be unsubmitted.</em>
+              </div>
+            </div>
+            
+           </div>
+     
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="submitbutton" >Submit</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+        
+      </div>
+    </form>
+    </div>
+  </div>
+</div> 
+
+<script>
+
+  function Submit() {
+
+    $('#submitmodal').modal('show');
+  };
+    
+
+  
+      
+  
+   </script>
 
 
 

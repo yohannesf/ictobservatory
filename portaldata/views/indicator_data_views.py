@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from ajax_datatable.views import AjaxDatatableView
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.forms import formset_factory, modelformset_factory
 from django.template.loader import render_to_string
@@ -605,7 +605,12 @@ def update_currency_indicators_to_usd(reporting_year, member_state=""):
 @group_required("Member State", "Organisation", "SADC")
 def submitIndicatorData(request):
     """Submit Indicator data (by Member States) and send notification to Admin/SADC"""
-
+    # messages.success(request, "Data Submitted Successfully.")
+    # return HttpResponseRedirect(
+    #     reverse_lazy(
+    #         "portaldata:dataentrybyms",
+    #     )
+    # )
     ExchangeRateData.objects.filter(
         currency__member_state=request.user.getUserMemberState(),
         reporting_year=Get_Reporting_Year(),
