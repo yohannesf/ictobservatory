@@ -70,6 +70,11 @@
                     <li class="nav-item"><a class="nav-link {% if url_name == 'dataentrybysadc' %}active{% endif %}" href=" {% url 'portaldata:dataentrybysadc' %}">
                       <i class="bi bi-journal-text"></i><span> Data Entry - SADC</span></a>
                     </li>
+                    <li class="nav-heading"></li>
+
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'send-message-admin' %}active{% endif %}" href="{% url 'portaldata:send-message-admin' %}  ">
+                      <i class="fas fa-envelope"></i><span> Send Message</span></a>
+                    </li>
                     {% endif %}
                     {%endif%}
 
@@ -85,6 +90,10 @@
 
                     <li class="nav-item"><a class="nav-link {% if url_name == 'view-indicator-data' %}active{% endif %}" href=" {% url 'portaldata:view-indicator-data' %} ">
                       <i class="fas fa-table"></i><span> View | Export Data ({% reporting_year %})  </span></a>
+                    </li>
+                    <li class="nav-heading"></li>
+                    <li class="nav-item"><a class="nav-link {% if url_name == 'send-message-ms' %}active{% endif %}" href="{% url 'portaldata:send-message-ms' %}  ">
+                      <i class="fas fa-envelope"></i><span> Send Message</span></a>
                     </li>
                     {% endif %}
                    
@@ -113,8 +122,10 @@
 
                     <li class="nav-heading"></li>
 
+                  
+
                     <li class="nav-item"><a class="nav-link {% if url_name == 'profile' %}active{% endif %}" href="{% url 'portaldata:profile' %}  ">
-                      <i class="fas fa-user"></i><span> Profile</span></a>
+                      <i class="fas  fa-user"></i><span> Profile</span></a>
                     </li>
 
 

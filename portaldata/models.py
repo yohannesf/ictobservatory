@@ -1,3 +1,4 @@
+from django.template.defaultfilters import linebreaksbr
 from django.contrib import admin
 from django.core.cache import cache
 from django.db.models.constraints import UniqueConstraint
@@ -8,6 +9,7 @@ import imp
 from operator import truediv
 from random import choices
 from tabnanny import verbose
+from django.utils.html import html_safe, format_html
 
 # from unittest.util import _MAX_LENGTH
 from django.db import models
@@ -657,6 +659,12 @@ class IndicatorData(models.Model):
 
         else:
             return "Draft"
+
+    # @property
+    # def format_comments(self):
+    #     str = linebreaksbr(self.comments)
+    #     print(mark_safe(str))
+    #     return mark_safe(self.comments)
 
     @property
     def get_validation_status(self):

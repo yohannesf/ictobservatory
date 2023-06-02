@@ -1,7 +1,7 @@
 from django.urls import path
 
 from portaldata.views.profile_views import manageprofile
-from .views.home_views import documentation, index
+from .views.home_views import documentation, index, send_message_by_admins, send_message_by_ms
 from .views.admin_views import (
     GeneralIndicatorCreateView,
     GeneralIndicatorListView,
@@ -139,7 +139,8 @@ urlpatterns = [
     path("dataentrybyms/exchange-rate", exchange_rate_data, name="exchange-rate"),
     path("show-definition/<int:id>/", showdefinition, name="showdefinition"),
     # '''Indicator Submit Page (for Submit button) for Member States'''
-    path("submit-indicator-data/", submitIndicatorData, name="submitIndicatorData"),
+    path("submit-indicator-data/", submitIndicatorData,
+         name="submitIndicatorData"),
     # '''Indicator Submit Page for Organizations'''
     path(
         "submit-indicator-data-by-org/",
@@ -168,6 +169,10 @@ urlpatterns = [
     path("manage-profile/", manageprofile, name="profile"),
     # '''Documentation'''
     path("documentation/", documentation, name="documentation"),
+    # '''Send Message for Admins'''
+    path("send-message-admin/", send_message_by_admins, name="send-message-admin"),
+    # '''Send Message for Member States'''
+    path("send-message-ms/", send_message_by_ms, name="send-message-ms"),
     # '''Publish'''
     path("publish-data/", publish_data, name="publish-data"),
 ]

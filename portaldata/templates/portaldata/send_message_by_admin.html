@@ -1,0 +1,116 @@
+{% extends 'base_auth.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load querystring from django_tables2 %}
+
+{% load static %}
+
+{% block title %}Send Message{% endblock title %}
+
+{% block content %}
+
+{{ form.media.css }}
+
+{% include 'partials/_sidebar.html' %}
+
+
+
+<div class="d-flex flex-column backend-home" id="content-wrapper">
+    <div id="content">
+
+     {% include 'partials/_auth_navbar.html' %}
+     
+
+
+        <div class="container-fluid">
+
+          <div class="card shadow">
+
+          <div class="card-header py-3">
+            <h4 class="text-end text-primary m-0 fw-bold">Send Message</h4>
+            
+            
+          </div>
+
+          <!--begin::Page Title-->
+          
+            <section class="section dashboard">
+
+             
+
+              <div class="row">
+
+                <div class="col-lg-9">
+                  <div class="card">
+                    <div class="card-body">
+                      {% comment %} <h5 class="card-title">Send Message</h5>
+                      <br> {% endcomment %}
+
+                   
+                      
+                      <form method="POST" >
+                        
+                        {% csrf_token %}
+
+                      {% include 'partials/_messages.html' %}
+
+                       {{form|crispy}}
+
+
+                       <button id="btncancel" type="button" class="btn btn-dark float-end "  >
+                        <a class="text-decoration-none text-white"  href="{% url 'portaldata:index' %}">Close</a></button>
+                        <button id="save"  type="submit" class="btn btn-primary  float-end me-4">Send</button>
+          
+                   
+
+                      </form>
+
+                      
+        
+                      <!-- Quill Editor Default -->
+                      
+        
+                    </div>
+                  </div>
+
+            
+
+
+
+                  
+                   
+
+                 
+
+                  
+                
+                </div>
+
+               
+                
+
+               
+              </div>
+
+             
+
+
+           
+
+          
+            
+                </section>
+         
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block extra_js %}
+{{ form.media.js }}
+    
+{% endblock extra_js %}
+
