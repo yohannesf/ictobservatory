@@ -40,7 +40,7 @@ sixcolors = ['#2C318A', '#02B052',  '#C49801',
 '''
 Global variables used to populate score cards in the home page
 '''
-#sadc_mobile_penetration = ''
+# sadc_mobile_penetration = ''
 
 sadc_network_coverage = ''
 
@@ -268,7 +268,7 @@ def scorecard_calculation(scorecard, year):
                     item_option = "denom"
                     query_list_denom.append(indicator_data)
                 else:
-                    #item_option = "other"
+                    # item_option = "other"
                     query_list.append(indicator_data)
             else:
                 query_list.append(indicator_data)
@@ -2090,7 +2090,7 @@ def chart_exchange_rate(year):
 def get_published_years_for_query():
     '''Get Published Years from database'''
 
-    #from portaldata.models import Published
+    # from portaldata.models import Published
     year = []
     year = list(Published.objects.filter(
         published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
@@ -2108,6 +2108,8 @@ def generate_report(request):
 
     currency_data_type = ''
 
+    currency_indicators = []
+
     context = {}
 
     dict_values = []
@@ -2117,6 +2119,12 @@ def generate_report(request):
     ind_data = None
 
     if request.method == "GET":
+
+        indicators_qs = Indicator.objects.filter(
+            status='Active', focus_area__focusarea_status=True).values()
+
+        currency_indicators = list(indicators_qs.filter(
+            data_type=0).values_list("id", flat=True))
 
         export_format = request.GET.get('_export', None)
 
@@ -2137,7 +2145,7 @@ def generate_report(request):
                 ind_data = ind_data.filter(indicator__in=list(indicators))
 
             # get_published_years_for_query()
-            #this is not needed
+            # this is not needed
 
             if years and years != ['Select All'] and 'Select All' not in years:
                 ind_data = ind_data.filter(reporting_year__in=years)
@@ -2155,10 +2163,20 @@ def generate_report(request):
                                     ['indicator__label',
                                         'member_state__member_state'],
                                     'reporting_year', 'ind_value_adjusted', aggregation=Max)  # type: ignore
-            else:
+
+            elif 'filter_lc' in request.GET:
 
                 currency_data_type = '''Data for all currency types is in Local Currency 
                '''
+
+                pivot_table = pivot(ind_data,
+                                    ['indicator__label',
+                                        'member_state__member_state'],
+                                    'reporting_year', 'ind_value', aggregation=Max)  # type: ignore
+
+            else:
+
+                currency_data_type = None
 
                 pivot_table = pivot(ind_data,
                                     ['indicator__label',
@@ -2239,7 +2257,7 @@ def generate_report(request):
 
             pivot_table = None
 
-    context = {"table": tbl, "form": form,
+    context = {"table": tbl, "form": form, "currency_indicators": currency_indicators,
                "currency_data_type": currency_data_type}
 
     return render(request, "portal/generatereport.html", context=context)

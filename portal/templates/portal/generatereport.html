@@ -81,11 +81,10 @@
             {{form.year_filter_field|addclass:'form-control'}}
           </div>
 
+         
+          <div  class="float-end text-end align-content-end">
 
-
-          <div class="float-end text-end align-content-end">
-
-            <div class="btn-group">
+            <div id="buttonDropdown" class="btn-group">
               <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Load Data
               </button>
@@ -98,10 +97,11 @@
               </div>
             </div>
 
-<!--
-          <input  class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" name="filter_usd" value="Load (data in USD)" >
+            <div id="buttonSingle" class="btn-group">
+          <input   class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" value="Load Data" >
             <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
-
+            </div>
+<!--
           <input  class="btn btn-primary btn-sm   d-sm-inline-block" role="button" type="submit" name="filter_lc" value="Load (data in Local Currency)" >
             <i class="fas fa-fa-undo fa-sm text-white-50"></i></input>
 
@@ -109,21 +109,31 @@
 
           <a  class="btn btn-primary btn-sm  d-sm-inline-block " role="button"    href="{% url 'portal:generate-report' %}">
             <i class="fas fa-fa-undo fa-sm text-white-50"></i>&nbsp;Reset</a>
+          
+          
           </div>
 
 
           {% if table %}
          
           <div class="table-responsive">
+
+           
            
           <div class="row g-3 ">
-            <span class="text-end text-wrap"><strong>*Note:</strong>{{currency_data_type}}</span>
+            
+            {% if currency_data_type %}
+            <span class="text-end text-wrap"><strong>*Note:</strong> {{currency_data_type}}</span>
+            {% endif %}
+
+
             {% render_table table %}
           </div>
+          
         </div>
           {% else %}
           <div class="row g-3 mt-2">
-            Make a selection and click filter to retrieve data.
+            Make a selection and click Load Data to retrieve data.
           </div>
         
           {% endif %}
@@ -145,6 +155,46 @@
     </div>
   </div>
   {% comment %} </div> {% endcomment %}
+
+  <script>
+
+    $(document).ready(function () {
+      
+      ChangeButtonText('id_indicator_filter_field')
+      
+      });  
+  
+    var currency_indicators = {{currency_indicators|safe}};
+   
+    function ChangeButtonText(id){
+
+        var options = document.getElementById(id).selectedOptions;
+        var selectedValues = Array.from(options).map(({ value }) => value);
+
+       if (selectedValues.length===0){
+            $("#buttonDropdown").hide();
+            $("#buttonSingle").show();
+          }
+
+          var i;
+          for (i = 0; i < selectedValues.length; i++) {
+  
+            if (currency_indicators.includes(parseInt(selectedValues[i])) || selectedValues.includes("all")) {
+                
+                $("#buttonDropdown").show();
+                $("#buttonSingle").hide();
+                break;
+            }
+            else {
+              $("#buttonDropdown").hide();
+                $("#buttonSingle").show();
+            }
+          }
+                  
+  }
+
+
+  </script>
 
       
 {% endblock content %}

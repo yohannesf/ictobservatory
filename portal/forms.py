@@ -78,7 +78,13 @@ class FilterForm(forms.Form):
         MEMBERSTATE_CHOICES = sorted(tuple(set(
             [(q['id'], q['member_state']) for q in memberstates_qs])))
 
-        indicators_qs = Indicator.objects.filter(status='Active').values()
+        indicators_qs = Indicator.objects.filter(
+            status='Active', focus_area__focusarea_status=True).values()
+
+        # currency_indicators = list(indicators_qs.filter(
+        #     data_type=3).values_list("id", flat=True))
+
+        # print(currency_indicators)
 
         INDICATOR_CHOICES = sorted(tuple(set(
             [(q['id'], q['label']) for q in indicators_qs])))
@@ -110,6 +116,9 @@ class FilterForm(forms.Form):
             choices=MEMBERSTATE_CHOICES, widget=Select2MultipleWidget)
         self.fields['year_filter_field'] = forms.MultipleChoiceField(
             choices=YEAR_CHOICES, widget=Select2MultipleWidget)
+
+        self.fields["indicator_filter_field"].widget.attrs[
+            "onchange"] = "javascript:ChangeButtonText(this.id);"
 
         self.fields['indicator_filter_field'].required = False
         self.fields['memberstate_filter_field'].required = False
