@@ -1,20 +1,21 @@
 from django import forms
 
 from django_select2.forms import Select2MultipleWidget
+from core.sharedfunctions import get_published_years
 from core.views import Get_Reporting_Year
 
 from portaldata.models import Indicator, MemberState
 
 
-def get_published_years():
-    '''Get Published Years from database'''
+# def get_published_years():
+#     '''Get Published Years from database'''
 
-    from portaldata.models import Published
-    year = None
-    year = list(Published.objects.filter(
-        published_status=True).values('reporting_year').order_by('-reporting_year'))
-    # print(year)
-    return year
+#     from portaldata.models import Published
+#     year = None
+#     year = list(Published.objects.filter(
+#         published_status=True).values('reporting_year').order_by('-reporting_year'))
+#     # print(year)
+#     return year
 
 
 def latest_published_year():
@@ -46,15 +47,20 @@ class HomePageFilterYear(forms.Form):
 
         if get_published_years():
             years_qs = get_published_years()
+            print(years_qs)
 
         else:
-            years_qs = [{'reporting_year': Get_Reporting_Year()}]
+            #years_qs = [{'reporting_year': Get_Reporting_Year()}]
+            years_qs = [Get_Reporting_Year()]
+            print(years_qs)
 
         YEAR_CHOICES = tuple((),)
 
         for i in years_qs:
-            for k, v in i.items():
-                YEAR_CHOICES += ((v, v),)
+            YEAR_CHOICES += ((i, i),)
+        # for i in years_qs:
+        #     for k, v in i.items():
+        #         YEAR_CHOICES += ((v, v),)
 
         self.fields['year_filter'] = forms.ChoiceField(
             choices=YEAR_CHOICES)
@@ -95,14 +101,18 @@ class FilterForm(forms.Form):
             years_qs = get_published_years()
 
         else:
-            years_qs = [{'reporting_year': Get_Reporting_Year()}]
+            #years_qs = [{'reporting_year': Get_Reporting_Year()}]
+            years_qs = [Get_Reporting_Year()]
 
-        years_qs.insert(0, {'reporting_year': 'Select All'})
+        #years_qs.insert(0, {'reporting_year': 'Select All'})
+        years_qs.insert(0,  'Select All')
 
         YEAR_CHOICES = tuple((),)
         for i in years_qs:
-            for k, v in i.items():
-                YEAR_CHOICES += ((v, v),)
+            YEAR_CHOICES += ((i, i),)
+        # for i in years_qs:
+        #     for k, v in i.items():
+        #         YEAR_CHOICES += ((v, v),)
 
         MEMBERSTATE_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
 
