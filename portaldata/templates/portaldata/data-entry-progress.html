@@ -371,7 +371,8 @@
       
        
         <button type="submit" class="btn btn-primary btn-lg  btn-block" id="kt_contact_submit_button"  
-         {% if Overallcalculatepg != 100 or get_number_to_submit == 0 %}disabled{% endif %}
+         {% if Overallcalculatepg != 100 or get_number_to_submit == 0 or user.getSysUser.role != 'FP' %}
+         disabled{% endif %}
          onclick="Submit()"
 
          
@@ -398,12 +399,16 @@
    
     <br>
 
+    
+
   
     <div class="block ">
+      {% if user.getSysUser.role != 'FP'  %}
+        <p class=" mt-3 ">Only <strong>Focal Point Persons</strong> can submit data.</p>
+    {% endif %}
         {% if Overallcalculatepg != 100 %}
         <p class=" mt-3 ">You can submit when data is completed for all required indicators. <br>
           Currently, <strong> {{OveallCompletedIndicators}} of {{OverallRequiredIndicators}} </strong>completed.
-        
         </p>
 
   
@@ -418,11 +423,14 @@
          </div>
          </div>
        
+        
+
+
 
       
           
         
-        </p>
+      
         
         {% endif %}
 

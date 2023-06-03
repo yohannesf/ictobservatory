@@ -26,7 +26,8 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("select2/", include("django_select2.urls")),
     re_path(
-        "^inbox/notifications/", include(notifications.urls, namespace="notifications")
+        "^inbox/notifications/", include(notifications.urls,
+                                         namespace="notifications")
     ),
     path("", include("portal.urls")),
     path("portaldata/", include("portaldata.urls")),

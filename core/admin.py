@@ -71,7 +71,7 @@ class UserAdmin(BaseUserAdmin):
     )
     inlines = (SystemUserInline,)
     list_display = ['email', 'first_name', 'last_name', 'is_active',
-                    'getUserGroup', 'getUserOrganisation', 'getUserMemberState']
+                    'getUserGroup', 'getUserOrganisation', 'getUserMemberState', 'getUserRole']
 
     ordering = ('email',)
 

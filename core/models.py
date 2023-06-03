@@ -123,6 +123,12 @@ class User(AbstractEmailUser):
     getUserGroup.admin_order_field = "systemuser__user_group"
     getUserGroup.short_description = 'User Group'
 
+    def getUserRole(self):
+        return self.getSysUser().get_role_display()
+
+    getUserRole.admin_order_field = "systemuser__role"
+    getUserRole.short_description = 'User Role'
+
     def __str__(self):
         return self.get_full_name()
 
@@ -134,13 +140,18 @@ class SystemUser(models.Model):
     For example, Member States will see data entry form with indicators assigned to them
     while Organizations (e.g. CRASA) will get a different data entry form that enables them to enter data for member states
     '''
+    ROLE_TYPE_CHOICES = [("FP", "Focal Point Person"), ("DE", "Data Entry Person"),
+                         ]  # ("SADC", "SADC Secretariat"), ("SA", "System Admin")
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
 
     phone_number = models.CharField(
         max_length=255, blank=True, null=True, verbose_name="Phone Number")
-    role = models.CharField(max_length=150, blank=True)
+
+    role = models.CharField(
+        max_length=150, choices=ROLE_TYPE_CHOICES, blank=True, default="FP",)
+
     organisation_name = models.CharField(
         max_length=150, blank=True, verbose_name="Organisation Name")
     user_group = models.ForeignKey(

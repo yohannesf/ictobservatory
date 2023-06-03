@@ -44,7 +44,8 @@ class IndicatorDataEntryForm(forms.ModelForm):
 
     class Meta:
         model = IndicatorData
-        fields = ["indicator", "ind_value", "comments", "attachment", "value_NA"]
+        fields = ["indicator", "ind_value",
+                  "comments", "attachment", "value_NA"]
         widgets = {
             "comments": forms.Textarea(attrs={"rows": 1, "cols": 30}),
             "value_NA": forms.CheckboxInput(),
@@ -56,43 +57,49 @@ class IndicatorDataEntryForm(forms.ModelForm):
         super(IndicatorDataEntryForm, self).__init__(*args, **kwargs)
 
         self.fields["value_NA"].widget.attrs[
-            "onclick"
-        ] = "javascript:toggleIndValue(this.id);"
+            "onclick"] = "javascript:toggleIndValue(this.id);"
 
         for k, v in initial.items():
             if v.data_type == DATA_TYPE.select:
                 choices = make_choices(v)
                 self.fields["ind_value"] = forms.ChoiceField(choices=choices)
-                self.fields["ind_value"].widget.attrs.update({"class": "form-select"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-select"})
             elif v.data_type == DATA_TYPE.number:
                 self.fields["ind_value"] = forms.IntegerField()
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
             elif v.data_type == DATA_TYPE.percentage:
                 self.fields["ind_value"] = forms.DecimalField(
                     max_digits=5, decimal_places=2
                 )  # type: ignore
 
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
             elif v.data_type == DATA_TYPE.currency:
                 self.fields["ind_value"] = forms.DecimalField(
                     max_digits=20, decimal_places=4
                 )
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
 
             elif v.data_type == DATA_TYPE.decimal:
                 self.fields["ind_value"] = forms.DecimalField(
                     max_digits=6, decimal_places=2
                 )
 
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
 
             elif v.data_type == DATA_TYPE.url:
                 self.fields["ind_value"] = forms.URLField(
                     validators=[
-                        MaxLengthValidator(SURVEY_FIELD_VALIDATORS["max_length"]["url"])
+                        MaxLengthValidator(
+                            SURVEY_FIELD_VALIDATORS["max_length"]["url"])
                     ]
                 )
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
 
             elif v.data_type == DATA_TYPE.email:
                 self.fields["ind_value"] = forms.EmailField(
@@ -102,7 +109,8 @@ class IndicatorDataEntryForm(forms.ModelForm):
                         )
                     ]
                 )
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
 
             elif v.data_type == DATA_TYPE.date:
                 self.fields["ind_value"] = forms.DateField(
@@ -112,7 +120,8 @@ class IndicatorDataEntryForm(forms.ModelForm):
                 self.fields["ind_value"] = forms.CharField(
                     widget=forms.Textarea(attrs={"rows": 3})
                 )
-                self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+                self.fields["ind_value"].widget.attrs.update(
+                    {"class": "form-control"})
 
 
 class IndicatorDataEditForm(forms.ModelForm):
@@ -145,51 +154,62 @@ class IndicatorDataEditForm(forms.ModelForm):
         if v.indicator.data_type == DATA_TYPE.select:
             choices = make_choices(v.indicator)
             self.fields["ind_value"] = forms.ChoiceField(choices=choices)
-            self.fields["ind_value"].widget.attrs.update({"class": "form-select"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-select"})
 
         elif v.indicator.data_type == DATA_TYPE.number:
             self.fields["ind_value"] = forms.IntegerField()
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
 
         elif v.indicator.data_type == DATA_TYPE.percentage:
             self.fields["ind_value"] = forms.DecimalField(
                 max_digits=5, decimal_places=2
             )  # type: ignore
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
 
         elif v.indicator.data_type == DATA_TYPE.currency:
             self.fields["ind_value"] = forms.DecimalField(
                 max_digits=20, decimal_places=4
             )
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
 
         elif v.indicator.data_type == DATA_TYPE.decimal:
             self.fields["ind_value"] = forms.DecimalField(
                 max_digits=6, decimal_places=2
             )
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
 
         elif v.indicator.data_type == DATA_TYPE.url:
             self.fields["ind_value"] = forms.URLField(
                 validators=[
-                    MaxLengthValidator(SURVEY_FIELD_VALIDATORS["max_length"]["url"])
+                    MaxLengthValidator(
+                        SURVEY_FIELD_VALIDATORS["max_length"]["url"])
                 ]
             )
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
         elif v.indicator.data_type == DATA_TYPE.email:
             self.fields["ind_value"] = forms.EmailField(
                 validators=[
-                    MaxLengthValidator(SURVEY_FIELD_VALIDATORS["max_length"]["email"])
+                    MaxLengthValidator(
+                        SURVEY_FIELD_VALIDATORS["max_length"]["email"])
                 ]
             )
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
         elif v.indicator.data_type == DATA_TYPE.date:
-            self.fields["ind_value"] = forms.DateField(input_formats=DATE_INPUT_FORMAT)
+            self.fields["ind_value"] = forms.DateField(
+                input_formats=DATE_INPUT_FORMAT)
         elif v.indicator.data_type == DATA_TYPE.text_area:
             self.fields["ind_value"] = forms.CharField(
                 widget=forms.Textarea(attrs={"rows": 1})
             )
-            self.fields["ind_value"].widget.attrs.update({"class": "form-control"})
+            self.fields["ind_value"].widget.attrs.update(
+                {"class": "form-control"})
 
         self.fields["ind_value"].required = False
 
