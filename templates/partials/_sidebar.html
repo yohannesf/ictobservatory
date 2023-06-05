@@ -7,7 +7,7 @@
 
 
 <nav  class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0      ">
-            <div class="container-fluid d-flex flex-column p-0   " >
+            <div class="container-fluid d-flex  p-0   " > <!--flex-column-->
               <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0 " href="{% url 'portal:index' %}">
                     <div class="logo " >
                       <img src="{% static 'img/sadc-logo-circle.svg' %}  " alt="logo">
@@ -35,7 +35,61 @@
 
                     <li class="nav-heading"></li>
 
-                    <li class="nav-item"><a class="nav-link {% if url_name == 'managereportingperiod' %}active{% endif %}" href=" {% url 'portaldata:managereportingperiod' %}">
+                    
+
+                    
+
+    <!--Start collapse Menu-->
+      <!--
+                    <li class="nav-item">
+                      <a class="nav-link  align-items-center" style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                        <i class="bi bi-menu-button-wide"></i><span> Manage </span>
+                        
+                      </a>
+                      <div class="collapse " id="home-collapse" style="">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                          <li class="nav-item">
+                            <a class="nav-link {% if url_name == 'managereportingperiod' %}active{% endif %}" href=" {% url 'portaldata:managereportingperiod' %}">
+                            <i class="bi bi-menu-button-wide"></i><span> Reporting Periods</span></a>
+                          </li>
+
+                          <li class="nav-item"><a class="nav-link {% if url_name == 'managefocusarea' %}active{% endif %}" href=" {% url 'portaldata:managefocusarea' %}">
+                            <i class="bi bi-menu-button-wide"></i><span> Focus Areas</span></a>
+                          </li>
+                      
+                          <li class="nav-item"><a class="nav-link {% if url_name == 'manageindicators' %}active{% endif %}" href=" {% url 'portaldata:manageindicators' %}">
+                            <i class="bi bi-menu-button-wide"></i><span> Indicators</span></a>
+                          </li>
+                          <li class="nav-item"><a class="nav-link {% if url_name == 'indicator-assignment' %}active{% endif %}" href=" {% url 'portaldata:indicator-assignment' %}">
+                            <i class="bi bi-menu-button-wide"></i><span> Indicators</span></a>
+                          </li>
+                          
+                          <li class="nav-item"><a class="nav-link {% if url_name == 'managegeneralindicators' %}active{% endif %}" href=" {% url 'portaldata:managegeneralindicators' %}">
+                            <i class="bi bi-menu-button-wide"></i><span> General Indicators</span></a>
+                          </li>
+                         
+
+                        </ul>
+                      </div>
+                    </li>
+
+                     -->
+
+            <!--End collapse Menu-->
+
+                  
+                
+
+                  
+
+                   
+
+             <!--Start Manage Menu-->
+
+           
+
+                    <li class="nav-item">
+                      <a class="nav-link {% if url_name == 'managereportingperiod' %}active{% endif %}" href=" {% url 'portaldata:managereportingperiod' %}">
                       <i class="bi bi-menu-button-wide"></i><span> Manage Reporting Periods</span></a>
                     </li>
                   
@@ -53,6 +107,10 @@
                     <li class="nav-item"><a class="nav-link {% if url_name == 'managegeneralindicators' %}active{% endif %}" href=" {% url 'portaldata:managegeneralindicators' %}">
                       <i class="bi bi-menu-button-wide"></i><span> Manage General Indicators</span></a>
                     </li>
+
+             
+
+                <!--End Manage Menu-->
 
                     <li class="nav-heading"></li>
                     

@@ -22,11 +22,12 @@ from ..models import Indicator, IndicatorData, MemberState
 def index(request):
     """Backend Home Page (a landing page when user is logged in)"""
 
+    # TO DO -> to be replaced by a button on the backend for admins with year selection dropdown
     if (request.user.is_superuser or request.user.is_sadc):
         if get_published_years():
             years_qs = get_published_years()
             [update_currency_indicators_to_usd(i) for i in years_qs]
-        # TO DO -> to be replaced by a button on the backend for admins with year selection dropdown
+
         # update_currency_indicators_to_usd("2022")
 
     return render(request, "portaldata/index.html")

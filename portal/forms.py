@@ -47,12 +47,10 @@ class HomePageFilterYear(forms.Form):
 
         if get_published_years():
             years_qs = get_published_years()
-            print(years_qs)
 
         else:
             #years_qs = [{'reporting_year': Get_Reporting_Year()}]
             years_qs = [Get_Reporting_Year()]
-            print(years_qs)
 
         YEAR_CHOICES = tuple((),)
 
