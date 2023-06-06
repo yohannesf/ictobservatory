@@ -277,6 +277,12 @@ body {
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
 }
 
+.card.disabled {
+    /* display: block; */
+
+    background-color: #babab7;
+}
+
 /* .card-link .card a:hover {
 
     color: aqua !important;
