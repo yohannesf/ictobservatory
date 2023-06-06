@@ -1,4 +1,6 @@
 
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django import forms
 from .models import User
 
@@ -146,4 +148,19 @@ class UserChangeForm(DjangoUserChangeForm):
 #                         params={'username': self.username_field.verbose_name},
 #                     )
 
+#         return self.cleaned_data
+
+
+# class LoginForm(forms.Form):
+#     username = forms.CharField()
+#     password = forms.CharField(widget=forms.PasswordInput)
+
+#     def clean(self):
+#         username = self.cleaned_data.get('username')
+#         password = self.cleaned_data.get('password')
+#         user = authenticate(username=username, password=password)
+#         if user is None:
+#             raise forms.ValidationError('Invalid username or password.')
+#         elif not user.is_active:
+#             raise forms.ValidationError('User is inactive.')
 #         return self.cleaned_data

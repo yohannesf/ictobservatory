@@ -1,28 +1,10 @@
 
-
-from django.conf import settings
-from django.contrib.humanize.templatetags.humanize import intcomma
-
-from django_tables2 import RequestConfig
-
-from django.db.models import Max
 from statistics import mean
-from datetime import datetime
-from django_tables2.export.export import TableExport
-import django_tables2 as tables
 
-from django.shortcuts import render
-from portal.forms import FilterForm, HomePageFilterYear, get_published_years, latest_published_year
+from portaldata.models import INDICATORDATA_STATUS, ExchangeRateData, GeneralIndicatorData, IndicatorData, MemberState, Chart, ChartConfig, ScoreCard, ScoreCardConfig
 
+from ..charts import ColumnChart, LineChart, StackedChart, SpiderWebChart, SunBurstChart
 
-from portaldata.models import ExchangeRateData, GeneralIndicatorData, Indicator, IndicatorData, INDICATORDATA_STATUS, MemberState, Chart, ChartConfig, CHART_TYPE, Published, ScoreCard, ScoreCardConfig
-
-
-from django.shortcuts import render
-
-from .charts import ColumnChart, LineChart, StackedChart, SpiderWebChart, SunBurstChart
-
-from django_pivot.pivot import pivot
 
 color_blue = ['#2C318A']
 color_green = ['#02B052']
@@ -40,11 +22,8 @@ sixcolors = ['#2C318A', '#02B052',  '#C49801',
 '''
 Global variables used to populate score cards in the home page
 '''
-# sadc_mobile_penetration = ''
-
-sadc_network_coverage = ''
-
 avg_pop_coverage_3g = ''
+sadc_network_coverage = ''
 
 avg_internet_penetration = ''
 
@@ -53,104 +32,11 @@ total_population = ''
 total_internet_users = ''
 
 
-def index(request):
-    '''
-    Main home page
-    This view renders all the charts and score cards in the home page
-    '''
-
-    form = HomePageFilterYear(request.GET or None)
-
-    year = latest_published_year()
-
-    if request.method == "GET":
-
-        year_filter = request.GET.get('year_filter')
-        if year_filter:
-            year = year_filter
-
-    charts = [
-
-        chart_telecom_revenue(year),
-        chart_ict_contrib_gdp(year),
-        chart_telecom_investment(year),
-
-
-        chart_mobile_penetration_rate(year),
-        chart_fixed_telephone_line(year),
-        chart_pop_coveredby_mobl_network(year),
-        chart_mobl_geog_coverage(year),
-        chart_internet_user_penetration(year),
-
-
-        chart_inter_internet_bandwidth(year),
-        chart_inter_internet_bandwidth_per_user(year),
-        chart_inter_internet_bandwidth_per_inhabitant(year),
-
-
-
-        chart_fixed_telephone_tariffs(year),
-        chart_sms_tariff(year),
-
-
-        chart_existence_of_policy_by_ms(year),
-        chart_existing_ict_regulation(year),
-
-
-
-
-
-        chart_literacy_rate(year),
-    ]
-
-    score_cards = {
-        'sadc_mobile_penetration': scorecard_sadc_mobile_penetration(year),
-        'sadc_network_coverage': sadc_network_coverage,
-        'avg_pop_coverage_3g': avg_pop_coverage_3g,
-        'avg_internet_penetration': scorecard_avg_internet_penetration(year)}
-
-    context = {
-        'form': form,
-        'charts': charts,
-        'score_cards': score_cards
-
-    }
-    return render(request, 'portal/index.html', context=context)
-
-
-def about(request):
-
-    return render(request, 'portal/about.html')
-
-
-def socio_economic(request):
-
-    form = HomePageFilterYear(request.GET or None)
-
-    year = latest_published_year()
-
-    if request.method == "GET":
-        year_filter = request.GET.get('year_filter')
-        if year_filter:
-            year = year_filter
-
-    charts = [chart_population(year),
-              chart_population_male_female(year),
-              chart_gpd_per_capita(year),
-              chart_gni_per_capita(year),
-
-              chart_exchange_rate(year),
-              ]
-
-    context = {
-        'form': form,
-
-        'charts': charts,
-
-
-    }
-
-    return render(request, 'portal/socio-economic-charts.html', context=context)
+def get_validated_data(indicator, reporting_year):
+    '''Takes indicator and year and returns submitted and validated data for the year by indicator'''
+    return IndicatorData.objects.filter(
+        indicator=indicator, reporting_year=reporting_year,
+        submitted=True, validation_status=INDICATORDATA_STATUS.validated)
 
 
 def sum_val(data_dict, indicator_label):
@@ -198,7 +84,7 @@ def percentage_per_indicator(result_list):
 
     if result_list:
         try:
-            percent = [mean(k)*100 for k in zip(*result_list)]
+            percent = [mean(k)*100 for k in zip(*result_list)]  # type: ignore
 
             return percent
         except:
@@ -215,6 +101,14 @@ def perUser(bandwidth, internet_user):
             return ''
     else:
         return ''
+
+
+def scorecard_avg_pop_coverage_3g():
+    return avg_pop_coverage_3g
+
+
+def scorecard_sadc_network_coverage():
+    return sadc_network_coverage
 
 
 def scorecard_sadc_mobile_penetration(year):
@@ -257,8 +151,10 @@ def scorecard_calculation(scorecard, year):
 
             item_option = item.indicator.label
 
-            indicator_data = list(IndicatorData.objects.filter(
+            indicator_data = list(get_validated_data(
                 indicator=item.indicator, reporting_year=year).values_list("ind_value_adjusted", flat=True))
+            # indicator_data = list(IndicatorData.objects.filter(
+            #     indicator=item.indicator, reporting_year=year).values_list("ind_value_adjusted", flat=True))
 
             if item.num_denom:
                 if item.num_denom == 'num':
@@ -360,7 +256,9 @@ def chart_population(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -437,7 +335,9 @@ def chart_population_male_female(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 if item.extra_calculation == 'mainstack':
@@ -518,7 +418,9 @@ def chart_gpd_per_capita(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -597,7 +499,9 @@ def chart_gni_per_capita(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -671,7 +575,9 @@ def chart_telecom_revenue(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 '''Main Stack is the first column chart in the stacked charts that shows the Total Revenue'''
@@ -742,7 +648,9 @@ def chart_internet_user_penetration(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 '''per100 canculates the Per 100 inhabitat with the value/population * 100'''
@@ -755,7 +663,9 @@ def chart_internet_user_penetration(year):
 
                             try:
                                 population = IndicatorData.objects.get(
-                                    indicator=population_indicator, reporting_year=year, member_state=i.member_state).ind_value
+                                    indicator=population_indicator, reporting_year=year,
+                                    member_state=i.member_state).ind_value
+
                                 population_list.append(
                                     population) if population not in population_list else population_list
                                 if i.ind_value_adjusted and population:
@@ -857,7 +767,9 @@ def chart_telecom_investment(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -934,7 +846,9 @@ def chart_existing_ict_regulation(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1023,7 +937,9 @@ def chart_existence_of_policy_by_ms(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1115,7 +1031,9 @@ def chart_mobile_penetration_rate(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1194,7 +1112,9 @@ def chart_fixed_telephone_line(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1273,7 +1193,9 @@ def chart_pop_coveredby_mobl_network(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1309,6 +1231,8 @@ def chart_pop_coveredby_mobl_network(year):
                 mean(d for d in pop_coverage_3g if d != ''), 1)
         except:
             avg_pop_coverage_3g = "-"
+
+        # scorecard_avg_pop_coverage_3g(avg_pop_coverage_3g)
 
     else:
 
@@ -1367,9 +1291,10 @@ def chart_mobl_geog_coverage(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
-
                 query_list.append(indicator_data)
 
     for qs in query_list:
@@ -1450,7 +1375,9 @@ def chart_inter_internet_bandwidth(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1529,7 +1456,9 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+               # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1605,7 +1534,9 @@ def chart_inter_internet_bandwidth_per_user(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 if item.extra_calculation == 'mtokbits':
@@ -1673,8 +1604,6 @@ def chart_inter_internet_bandwidth_per_user(year):
 
         elif aggregation == 'avg':
 
-            categories.append("SADC Average")  # type: ignore
-
             total_bandwidth = sum_val(
                 data_dict, 'International Internet Bandwidth')
 
@@ -1696,6 +1625,7 @@ def chart_inter_internet_bandwidth_per_user(year):
             if total_bandwidth and total_users:
 
                 data_calc[label].append(round(total_bandwidth/total_users, 2))
+                categories.append("SADC Average")  # type: ignore
 
     general_indicator_data = GeneralIndicatorData.objects.filter(
         general_indicator__include_in_chart=chart, reporting_year=year)
@@ -1746,7 +1676,9 @@ def chart_fixed_telephone_tariffs(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1823,7 +1755,9 @@ def chart_sms_tariff(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1898,7 +1832,9 @@ def chart_literacy_rate(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -1973,7 +1909,9 @@ def chart_ict_contrib_gdp(year):
 
             for item in indicators_list:
 
-                indicator_data = IndicatorData.objects.filter(
+                # indicator_data = IndicatorData.objects.filter(
+                #     indicator=item.indicator, reporting_year=year)
+                indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
                 query_list.append(indicator_data)
@@ -2046,7 +1984,7 @@ def chart_exchange_rate(year):
     data_dict = {}
 
     exchange_rate_queryset = ExchangeRateData.objects.filter(
-        reporting_year=year)
+        reporting_year=year, submitted=True)
 
     query_list.append(exchange_rate_queryset)
 
@@ -2085,179 +2023,3 @@ def chart_exchange_rate(year):
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='3')
 
     return chart_html
-
-
-def get_published_years_for_query():
-    '''Get Published Years from database'''
-
-    # from portaldata.models import Published
-    year = []
-    year = list(Published.objects.filter(
-        published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
-
-    return year
-
-
-def generate_report(request):
-    '''
-    Report / Query Generator
-    First implement the filter
-    '''
-
-    form = FilterForm(request.GET or None)
-
-    currency_data_type = ''
-
-    currency_indicators = []
-
-    context = {}
-
-    dict_values = []
-
-    pivot_table = None
-
-    ind_data = None
-
-    if request.method == "GET":
-
-        indicators_qs = Indicator.objects.filter(
-            status='Active', focus_area__focusarea_status=True).values()
-
-        currency_indicators = list(indicators_qs.filter(
-            data_type=0).values_list("id", flat=True))
-
-        export_format = request.GET.get('_export', None)
-
-        indicators = request.GET.getlist('indicator_filter_field')
-        ms = request.GET.getlist('memberstate_filter_field')
-
-        years = request.GET.getlist('year_filter_field')
-
-        if indicators or ms or years:
-
-            ind_data = IndicatorData.objects.filter(validation_status=INDICATORDATA_STATUS.validated).order_by(
-                'member_state__member_state', 'indicator')
-
-            if ms and ms != ['all'] and 'all' not in ms:
-                ind_data = ind_data.filter(member_state__in=list(ms))
-
-            if indicators and indicators != ['all'] and 'all' not in indicators:
-                ind_data = ind_data.filter(indicator__in=list(indicators))
-
-            # get_published_years_for_query()
-            # this is not needed
-
-            if years and years != ['Select All'] and 'Select All' not in years:
-                ind_data = ind_data.filter(reporting_year__in=years)
-            else:
-                ind_data = ind_data.filter(
-                    reporting_year__in=get_published_years_for_query())
-
-            if 'filter_usd' in request.GET:
-
-                currency_data_type = '''
-                Data for all currency types is converted to USD.
-                '''
-
-                pivot_table = pivot(ind_data,
-                                    ['indicator__label',
-                                        'member_state__member_state'],
-                                    'reporting_year', 'ind_value_adjusted', aggregation=Max)  # type: ignore
-
-            elif 'filter_lc' in request.GET:
-
-                currency_data_type = '''Data for all currency types is in Local Currency 
-               '''
-
-                pivot_table = pivot(ind_data,
-                                    ['indicator__label',
-                                        'member_state__member_state'],
-                                    'reporting_year', 'ind_value', aggregation=Max)  # type: ignore
-
-            else:
-
-                currency_data_type = None
-
-                pivot_table = pivot(ind_data,
-                                    ['indicator__label',
-                                        'member_state__member_state'],
-                                    'reporting_year', 'ind_value', aggregation=Max)  # type: ignore
-
-            for item in list(pivot_table):
-                dict_values = list(item.keys())
-
-            dict_values = dict_values[2:]
-
-            class IndicatorDataTable(tables.Table):
-
-                member_state__member_state = tables.Column()
-                indicator__label = tables.Column()
-
-                def render_2021(self, value):
-                    try:
-                        value = round(float(value), 2)
-                        return intcomma(value)
-                    except:
-                        return intcomma(value)
-
-                def render_2022(self, value):
-
-                    try:
-                        value = round(float(value), 2)
-                        return intcomma(value)
-                    except:
-                        return intcomma(value)
-
-                def render_2023(self, value):
-                    try:
-                        value = round(float(value), 2)
-                        return intcomma(value)
-                    except:
-                        return intcomma(value)
-
-                def render_2024(self, value):
-                    try:
-                        value = round(float(value), 2)
-                        return intcomma(value)
-                    except:
-                        return intcomma(value)
-
-                class Meta:
-                    sequence = ("member_state__member_state",
-                                "indicator__label", "...")
-                    attrs = {
-                        "class": "table table-striped table-bordered dt-responsive compact nowrap"}
-                    paginator_class = tables.LazyPaginator
-                    empty_text = 'Query did not return any results. Please refine your search.'
-
-            tbl = IndicatorDataTable('')
-
-            for colname in dict_values:
-                column = tables.Column(orderable=False, empty_values=None)
-
-                # type: ignore
-                tbl.base_columns[colname] = column
-
-            tbl = IndicatorDataTable(pivot_table)
-
-            RequestConfig(request).configure(tbl)
-
-            tbl.paginate(page=request.GET.get("page", 1), per_page=25)
-
-            if TableExport.is_valid_format(export_format):
-
-                time_now = datetime.now().strftime("%D_%H_%M")
-                file_name = f"{time_now} - SADC ICT Observatory Data"
-
-                exporter = TableExport(export_format, tbl)
-
-                return exporter.response(f"{file_name}"'.{}'.format(export_format))
-        else:
-            tbl = None
-
-            pivot_table = None
-
-    context = {"table": tbl, "form": form, "currency_indicators": currency_indicators,
-               "currency_data_type": currency_data_type}
-
-    return render(request, "portal/generatereport.html", context=context)

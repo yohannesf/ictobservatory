@@ -30,20 +30,33 @@
           </div>
           <!--end::Page Title-->
 
+          {% getRevisionRequest_any  'M' user.getUserMemberState as revision_request_any %}
 
+        
          
  
- {% if not rep_period   %}
- <div class="col-md-12">
- <div class="alert alert-warning bg-warning border-0"  > 
+ {% if not rep_period and revision_request_any == 0  %}
+ 
+ <div class=" col-md-12 alert-warning bg-warning border-1 rounded-3 p-3 mb-3 fw-bold"  > 
   
-  <p class="   fw-bold" >Data entry is enabled only during Reporting Periods. 
-    Please revisit the page at a later date. </p>
+  Data entry is enabled only during Reporting Periods. 
+    Please revisit the page at a later date. 
+ 
 </div>
-</div>
+ {% endif %}
+{% if revision_request_any > 0 %}
+
+<div class="col-md-12 alert-warning bg-warning border-1 rounded-3 p-3 mb-3 fw-bold">
+     
+   You can edit and submit indicators that you are requested to revise. 
+ 
+ </div>
+
+{% endif %}
+
     
   
-{% endif %}
+
 
 {% include 'partials/_messages.html' %}
           
@@ -51,12 +64,12 @@
 
   <!--Begin Exchange Data Column-->
   <div class="col-md-6 col-lg-4 col-xl-4 col-xxl-3 ">
-      <a href="{% url 'portaldata:exchange-rate'  %}" class="card-link {% if not rep_period   %} disabled {% endif %}">
+      <a href="{% url 'portaldata:exchange-rate'  %}" class="card-link {% if not rep_period %} disabled {% endif %}">
 
-    <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90 ">
+    <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90  {% if not rep_period  %} disabled {% endif %} ">
     <!--begin::Header-->
 
-   <!--  {% getExchangeDataUnsubmitted user.getUserMemberState as check_submitted %}
+   <!--  {% getExchangeDataUnsubmitted user.getUserMemberState as check_submitted %}  
      ######Commented out: Exchange data notification badge  ########
     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
         {{check_submitted}}
@@ -121,7 +134,7 @@
                 
               {% for focusarea in focusareas  %}
 
-                 
+              {% getRevisionRequest focusarea  'M' user.getUserMemberState as revision_request %}
 
                   {% if focusarea.count_indicators > 0 %}
 
@@ -130,7 +143,7 @@
                 <div class="col-md-6 col-lg-4 col-xl-4 col-xxl-3 ">
                     {% comment %} <a href="{% url 'data:entry' focusarea.abbreviation %}" class="card-link"> {% endcomment %}
                     {% comment %} <a href="{% url 'data:DataEntryFormView' focusarea.abbreviation %}" class="card-link"> {% endcomment %}
-                    <a href="{% url 'portaldata:manage_indicatordata' id=focusarea.id %}" class="card-link {% if not rep_period   %} disabled {% endif %}">
+                    <a href="{% url 'portaldata:manage_indicatordata' id=focusarea.id %}" class="card-link {% if not rep_period and revision_request == 0   %} disabled {% endif %}">
                     {% comment %} <a href="{% url 'data:manage_books' %}" class="card-link"> {% endcomment %}
                     {% comment %} <a href="{% url 'data:indicatorDataFormSet' %}" class="card-link"> {% endcomment %}
                     {% comment %} <a href="{% url 'data:single-form' focusarea.id %}" class="card-link"> {% endcomment %}
@@ -139,11 +152,11 @@
                     {% comment %} <a href="{% url 'data:dataupdateform' pk=62 %}" class="card-link"> {% endcomment %}
 
                             <!--begin::Card widget 7-->
-                      <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90 " >
+                      <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-center  h-md-80 mb-5 mb-xl-10 bg-sadc opacity-90 {% if not rep_period and revision_request == 0   %} disabled {% endif %} " >
                         <!--begin::Header-->
+                       
 
-
-                        {% getRevisionRequest focusarea 'M' user.getUserMemberState as revision_request %}
+                       
                         {% comment %} {% getSubmitted focusarea 'M' user.getUserMemberState as check_submitted %}
                         {{ check_submitted }} {% endcomment %}
 

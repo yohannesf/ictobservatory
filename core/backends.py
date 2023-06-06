@@ -6,6 +6,7 @@ UserModel = get_user_model()
 
 
 class ExtendedUserModelBackend(ModelBackend):
+
     def authenticate(self, request, username=None, password=None, **kwargs):
         # if username is None:
         #     username = kwargs.get(UserModel.USERNAME_FIELD,
@@ -20,5 +21,9 @@ class ExtendedUserModelBackend(ModelBackend):
             # difference between an existing and a nonexistent user (#20760).
             UserModel().set_password(password)
         else:
+
             if user.check_password(password) and self.user_can_authenticate(user):
                 return user
+
+            # if not user.is_active:
+            # raise forms.ValidationError('User is inactive.')

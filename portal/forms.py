@@ -128,6 +128,6 @@ class FilterForm(forms.Form):
         self.fields["indicator_filter_field"].widget.attrs[
             "onchange"] = "javascript:ChangeButtonText(this.id);"
 
-        self.fields['indicator_filter_field'].required = False
+        self.fields['indicator_filter_field'].required = True
         self.fields['memberstate_filter_field'].required = False
         self.fields['year_filter_field'].required = False

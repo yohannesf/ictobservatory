@@ -4,7 +4,7 @@ from django.conf import settings
 from django.template import Library
 from core.views import Get_Reporting_Year, data_by_year_status
 
-from portaldata.models import ExchangeRateData, Indicator, IndicatorData, MemberState, Published
+from portaldata.models import INDICATORDATA_STATUS, ExchangeRateData, Indicator, IndicatorData, MemberState, Published
 #from portaldata.views.admin_views import data_by_year_status
 #from portaldata.views.admin_views import indicator_data_by_year_status
 
@@ -47,6 +47,20 @@ def getSubmitted(focusarea, assignedto, memberstate, *args):
 def getRevisionRequest(focusarea, assignedto, memberstate, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
     return focusarea.get_revision_request(assignedto, memberstate, Get_Reporting_Year())
+
+
+@register.simple_tag
+def getRevisionRequest_any(assignedto, memberstate, *args):
+
+    ind_count = IndicatorData.objects.filter(
+        indicator__indicator_assigned_to=assignedto,
+        reporting_year=Get_Reporting_Year(),
+        member_state=memberstate,
+        submitted=False,
+        validation_status=INDICATORDATA_STATUS.returned,
+    ).count()
+    #memberstate = MemberState.objects.get(pk=memberstate)
+    return ind_count
 
 
 @register.simple_tag
