@@ -1,9 +1,18 @@
 {% comment %} <div class="row">
 
   <div class="col-lg-9"> {% endcomment %}
+            {% now "j" as today%}
             <div  class="list-group-item list-group-item-action" aria-current="true">
                 <div class="d-flex w-100 justify-content-between">
-                <p class="mb-1"><strong>From:</strong> {{ notice.actor|title }}</p> <small>{{ notice.timestamp|date }} ({{ notice.timesince }} ago)</small></div>
+                <p class="mb-1"><strong>From:</strong> {{ notice.actor|title }}</p> 
+                  <small>
+                    {% if today == notice.timestamp|date:"j" %}
+                      {{ notice.timesince }} ago
+                    {% else %}
+                      {{notice.timestamp|date}}
+                    {% endif %}
+                  </small>
+                </div>
                 <h6 class="mb-1"><small ><strong>Subject</small></strong><nobr> {{ notice.verb }}</h6> 
                 <p style="word-wrap: break-word; white-space: normal;">
                 <small>{{ notice.description|linebreaksbr }}</small> </p>
