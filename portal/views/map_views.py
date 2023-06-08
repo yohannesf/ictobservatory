@@ -27,7 +27,7 @@ def map_view(request):
     indicator = Indicator.objects.filter(id=1).first()
 
     data = json.loads(get_validated_data(indicator=indicator,
-                                         reporting_year=Get_Reporting_Year()).content)
+                                         reporting_year='2022').content)
 
     print(data)
 
