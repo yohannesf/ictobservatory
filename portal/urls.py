@@ -1,4 +1,6 @@
 from django.urls import path
+
+from portal.views.map_views import map_view
 from .views.portal_home_views import index, socio_economic, about
 from .views.querydata_views import generate_report
 
@@ -18,6 +20,9 @@ urlpatterns = [
 
     #'''About Page'''
     path('about/', about, name='about'),
+
+
+    path('map/', map_view, name='map'),
 
 
 

@@ -256,6 +256,13 @@ class MemberState(models.Model):
         choices=MEMBERSTATE_STATUS_CHOICES, default=True, verbose_name="Status"
     )
 
+    @property
+    def ms_shortname(self):
+        if self.member_state_short_name != None or self.member_state_short_name != '':
+            return self.member_state_short_name
+        else:
+            return self.member_state
+
     def count_active(self):
         active_member_states = MemberState.objects.filter(
             memberstate_status=True
