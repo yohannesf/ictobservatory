@@ -50,6 +50,20 @@ def is_number(s):
 
 #     return lst
 
+def setOptions():
+    '''
+    Set general options
+    A function to set general options for charts
+    '''
+
+    return '''Highcharts.setOptions({
+                     lang: {
+
+                        thousandsSep: ','
+                        }
+                        }
+                    );'''
+
 
 def map_view(request):
 
@@ -228,7 +242,7 @@ def map():
     html = f'''
    <div id="container" >
     <script>
-
+{setOptions()}
     {begin}
     Highcharts.mapChart('container', {map}){end}
 
