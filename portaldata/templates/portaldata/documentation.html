@@ -35,14 +35,19 @@
 
                 <section class="section faq">
                     <div class="row">
-                      <div class="col-lg-6">
+                      {% comment %} <div class="col-lg-6">
               
                         <div class="card basic">
-                          <div class="card-body">
+                          <div class="card-body"> {% endcomment %}
 
 
                             {% if user.is_authenticated %}
                                 {% if user.is_sadc or user.is_superuser %}  
+
+                                <div class="col-lg-9">
+              
+                                  <div class="card basic">
+                                    <div class="card-body">
                
                                     <h5 class="card-title">Administration</h5>
 
@@ -87,6 +92,10 @@
                             {% endif %}
 
                             {% if user.is_authenticated and user.is_memberstate %}  
+                            <div class="col-lg-6">
+              
+                              <div class="card basic">
+                                <div class="card-body">
                                 <h5 class="card-title">Member States</h5>
                 
                                     <br >
@@ -121,6 +130,10 @@
                             {% endif %}
 
                             {% if user.is_authenticated and user.is_organisation %}
+                            <div class="col-lg-6">
+              
+                              <div class="card basic">
+                                <div class="card-body">
                                 <h5 class="card-title">Organisations</h5>
         
                                 <br >
