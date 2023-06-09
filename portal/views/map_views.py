@@ -13,7 +13,7 @@ from django.http import JsonResponse
 def get_validated_data(indicator, reporting_year):
     '''Takes indicator and year and returns submitted and validated data for the year by indicator'''
     data = list(IndicatorData.objects.filter(
-        indicator=indicator, reporting_year=reporting_year,
+        indicator=indicator, reporting_year='2022',
         # submitted=True, validation_status=INDICATORDATA_STATUS.validated
     ).values(code=F('member_state__member_state_iso3_code'),
              name=F('member_state__member_state'),
