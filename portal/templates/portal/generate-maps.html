@@ -8,15 +8,21 @@
 
 <style>
   #wrapper {
-    min-height: 550px;
+    min-height: 750px;
   }
   
- #container {
+  #container {
     height: 500px;
-    min-width: 310px;
+     min-width: 310px;
     max-width: 680px;
     margin: 0 auto;
-}
+} 
+
+ .loading {
+  margin-top: 10em;
+  text-align: center;
+  color: gray;
+} 
 
 </style>
 
@@ -24,7 +30,22 @@
 {% endblock extra_style %} 
 
 {% block extra_js_top %}
-<script src="//code.highcharts.com/maps/modules/map.js"></script>{% endblock extra_js_top %}
+{% comment %} <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="//code.highcharts.com/maps/modules/map.js"></script> {% endcomment %}
+
+ <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+<script src="https://code.highcharts.com/maps/modules/accessibility.js"></script> 
+
+
+{% comment %} <script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/maps/modules/map.js"></script>
+<script src="http://code.highcharts.com/maps/modules/data.js"></script>
+<script src="http://code.highcharts.com/mapdata/custom/africa.js"></script> {% endcomment %}
+{% endblock extra_js_top %}
 
 
 
@@ -42,7 +63,7 @@
   
 
   <div id="content">
-    <div class="container-fluid h-100">
+    <div class="container-fluid h-100 ">
         
            
 
