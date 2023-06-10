@@ -49,8 +49,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 #DEBUG = True
 DEBUG = os.getenv("DEBUG", "True") == "True"  # Added for deployment
 
-# ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
-#                           "127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
+                          "127.0.0.1,localhost").split(",")
 
 
 # Application definition
@@ -197,8 +197,9 @@ USE_TZ = True
 
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # MEDIA folder settings

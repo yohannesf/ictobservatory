@@ -87,3 +87,10 @@
 
     }
 }
+
+/* @media print {
+    .highcharts-subtitle {
+        display: block;
+        margin-top: 5px;
+    }
+} */

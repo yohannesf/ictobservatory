@@ -1,5 +1,8 @@
 (function () {
+
   "use strict"; // Start of use strict
+
+
 
   var sidebar = document.querySelector('.sidebar');
   var sidebarToggles = document.querySelectorAll('#sidebarToggle, #sidebarToggleTop');
@@ -8,6 +11,7 @@
 
 
   if (sidebar) {
+
 
     var collapseEl = sidebar.querySelector('.collapse');
     var collapseElementList = [].slice.call(document.querySelectorAll('.sidebar .collapse'))

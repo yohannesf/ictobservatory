@@ -69,9 +69,14 @@ table.simpletable td {
     font-size: 14px;
 }
 
+
+
 .dataTable {
     border: 1px solid #2b338e;
+
 }
+
+
 
 .dataTable td:last-child {
     border-right: 1px solid #2b338e !important;
@@ -98,7 +103,17 @@ table.simpletable td {
 
 /* table.dataTable {
     table-layout: fixed;
-    font-size: 13px;
+}
+    /* font-size: 13px;
     line-height: 14px;
-    background-color: white;
-} */
+    background-color: white; */
+
+/*
+.dataTable tbody td {
+    word-break: break-word;
+    word-wrap: break-word;
+    vertical-align: top;
+
+}
+
+*/
