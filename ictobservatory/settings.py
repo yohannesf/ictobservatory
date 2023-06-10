@@ -43,10 +43,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 
-#SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+# DEBUG = True
 DEBUG = os.getenv("DEBUG", "True") == "True"  # Added for deployment
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
@@ -157,7 +157,10 @@ if len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
     if os.getenv("DATABASE_URL", None) is None:
         raise Exception("DATABASE_URL environment variable not defined")
     DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+        "default": {
+            "NAME": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+            "ENGINE": "django.db.backends.postgresql"
+        }
     }
 
 
@@ -195,7 +198,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
@@ -215,7 +218,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'core.User'
 
-#AUTH_USER_MODEL = 'authtools.User'
+# AUTH_USER_MODEL = 'authtools.User'
 
 LOGIN_URL = 'login'
 
@@ -409,7 +412,7 @@ JAZZMIN_UI_TWEAKS = {
 
 }
 
-#JAZZMIN_SETTINGS["show_ui_builder"] = True
+# JAZZMIN_SETTINGS["show_ui_builder"] = True
 
 CRONJOBS = [
     ('* * * * *', 'portaldata.cron.email_notifications')
