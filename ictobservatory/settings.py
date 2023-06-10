@@ -159,7 +159,7 @@ if len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
     DATABASES = {
         "default": {
             "NAME": dj_database_url.parse(os.environ.get("DATABASE_URL")),
-            "ENGINE": "django.db.backends.postgresql"
+            "ENGINE": "django.db.backends.postgresql_psycopg2"
         }
     }
 
