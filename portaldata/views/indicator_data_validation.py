@@ -10,7 +10,7 @@ from ajax_datatable.views import AjaxDatatableView
 from django.db.models import Q
 
 from core.models import User
-from core.views import Get_Reporting_Year
+from core.sharedfunctions import get_current_reporting_year
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from ictobservatory import settings
@@ -23,7 +23,7 @@ from portaldata.models import (IND_ASSIGNED_TO, INDICATORDATA_STATUS,
 
 
 @csrf_exempt
-def ValidateData(request):
+def validate_data(request):
     '''Validat Data button to update indicator data status as "Validated" '''
 
     if request.method == 'POST':
@@ -44,7 +44,7 @@ def ValidateData(request):
 
 
 @csrf_exempt
-def SendBack(request, id):
+def send_back_for_revision(request, id):
     '''Sending indicator data for revision'''
 
     context = {}
@@ -104,16 +104,11 @@ def SendBack(request, id):
 
             message = comment if comment else f"Please revise indicator {ind_data.indicator.indicator_number}"
 
-            notify.send(request.user, recipient=users,
-                        verb=verb, description=comment if comment else f"Please revise indicator {ind_data.indicator.indicator_number}")
+            send_notification(sender=request.user, recipients=users,
+                              subject=verb, message=message)
 
-            email_address = []
-
-            for i in users:
-                email_address.append(i.email)
-
-            # email_notifications(
-            #     subject = verb, recipient_list = email_address, message = message)
+            # notify.send(request.user, recipient=users,
+            #             verb=verb, description=comment if comment else f"Please revise indicator {ind_data.indicator.indicator_number}")
 
             return HttpResponse(status=200)
 
@@ -127,6 +122,22 @@ def SendBack(request, id):
     return HttpResponse(status=200)
     # return HttpResponse('')
     return render(request, 'portaldata/indicator_data_revision.html', context)
+
+
+def send_notification(sender, recipients, subject, message):
+
+    try:
+        notify.send(sender, recipient=recipients,
+                    verb=subject, description=message)
+        email_address = []
+
+        for i in recipients:
+            email_address.append(i.email)
+
+        # email_notifications(
+        #     subject=subject, recipient_list=email_address, message=message)
+    except:
+        print("something went wrong")
 
 
 def email_notifications(subject, recipient_list, message):
@@ -144,7 +155,7 @@ def indicatordata_list_view(request):
     # model = Track
     template_name = "portaldata/indicator_data_validation.html"
 
-    context = {'reporting_year': Get_Reporting_Year()}
+    context = {'reporting_year': get_current_reporting_year()}
 
     return render(request, template_name, context=context)
 
@@ -154,7 +165,7 @@ class IndicatorDatatableView(AjaxDatatableView):
     def get_initial_queryset(self, request=None):
 
         queryset = IndicatorData.objects.filter(indicator__status='Active', indicator__focus_area__focusarea_status=True,
-                                                reporting_year=Get_Reporting_Year()
+                                                reporting_year=get_current_reporting_year()
                                                 ).exclude(validation_status=INDICATORDATA_STATUS.draft)
 
         return queryset
@@ -175,7 +186,7 @@ class IndicatorDatatableView(AjaxDatatableView):
     search_values_separator = '+'
     show_date_filters = False
 
-    qs = IndicatorData.objects.filter(reporting_year=Get_Reporting_Year(), indicator__status='Active',
+    qs = IndicatorData.objects.filter(reporting_year=get_current_reporting_year(), indicator__status='Active',
                                       indicator__focus_area__focusarea_status=True).values('indicator__label', 'indicator__focus_area__title'
                                                                                            ).exclude(validation_status=INDICATORDATA_STATUS.draft).distinct()
 

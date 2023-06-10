@@ -28,7 +28,7 @@ from django.utils.safestring import SafeText, mark_safe
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.utils.translation import gettext_lazy as _
 
-from core.views import Get_Reporting_Year
+from core.sharedfunctions import get_current_reporting_year
 
 
 DATA_TYPE = namedtuple(
@@ -398,7 +398,7 @@ class Indicator(models.Model):
                 indicator=self,
                 indicator__focus_area__focusarea_status=True,
                 member_state__memberstate_status=True,
-                reporting_year=Get_Reporting_Year(),
+                reporting_year=get_current_reporting_year(),
             )
             .exclude(value_NA=False, ind_value__exact="")
             .exclude(value_NA=False, ind_value__isnull=True)
@@ -425,7 +425,7 @@ class Indicator(models.Model):
 
     def check_submitted(self):
         ind_count = IndicatorData.objects.filter(
-            reporting_year=Get_Reporting_Year(),
+            reporting_year=get_current_reporting_year(),
             indicator__focus_area__focusarea_status=True,
             indicator__focus_area=self,
             submitted=False,
@@ -708,13 +708,14 @@ def update_usd(sender, instance, **kwargs):
             instance.indicator.data_type == DATA_TYPE.currency
             and instance.indicator.type_of_currency != "usd"
         ):
-            print(get_exchange_rate(instance.member_state, Get_Reporting_Year()))
-            if get_exchange_rate(instance.member_state, Get_Reporting_Year()) != 0:
+            print(get_exchange_rate(instance.member_state,
+                  get_current_reporting_year()))
+            if get_exchange_rate(instance.member_state, get_current_reporting_year()) != 0:
                 instance.ind_value_adjusted = round(
                     float(instance.ind_value)
                     / float(
                         get_exchange_rate(
-                            instance.member_state, Get_Reporting_Year())
+                            instance.member_state, get_current_reporting_year())
                     ),
                     4,
                 )

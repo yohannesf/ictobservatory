@@ -61,7 +61,7 @@ All charts use HighCharts.com to render various type of charts
 '''
 
 
-def setOptions():
+def set_chart_options():
     '''
     Set general options
     A function to set general options for charts
@@ -146,7 +146,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
                        'csv': {
 
                        },
-                       'tableCaption': 'Chart Data',
+                       #    'tableCaption': 'Chart Data',
                        'buttons': {'contextButton': {'enabled': False}}
                        },
         'tooltip': {'shared': False,
@@ -183,7 +183,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
     html = f'''
     <div id="{container}" class="text-primary chart-area" >
     <script>
-    {setOptions()}
+    {set_chart_options()}
     Highcharts.chart('{container}', { dump });
     </script>
     </div>
@@ -265,7 +265,7 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
     html = f'''
     <div id="{container}" class="text-primary chart-area" >
     <script>
-    {setOptions()}
+    {set_chart_options()}
     Highcharts.chart('{container}', { dump });
     </script>
     </div>
@@ -361,7 +361,7 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
     html = f'''
     <div id="{container}" class="text-primary chart-area" >
     <script>
-    {setOptions()}
+    {set_chart_options()}
     Highcharts.chart('{container}', { dump });
     </script>
     </div>
@@ -459,7 +459,7 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
     html = f'''
     <div id="{container}" class="text-primary chart-area" >
     <script>
-    {setOptions()}
+    {set_chart_options()}
     Highcharts.chart('{container}', { dump });
     </script>
     </div>
@@ -553,7 +553,7 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
     html = f'''
     <div id="{container}" class="text-primary chart-area" >
     <script>
-    {setOptions()}
+    {set_chart_options()}
     Highcharts.chart('{container}', { dump });
     </script>
     </div>

@@ -2,7 +2,7 @@ from django import forms
 
 from django_select2.forms import Select2MultipleWidget
 from core.sharedfunctions import get_published_years
-from core.views import Get_Reporting_Year
+from core.sharedfunctions import get_current_reporting_year
 
 from portaldata.models import Indicator, MemberState
 
@@ -16,21 +16,6 @@ from portaldata.models import Indicator, MemberState
 #         published_status=True).values('reporting_year').order_by('-reporting_year'))
 #     # print(year)
 #     return year
-
-
-def latest_published_year():
-    '''Get Latest Published Year'''
-
-    from portaldata.models import Published
-    year = None
-    year = list(Published.objects.filter(
-        published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
-
-    if year:
-        year = year[0]
-    else:
-        year = Get_Reporting_Year()
-    return year
 
 
 class HomePageFilterYear(forms.Form):
@@ -50,7 +35,7 @@ class HomePageFilterYear(forms.Form):
 
         else:
             #years_qs = [{'reporting_year': Get_Reporting_Year()}]
-            years_qs = [Get_Reporting_Year()]
+            years_qs = [get_current_reporting_year()]
 
         YEAR_CHOICES = tuple((),)
 
@@ -100,7 +85,7 @@ class FilterForm(forms.Form):
 
         else:
             #years_qs = [{'reporting_year': Get_Reporting_Year()}]
-            years_qs = [Get_Reporting_Year()]
+            years_qs = [get_current_reporting_year()]
 
         #years_qs.insert(0, {'reporting_year': 'Select All'})
         years_qs.insert(0,  'Select All')

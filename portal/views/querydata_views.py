@@ -10,6 +10,7 @@ from django_tables2.export.export import TableExport
 import django_tables2 as tables
 
 from django.shortcuts import render
+from core.sharedfunctions import get_published_years
 from portal.forms import FilterForm
 
 
@@ -22,21 +23,9 @@ from django.shortcuts import render
 from django_pivot.pivot import pivot
 
 
-def get_published_years_for_query():
-    '''Get Published Years from database'''
-
-    # from portaldata.models import Published
-    year = []
-    year = list(Published.objects.filter(
-        published_status=True).values_list('reporting_year', flat=True).order_by('-reporting_year'))
-
-    return year
-
-
 def generate_report(request):
     '''
     Report / Query Generator
-    First implement the filter
     '''
 
     form = FilterForm(request.GET or None)
@@ -86,7 +75,7 @@ def generate_report(request):
                 ind_data = ind_data.filter(reporting_year__in=years)
             else:
                 ind_data = ind_data.filter(
-                    reporting_year__in=get_published_years_for_query())
+                    reporting_year__in=get_published_years())
 
             if 'filter_usd' in request.GET:
 

@@ -267,7 +267,7 @@ class FocusAreaCreateView(CreateView):
         initial = initial.copy()'''
 
         initial['sn'] = FocusArea.next_sn(FocusArea)  # type: ignore
-        initial['title'] = "Add"  # type: ignore
+        initial['pagetitle'] = "Add"  # type: ignore
         return initial
 
     def form_valid(self, form):
@@ -292,7 +292,7 @@ class FocusAreaUpdateView(UpdateView):
 
         initial = super(FocusAreaUpdateView, self).get_initial()
 
-        initial['title'] = "Update"  # type: ignore
+        initial['pagetitle'] = "Update"  # type: ignore
         return initial
 
 
@@ -416,13 +416,13 @@ def manage_indicatorassignment(request):
     return render(request, 'portaldata/indicator-assignment.html', context=context)
 
 
-@ csrf_exempt
-def PublishUnpublish(request):
+# @ csrf_exempt
+# def publish_unpublish(request):
 
-    if request.method == 'POST':
-        id = request.POST.get('id')
+#     if request.method == 'POST':
+#         id = request.POST.get('id')
 
-    return HttpResponse(status=200)
+#     return HttpResponse(status=200)
 
 
 @ csrf_exempt

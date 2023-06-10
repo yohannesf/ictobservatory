@@ -1,4 +1,8 @@
+from notifications.signals import notify
 from django.contrib import admin
+
+from core.models import User
+from portaldata.views.indicator_data_validation import send_notification
 from .models import (
     INDICATORDATA_STATUS,
     FocusArea,
@@ -30,7 +34,30 @@ def validate_data(modeladmin, request, queryset):
 
 @admin.action(description="Mark selected data as Unsubmitted")
 def unsubmit_data(modeladmin, request, queryset):
-    queryset.update(submitted=False)
+    unsubmitted_list = list(queryset)
+
+    member_state_id = []
+    if unsubmitted_list:
+        for i in unsubmitted_list:
+            member_state_id.append(i.member_state.id)
+
+    users = User.objects.filter(
+        systemuser__user_member_state_id__in=member_state_id)
+
+    verb = f"Data Unsubmitted"
+
+    message = f"Data is unsubmitted per your request."
+
+    send_notification(sender=request.user, recipients=users,
+                      subject=verb, message=message)
+
+    # if users:
+
+    #     notify.send(request.user, recipient=users,
+    #                 verb=verb, description=message)
+
+    queryset.update(submitted=False,
+                    validation_status=INDICATORDATA_STATUS.draft)
 
 
 class IndicatorDataAdmin(admin.ModelAdmin):
@@ -89,7 +116,8 @@ class GeneralIndicatorDataAdmin(admin.ModelAdmin):
 
 
 class ScorecardAdmin(admin.ModelAdmin):
-    list_display = ("scorecard_name", "scorecard_title", "description", "aggregation")
+    list_display = ("scorecard_name", "scorecard_title",
+                    "description", "aggregation")
 
     list_filter = ["scorecard_title"]
 
@@ -199,7 +227,8 @@ class GeneralIndicatorAdmin(admin.ModelAdmin):
 
 
 class PublishedAdmin(admin.ModelAdmin):
-    list_display = ("reporting_year", "published_status", "last_update", "updated_by")
+    list_display = ("reporting_year", "published_status",
+                    "last_update", "updated_by")
 
 
 admin.site.register(FocusArea, FocusAreaAdmin)

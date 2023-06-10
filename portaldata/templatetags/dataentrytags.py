@@ -1,5 +1,5 @@
 from django.template import Library
-from core.views import Get_Reporting_Year, Get_Num_Days_Left, Is_Reporting_Period
+from core.sharedfunctions import get_current_reporting_year, get_num_days_remaining, is_reporting_period
 
 from portaldata.models import DATA_TYPE
 register = Library()
@@ -12,17 +12,17 @@ def addclass(field, class_attr):
 
 @register.simple_tag
 def reporting_year():
-    return Get_Reporting_Year()
+    return get_current_reporting_year()
 
 
 @register.simple_tag
 def num_days_left():
-    return Get_Num_Days_Left()
+    return get_num_days_remaining()
 
 
 @register.simple_tag
 def check_within_reporting_period():
-    return Is_Reporting_Period()
+    return is_reporting_period()
 
 
 @register.simple_tag

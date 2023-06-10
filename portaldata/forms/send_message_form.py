@@ -6,7 +6,7 @@ from django_select2.forms import Select2MultipleWidget
 from portaldata.models import Indicator, MemberState
 
 
-class SendMessage_byAdmins(forms.Form):
+class SendMessageFormForAdmins(forms.Form):
 
     memberstate_filter_field = forms.ChoiceField(
         choices=[])
@@ -14,7 +14,7 @@ class SendMessage_byAdmins(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
-        super(SendMessage_byAdmins, self).__init__(*args, **kwargs)
+        super(SendMessageFormForAdmins, self).__init__(*args, **kwargs)
 
         memberstates_qs = MemberState.objects.filter(
             memberstate_status=True).values().order_by('member_state')
@@ -29,7 +29,7 @@ class SendMessage_byAdmins(forms.Form):
         self.fields['memberstate_filter_field'].label = "Member States"
 
 
-class SendMessage_byMS(forms.Form):
+class SendMessageFormForMS(forms.Form):
 
     subject = forms.CharField(max_length=200, required=True)
     message = forms.CharField(widget=forms.Textarea)

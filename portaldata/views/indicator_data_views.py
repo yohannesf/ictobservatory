@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core.decorators import group_required
 from core.models import SystemUser, User
-from core.views import Get_Reporting_Year
+from core.sharedfunctions import get_current_reporting_year
 from ..models import (
     DATA_TYPE,
     IND_ASSIGNED_TO,
@@ -42,7 +42,7 @@ from ..forms.indicator_data_entry_edit_by_orgs import (
 
 @login_required
 # @group_required('Member State')
-def dataentryprogress(request):
+def data_entry_progress_by_ms(request):
     """Data Entry Progress page for Member States"""
 
     focusareas = FocusArea.objects.filter(
@@ -54,7 +54,7 @@ def dataentryprogress(request):
 
 @login_required
 # @group_required('Organisation')
-def dataentryprogressorg(request):
+def data_entry_progress_by_org(request):
     """Data Entry Progress page for Organisations"""
 
     indicators = Indicator.objects.filter(
@@ -75,7 +75,7 @@ def manage_general_indicatordata(request):
     """General Indicator Data View"""
 
     qs_gen_ind_data = GeneralIndicatorData.objects.filter(
-        reporting_year=Get_Reporting_Year()
+        reporting_year=get_current_reporting_year()
     )
 
     num_gen_ind_data = qs_gen_ind_data.count()
@@ -108,7 +108,7 @@ def manage_general_indicatordata(request):
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
-                instance.reporting_year = Get_Reporting_Year()
+                instance.reporting_year = get_current_reporting_year()
                 instance.updated_by = request.user
                 instance.save()
 
@@ -118,7 +118,7 @@ def manage_general_indicatordata(request):
     else:
         formset = GeneralIndicatorDataFormSet(
             queryset=GeneralIndicatorData.objects.filter(
-                reporting_year=Get_Reporting_Year()
+                reporting_year=get_current_reporting_year()
             )
         )
 
@@ -141,7 +141,7 @@ def manage_indicatordata(request, id):
         indicator__focus_area=id,
         indicator__status="Active",
         indicator__indicator_assigned_to=IND_ASSIGNED_TO.MEMBER_STATES,
-        reporting_year=Get_Reporting_Year(),
+        reporting_year=get_current_reporting_year(),
         member_state=request.user.getUserMemberState(),
     )
 
@@ -197,7 +197,7 @@ def manage_indicatordata(request, id):
                     if form.is_valid():
                         instance = form.save(commit=False)
 
-                        instance.reporting_year = Get_Reporting_Year()
+                        instance.reporting_year = get_current_reporting_year()
                         instance.member_state = request.user.getUserMemberState()
                         instance.created_by = request.user
                         instance.updated_by = request.user
@@ -236,7 +236,7 @@ def view_indicatordata(request):
 
     template_name = "portaldata/view_indicator_data_by_ms.html"
 
-    context = {"reporting_year": Get_Reporting_Year(
+    context = {"reporting_year": get_current_reporting_year(
     ), "member_state": request.user.getUserMemberState()}
 
     return render(request, template_name, context=context)
@@ -251,14 +251,15 @@ class ViewIndicatorDatatableView(AjaxDatatableView):
 
         try:
 
-            if 'member_state' in request.REQUEST:
-                member_state = request.REQUEST.get('member_state')
+            if 'member_state' in request.REQUEST:  # type: ignore
+                member_state = request.REQUEST.get(
+                    'member_state')  # type: ignore
 
                 queryset = IndicatorData.objects.filter(
                     # indicator__status="Active",
                     member_state__member_state__exact=member_state,
                     # indicator__focus_area__focusarea_status=True,
-                    reporting_year=Get_Reporting_Year(),
+                    reporting_year=get_current_reporting_year(),
                 )
 
                 return queryset
@@ -284,7 +285,7 @@ class ViewIndicatorDatatableView(AjaxDatatableView):
 
     qs = (
         IndicatorData.objects.filter(
-            reporting_year=Get_Reporting_Year(),
+            reporting_year=get_current_reporting_year(),
             indicator__status="Active",
             indicator__focus_area__focusarea_status=True,
         )
@@ -367,7 +368,7 @@ def manage_indicatordata_organisation(request, id):
         indicator=id,
         indicator__status="Active",
         member_state__memberstate_status=True,
-        reporting_year=Get_Reporting_Year(),
+        reporting_year=get_current_reporting_year(),
     )
 
     member_state_initial_data = [
@@ -420,7 +421,7 @@ def manage_indicatordata_organisation(request, id):
                     if form.is_valid():
                         instance = form.save(commit=False)
 
-                        instance.reporting_year = Get_Reporting_Year()
+                        instance.reporting_year = get_current_reporting_year()
 
                         instance.created_by = request.user
                         instance.updated_by = request.user
@@ -450,12 +451,12 @@ def manage_indicatordata_organisation(request, id):
 
 @login_required
 @group_required("Member State", "Organisation", "SADC")
-def showdefinition(request, id):
+def show_indicator_definition(request, id):
     indicator = Indicator.objects.get(pk=id)
     return render(request, "portaldata/_definition.html", {"indicator": indicator})
 
 
-def SendNotification_to_admins(name, submittedby, reporting_year):
+def send_message_to_admins(name, submittedby, reporting_year):
     """Send Notification to Admin/SADC when data is submitted"""
 
     # Get users who are in the SADC group (without necessarily being superusers)
@@ -489,7 +490,7 @@ def SendNotification_to_admins(name, submittedby, reporting_year):
     # send_mail('Data Submission', description, email_from, recipient_list)
 
 
-def SendNotification_to_self(member_state, submittedby, reporting_year):
+def send_message_copy_to_self_ms(member_state, submittedby, reporting_year):
     """Send Notification to self when data is submitted"""
 
     users = User.objects.filter(systemuser__user_member_state=member_state)
@@ -518,7 +519,7 @@ def SendNotification_to_self(member_state, submittedby, reporting_year):
         # send_mail('Data Submission', description, email_from, recipient_list)
 
 
-def SendNotification_to_self_orgs(organisation, submittedby, reporting_year):
+def send_message_copy_to_self_org(organisation, submittedby, reporting_year):
     """Send Notification to self when data is submitted"""
 
     users = User.objects.filter(systemuser__user_organisation=organisation)
@@ -591,7 +592,7 @@ def update_currency_indicators_to_usd(reporting_year, member_state=""):
                                 float(data.ind_value)
                                 / float(
                                     exchange_rate.get(
-                                        data.member_state.member_state)
+                                        data.member_state.member_state)  # type: ignore
                                 )
                             )
                         )  # type: ignore
@@ -603,7 +604,7 @@ def update_currency_indicators_to_usd(reporting_year, member_state=""):
 
 @login_required
 @group_required("Member State", "Organisation", "SADC")
-def submitIndicatorData(request):
+def submit_indicator_data_by_ms(request):
     """Submit Indicator data (by Member States) and send notification to Admin/SADC"""
     # messages.success(request, "Data Submitted Successfully.")
     # return HttpResponseRedirect(
@@ -613,12 +614,12 @@ def submitIndicatorData(request):
     # )
     ExchangeRateData.objects.filter(
         currency__member_state=request.user.getUserMemberState(),
-        reporting_year=Get_Reporting_Year(),
+        reporting_year=get_current_reporting_year(),
     ).update(submitted=True)
 
     IndicatorData.objects.filter(
         submitted=False,
-        reporting_year=Get_Reporting_Year(),
+        reporting_year=get_current_reporting_year(),
         indicator__indicator_assigned_to=IND_ASSIGNED_TO.MEMBER_STATES,
         indicator__focus_area__focusarea_status=True,
         member_state=request.user.getUserMemberState(),
@@ -629,11 +630,13 @@ def submitIndicatorData(request):
     ms = request.user.getUserMemberState()
 
     """Here, the function call below ensures local currencies are converted to USD values"""
-    update_currency_indicators_to_usd(Get_Reporting_Year(), ms.member_state)
+    update_currency_indicators_to_usd(
+        get_current_reporting_year(), ms.member_state)
 
-    SendNotification_to_admins(
-        ms.member_state, request.user, Get_Reporting_Year())
-    SendNotification_to_self(ms, request.user, Get_Reporting_Year())
+    send_message_to_admins(
+        ms.member_state, request.user, get_current_reporting_year())
+    send_message_copy_to_self_ms(
+        ms, request.user, get_current_reporting_year())
 
     return HttpResponseRedirect(
         reverse_lazy(
@@ -644,12 +647,12 @@ def submitIndicatorData(request):
 
 @login_required
 @group_required("Member State", "Organisation", "SADC")
-def submitIndicatorDatabyOrg(request):
+def submit_indicator_data_by_org(request):
     """Submit Indicator data (by Organisations) and send notification to Admin/SADC"""
 
     IndicatorData.objects.filter(
         submitted=False,
-        reporting_year=Get_Reporting_Year(),
+        reporting_year=get_current_reporting_year(),
         indicator__indicator_assigned_to=IND_ASSIGNED_TO.ORGANIZATIONS,
         indicator__assignedindicator__assigned_to_organisation=request.user.getUserOrganisation(),
         indicator__focus_area__focusarea_status=True,
@@ -660,12 +663,13 @@ def submitIndicatorDatabyOrg(request):
     org = request.user.getUserOrganisation()
 
     """Here, the function call below ensures local currencies are converted to USD values"""
-    update_currency_indicators_to_usd(Get_Reporting_Year())
+    update_currency_indicators_to_usd(get_current_reporting_year())
 
-    SendNotification_to_admins(
-        org.organisation_name, request.user, Get_Reporting_Year()
+    send_message_to_admins(
+        org.organisation_name, request.user, get_current_reporting_year()
     )
-    SendNotification_to_self_orgs(org, request.user, Get_Reporting_Year())
+    send_message_copy_to_self_org(
+        org, request.user, get_current_reporting_year())
 
     return HttpResponseRedirect(
         reverse_lazy(

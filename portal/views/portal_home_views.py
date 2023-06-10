@@ -1,6 +1,7 @@
 
 from django.shortcuts import render
-from portal.forms import HomePageFilterYear,  latest_published_year
+from portal.forms import HomePageFilterYear
+from core.sharedfunctions import get_latest_published_year
 from django.shortcuts import render
 from .chart_views import (chart_telecom_revenue, chart_ict_contrib_gdp,
                           chart_telecom_investment,  chart_mobile_penetration_rate,
@@ -42,7 +43,7 @@ def index(request):
 
     form = HomePageFilterYear(request.GET or None)
 
-    year = latest_published_year()
+    year = get_latest_published_year()
 
     if request.method == "GET":
 
@@ -109,7 +110,7 @@ def socio_economic(request):
 
     form = HomePageFilterYear(request.GET or None)
 
-    year = latest_published_year()
+    year = get_latest_published_year()
 
     if request.method == "GET":
         year_filter = request.GET.get('year_filter')

@@ -93,7 +93,7 @@ def percentage_per_indicator(result_list):
         return 0
 
 
-def perUser(bandwidth, internet_user):
+def calculate_per_user(bandwidth, internet_user):
     if internet_user and bandwidth:
         try:
             return round(float(bandwidth) / float(internet_user), 2)
@@ -1592,7 +1592,7 @@ def chart_inter_internet_bandwidth_per_user(year):
 
     if 'International Internet Bandwidth' in data_dict and 'Total Internet Subscribers' in data_dict:
         data_calc[label] = list(map(
-            perUser, data_dict['International Internet Bandwidth'], data_dict['Total Internet Subscribers']))
+            calculate_per_user, data_dict['International Internet Bandwidth'], data_dict['Total Internet Subscribers']))
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''

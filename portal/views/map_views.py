@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse
 import requests
 import json
 from django.shortcuts import render
-from core.views import Get_Reporting_Year
+from core.sharedfunctions import get_current_reporting_year
 from portaldata.models import INDICATORDATA_STATUS, Indicator, IndicatorData
 
 from django.db.models import F, Q, When
@@ -76,7 +76,7 @@ def map():
     indicator = Indicator.objects.filter(id=1).first()
 
     data = json.loads(get_validated_data(indicator=indicator,
-                                         reporting_year=Get_Reporting_Year()).content)
+                                         reporting_year=get_current_reporting_year()).content)
 
     res = [(float(sub['value']) if is_number(sub['value']) else sub['value'])
            for sub in data]
@@ -153,6 +153,7 @@ def map():
 
 
         },
+        # type: ignore
         'title': {'text': indicator.label, 'align': 'center', },
 
         # 'subtitle': {

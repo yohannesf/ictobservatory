@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required
-def manageprofile(request):
+def view_profile(request):
     '''Show User's Profile on the Profile page'''
 
     user = request.user

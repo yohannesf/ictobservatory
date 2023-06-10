@@ -2,7 +2,7 @@
 from django.conf import settings
 
 from django.template import Library
-from core.views import Get_Reporting_Year, data_by_year_status
+from core.sharedfunctions import get_current_reporting_year, data_by_year_status
 
 from portaldata.models import INDICATORDATA_STATUS, ExchangeRateData, Indicator, IndicatorData, MemberState, Published
 #from portaldata.views.admin_views import data_by_year_status
@@ -21,7 +21,7 @@ def getActiveRequiredindicatorsbyassignedto(focusarea, assginedto, *args):
 @register.simple_tag
 def getCompletedActiveRequiredindicatorsbyassignedto(focusarea, assginedto, memberstate, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
-    return focusarea.count_completed_indicators_by_assignment(assginedto, memberstate, Get_Reporting_Year())
+    return focusarea.count_completed_indicators_by_assignment(assginedto, memberstate, get_current_reporting_year())
 
 
 @register.simple_tag
@@ -40,13 +40,13 @@ def calculateprogress(focusarea, assignedto, memberstate, *args):
 @register.simple_tag
 def getSubmitted(focusarea, assignedto, memberstate, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
-    return focusarea.check_submitted(assignedto, memberstate, Get_Reporting_Year())
+    return focusarea.check_submitted(assignedto, memberstate, get_current_reporting_year())
 
 
 @register.simple_tag
 def getRevisionRequest(focusarea, assignedto, memberstate, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
-    return focusarea.get_revision_request(assignedto, memberstate, Get_Reporting_Year())
+    return focusarea.get_revision_request(assignedto, memberstate, get_current_reporting_year())
 
 
 @register.simple_tag
@@ -54,7 +54,7 @@ def getRevisionRequest_any(assignedto, memberstate, *args):
 
     ind_count = IndicatorData.objects.filter(
         indicator__indicator_assigned_to=assignedto,
-        reporting_year=Get_Reporting_Year(),
+        reporting_year=get_current_reporting_year(),
         member_state=memberstate,
         submitted=False,
         validation_status=INDICATORDATA_STATUS.returned,
@@ -66,7 +66,7 @@ def getRevisionRequest_any(assignedto, memberstate, *args):
 @register.simple_tag
 def getRevisionRequestOrg(indicator, org, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
-    return indicator.get_revision_request(org, Get_Reporting_Year())
+    return indicator.get_revision_request(org, get_current_reporting_year())
 
 
 # End Region - Per focus area
@@ -95,7 +95,7 @@ def countallcompletedindicators(assignedto, memberstate):
     '''For Member States'''
     ind_count = IndicatorData.objects.filter(indicator__required=True, indicator__indicator_assigned_to=assignedto,
                                              member_state=memberstate, indicator__focus_area__focusarea_status=True,
-                                             reporting_year=Get_Reporting_Year(),
+                                             reporting_year=get_current_reporting_year(),
                                              ).exclude(value_NA=False, ind_value__exact=''
                                                        ).exclude(value_NA=False, ind_value__isnull=True).count()
     return ind_count + isExchangeDataCompleted(memberstate)
@@ -106,7 +106,7 @@ def countallcompletedindicatorsOrg(org):
     '''For Organisations'''
     ind_count = IndicatorData.objects.filter(indicator__required=True, indicator__assignedindicator__assigned_to_organisation=org,
                                              indicator__focus_area__focusarea_status=True, member_state__memberstate_status=True,
-                                             reporting_year=Get_Reporting_Year(),
+                                             reporting_year=get_current_reporting_year(),
                                              ).exclude(value_NA=False, ind_value__exact=''
                                                        ).exclude(value_NA=False, ind_value__isnull=True).count()
     return ind_count
@@ -149,7 +149,7 @@ def calculateoverallprogressOrg(org, *args):
 def getOverallToSubmit(assignedto, memberstate, *args):
     '''For Member States'''
     #memberstate = MemberState.objects.get(pk=memberstate)
-    ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=Get_Reporting_Year(),
+    ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
                                              indicator__indicator_assigned_to=assignedto,
                                              indicator__focus_area__focusarea_status=True,
                                              member_state=memberstate).count()
@@ -159,7 +159,7 @@ def getOverallToSubmit(assignedto, memberstate, *args):
 @register.simple_tag
 def getOverallToSubmitOrg(org, *args):
     '''For Organisations'''
-    ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=Get_Reporting_Year(),
+    ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
                                              indicator__assignedindicator__assigned_to_organisation=org,
                                              indicator__focus_area__focusarea_status=True,
                                              member_state__memberstate_status=True,
@@ -175,7 +175,7 @@ def isExchangeDataCompleted(memberstate, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
 
     completed = ExchangeRateData.objects.filter(currency__member_state=memberstate,
-                                                reporting_year=Get_Reporting_Year()).count()
+                                                reporting_year=get_current_reporting_year()).count()
     return completed
 
 
@@ -183,7 +183,7 @@ def isExchangeDataCompleted(memberstate, *args):
 def getExchangeDataUnsubmitted(memberstate, *args):
     #memberstate = MemberState.objects.get(pk=memberstate)
     ind_count = ExchangeRateData.objects.filter(currency__member_state=memberstate, submitted=False,
-                                                reporting_year=Get_Reporting_Year()).count()
+                                                reporting_year=get_current_reporting_year()).count()
 
     return ind_count
 

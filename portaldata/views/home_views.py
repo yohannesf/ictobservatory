@@ -7,12 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from core.models import SystemUser, User
 from core.sharedfunctions import get_published_years
-from core.views import Get_Reporting_Year
-from portaldata.forms.send_message_form import SendMessage_byAdmins, SendMessage_byMS
+
+from portaldata.forms.send_message_form import SendMessageFormForAdmins, SendMessageFormForMS
 
 from portaldata.views.indicator_data_views import (
-    SendNotification_to_self,
-    SendNotification_to_self_orgs,
+    send_message_copy_to_self_ms,
+    send_message_copy_to_self_org,
     update_currency_indicators_to_usd,
 )
 from ..models import Indicator, IndicatorData, MemberState
@@ -52,7 +52,7 @@ def send_emails(recipient_list, subject, message, mass=False):
 def send_message_by_admins(request):
     """Send Message, system wide"""
 
-    form = SendMessage_byAdmins(request.POST or None)
+    form = SendMessageFormForAdmins(request.POST or None)
 
     if request.method == "POST":
 
@@ -91,7 +91,7 @@ def send_message_by_admins(request):
                 send_emails(emails, subject=subject,
                             message=message, mass=True)
             messages.success(request, "Message Sent Successfully")
-            form = SendMessage_byAdmins()
+            form = SendMessageFormForAdmins()
 
             # return render(request, "portaldata/send_message.html", {"form": form})
 
@@ -104,7 +104,7 @@ def send_message_by_admins(request):
 def send_message_by_ms(request):
     """Send Messages to SADC"""
 
-    form = SendMessage_byMS(request.POST or None)
+    form = SendMessageFormForMS(request.POST or None)
 
     if request.method == "POST":
 
@@ -148,7 +148,7 @@ def send_message_by_ms(request):
                 send_emails(emails, subject=subject,
                             message=message, mass=False)
             messages.success(request, "Message Sent Successfully")
-            form = SendMessage_byMS()
+            form = SendMessageFormForMS()
 
             # return render(request, "portaldata/send_message.html", {"form": form})
 
