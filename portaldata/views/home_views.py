@@ -28,8 +28,6 @@ def index(request):
             years_qs = get_published_years()
             [update_currency_indicators_to_usd(i) for i in years_qs]
 
-        # update_currency_indicators_to_usd("2022")
-
     return render(request, "portaldata/index.html")
 
 

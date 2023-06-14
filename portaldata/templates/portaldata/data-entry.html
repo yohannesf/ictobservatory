@@ -271,15 +271,12 @@
 
  <script>
 
+ 
+
     //Function to disable input field (data) when a Value NA is checked.
     function toggleIndValue(clicked_id) {
 
       var value_NA = document.getElementById(clicked_id);
-      //console.log(value_NA);
-      //console.log(value_NA.checked);
-
-      
-
       
       
       //to get the initial 10 strings of the cheked id e.g. form_0-
@@ -292,17 +289,20 @@
       var input_field = document.getElementById(ind_value_label)
  
       if (value_NA.checked=== true) {
-        input_field.value = '';
-        input_field.disabled = true;
+          
+          input_field.readOnly = true;
+          input_field.value =  null;
+        
         
       }
       else {
-        input_field.disabled = false;
+        input_field.readOnly = false;
+        
       }
       
 
       
-    }
+    };
   
   
 

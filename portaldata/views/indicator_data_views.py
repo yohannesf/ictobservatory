@@ -170,6 +170,7 @@ def manage_indicatordata(request, id):
             if formset.is_valid():
                 for form in formset:
                     if form.is_valid():
+
                         instance = form.save(commit=False)
 
                         instance.updated_by = request.user
@@ -195,6 +196,7 @@ def manage_indicatordata(request, id):
             if formset.is_valid():
                 for form in formset.forms:
                     if form.is_valid():
+
                         instance = form.save(commit=False)
 
                         instance.reporting_year = get_current_reporting_year()

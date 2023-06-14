@@ -85,7 +85,7 @@ class IndicatorDataEntryForm(forms.ModelForm):
 
             elif v.data_type == DATA_TYPE.decimal:
                 self.fields["ind_value"] = forms.DecimalField(
-                    max_digits=6, decimal_places=2
+                    max_digits=20, decimal_places=2
                 )
 
                 self.fields["ind_value"].widget.attrs.update(
@@ -147,10 +147,6 @@ class IndicatorDataEditForm(forms.ModelForm):
 
         v = self.instance  # type: ignore
 
-        self.fields["value_NA"].widget.attrs[
-            "onclick"
-        ] = "javascript:toggleIndValue(this.id);"
-
         if v.indicator.data_type == DATA_TYPE.select:
             choices = make_choices(v.indicator)
             self.fields["ind_value"] = forms.ChoiceField(choices=choices)
@@ -178,7 +174,7 @@ class IndicatorDataEditForm(forms.ModelForm):
 
         elif v.indicator.data_type == DATA_TYPE.decimal:
             self.fields["ind_value"] = forms.DecimalField(
-                max_digits=6, decimal_places=2
+                max_digits=20, decimal_places=2
             )
             self.fields["ind_value"].widget.attrs.update(
                 {"class": "form-control"})
@@ -214,12 +210,17 @@ class IndicatorDataEditForm(forms.ModelForm):
         self.fields["ind_value"].required = False
 
         if v.value_NA == True:
-            self.fields["ind_value"].disabled = True
+            #self.fields["ind_value"].disabled = True
+            self.fields['ind_value'].widget.attrs['readonly'] = True
 
         if v.submitted:
             self.fields["ind_value"].disabled = True
             self.fields["comments"].disabled = True
             self.fields["value_NA"].disabled = True
+
+        self.fields["value_NA"].widget.attrs[
+            "onclick"
+        ] = "javascript:toggleIndValue(this.id);"
 
 
 class ExchangeRateDataForm(forms.ModelForm):
