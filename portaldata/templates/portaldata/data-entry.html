@@ -95,9 +95,15 @@
                       <span class="d-none">
                         {{form.indicator}}
                       </span>
-
+                      {% get_currency_type_information form.instance.indicator as currency_type_info %} 
                       <!--Indicator Name-->
-                      {{form.instance}}
+                      {{form.instance}} 
+                      {% if currency_type_info  %}
+                      <span class="small" >
+                        {{currency_type_info}}
+                      </span>
+                      {% endif %}
+                      
                     </td>
 
                     <td>
@@ -173,7 +179,14 @@
                           <span class="d-none" >
                           {{form.indicator}}
                           </span>
-                          {{form.initial.indicator}}
+                          {% get_currency_type_information form.initial.indicator as currency_type_info %} 
+                          {{form.initial.indicator}} 
+
+                          {% if currency_type_info  %}
+                          <span class="small" >
+                            {{currency_type_info}}
+                          </span>
+                          {% endif %}
                           
                         </td>
 
@@ -183,7 +196,8 @@
                           <div class="input-group has-validation">
                         
                          
-                            <span class="input-group-text">{% getInputDecorator form.initial.indicator %}</span>
+                            <span class="input-group-text">
+                            {% getInputDecorator form.initial.indicator %}</span>
                             {{ form.ind_value }}
                           
                             <div class="invalid-tooltip"> 

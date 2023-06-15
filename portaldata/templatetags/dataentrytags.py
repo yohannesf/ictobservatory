@@ -50,9 +50,13 @@ def getInputDecorator(indicator):
     else:
         return ''
 
-    '''
-    elif indicator.data_type == DATA_TYPE.currency and indicator.type_of_currency == 'usd':
-        return '$'
+
+@register.simple_tag
+def get_currency_type_information(indicator):
+
+    if indicator.data_type == DATA_TYPE.currency and indicator.type_of_currency == 'usd':
+        return '(USD)'
     elif indicator.data_type == DATA_TYPE.currency:
-        return 'LC'
-    '''
+        return '(local currency)'
+    else:
+        return None
