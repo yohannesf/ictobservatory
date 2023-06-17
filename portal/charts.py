@@ -70,7 +70,8 @@ def set_chart_options():
     return '''Highcharts.setOptions({
                      lang: {
 
-                        thousandsSep: ','
+                        thousandsSep: ',',
+                        numericSymbols: ["k", "mn", "B", "T", "P", "E"]
                         }
                         }
                     );'''
