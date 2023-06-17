@@ -19,9 +19,22 @@ body {
     opacity: 1;
 }
 
+/* .form-select[readonly] option,
+.form-select[readonly] optgroup {
+    display: none;
+    background-color: #e9ecef;
+    opacity: 1;
+} */
+
 .form-select {
     color: var(--bs-dark) !important;
 }
+
+/* .form-select:disabled,
+.form-select[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+} */
 
 .table {
     color: var(--bs-dark) !important;

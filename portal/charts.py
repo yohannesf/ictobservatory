@@ -119,7 +119,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
     chart = {
 
         'chart': {'renderTo': 'container', 'type': 'column', },
-        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
+        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}, 'title': {'text': 'Member State', 'enabled': False}},
         'title': {'text': chart_title + ' (' + year + ')'},
         # 'subtitle': {'text': 'Year: ' + year},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, 'max': max_value if max_value else None},
@@ -223,7 +223,7 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
     chart = {
 
         'chart': {'renderTo': 'container', 'type': 'line', },
-        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
+        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}, 'title': {'text': 'Member State', 'enabled': False}},
         'title': {'text': chart_title + ' (' + year + ')'},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, },
         'credits': {'enabled': False},
@@ -314,7 +314,7 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
     chart = {
 
         'chart': {'renderTo': 'container', 'type': 'column', },
-        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
+        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}, 'title': {'text': 'Member State', 'enabled': False}},
         'title': {'text': chart_title + ' (' + year + ')'},
         'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'},
                   'stackLabels': {'enabled': False, 'style': {'fontSize': '9px', 'textOutline': 'none'}}, },
@@ -408,7 +408,7 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
                       'whiteSpace': 'nowrap',
 
                       'fontSize': '10px'
-                  }, }},
+                  }, }, 'title': {'text': 'Member State', 'enabled': False}},
         'title': {'text': chart_title + ' (' + year + ')'},
         'pane': {'size': '95%'},
         'yAxis': {'gridLineInterpolation': 'polygon',  'lineWidth': 2,  'min': 0,
@@ -490,26 +490,27 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
         data.append({
             'name': k,
             'y': v,
-            'z': 119,
-            'color': color[random.randint(0, len(color)-1)],
+            # 'z': 119,
+            # 'color': color[random.randint(0, len(color)-1)],
             # if single series, don't show in legend
-            'showInLegend': False if len(data_dict) == 1 else True
+            # 'showInLegend': False if len(data_dict) == 1 else True
         })
 
     chart = {
 
         'chart': {'renderTo': 'container', 'type': 'variablepie', 'marginTop': 20, },
-        'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}},
+        # 'xAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}, 'title': {'text': 'Member State', 'enabled': False}},
+        # 'zAxis': {'categories': categories, 'labels': {'textOverflow': 'none'}, 'title': {'text': 'Member State', 'enabled': False}},
         'title': {'text': chart_title + ' (' + year + ')'},
-        'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, },
+        # 'yAxis': {'title': {'text': y_axis_title}, 'labels': {'overflow': 'wrap'}, },
         'credits': {'enabled': False},
         'legend': {'verticalAlign': 'top',  'align': 'right', 'floating': True,  'layout': 'vertical'},
         # 'plotOptions': {'series': {'dataLabels': {'enabled': 'true', 'rotation': 270, 'y': -25,   'crop': False, 'overflow': 'none'}}},
         'series': [{
-            'minPointSize': 10,
-            'innerSize': '50%',
-            'zMin': 0,
-            'name': 'Data',
+            'minPointSize': 60,
+            'innerSize': '60%',
+            # 'zMin': 0,
+            'name': chart_title,  # 'Data',
             'data': data,
             'dataLabels': {'format': '{point.name}<br>{point.y}%', 'align': 'center', },
         }
