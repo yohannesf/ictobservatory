@@ -130,6 +130,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
         # 'plotOptions': {'series': {'dataLabels': {'enabled': 'true', 'rotation': 270, 'y': -25,   'crop': False, 'overflow': 'none'}}},
         'series': series,
         'exporting':  {'chartOptions':
+
                        {
                            'title': {'text': chart_title + ' (' + year + ')', 'style': {
                                'fontWeight': 'bold',
@@ -141,15 +142,21 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
                            #    'plotOptions': {'series': {'dataLabels': {
                            #        'enabled': 'true', 'rotation': 270, 'y': -25, 'crop': False, 'overflow': 'none'}}}
                        },
+
+
                        'filename': chart_title + '_' + year,
                        # 'sourceWidth': 1000,
 
-                       'csv': {
+                       #    'csv': {
 
-                       },
+                       #        # 'numberormat': '{point.y:,.2f}',
+
+                       #    },
                        #    'tableCaption': 'Chart Data',
                        'buttons': {'contextButton': {'enabled': False}}
                        },
+
+
         'tooltip': {'shared': False,
                     'pointFormat': '{series.name}: <b>{point.y:,.'+round+'f}'+percent_value+'</b><br/>'
 
@@ -157,6 +164,7 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
         'lang': {
             'noData': 'No Data'
         },
+
 
         'noData': {
             'style': {
@@ -531,6 +539,23 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
                        },
                        'filename': chart_title + '_' + year,
                        # 'sourceWidth': 1000,
+                       #    'csv': {
+                       #        '''
+                       #        columnHeaderFormatter: function (item, key) {
+                       #                 if (!item || item instanceof Highcharts.Axis) {
+                       #                     return item.options.title.text;
+                       #                 }
+                       #                 // Item is not axis, now we are working with series.
+                       #                 // Key is the property on the series we show in this column.
+                       #                 return {
+                       #                     topLevelColumnTitle: 'Temperature',
+                       #                     columnTitle: key === 'y' ? 'avg' : key
+                       #                 };
+                       #             },
+                       #        '''
+
+                       #    },
+
 
                        'buttons': {'contextButton': {'enabled': False}}
                        },

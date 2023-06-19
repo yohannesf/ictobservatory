@@ -600,7 +600,10 @@ def chart_telecom_revenue(year):
             indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
             if (entry.ind_value_adjusted):
-                data.append(float(entry.ind_value_adjusted))
+                try:
+                    data.append(round(float(entry.ind_value_adjusted), 2))
+                except:
+                    data.append(float(entry.ind_value_adjusted))
             else:
                 data.append(entry.ind_value_adjusted)
         data_dict[indicator_label] = data
@@ -789,7 +792,10 @@ def chart_telecom_investment(year):
             indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
             if (entry.ind_value_adjusted):
-                data.append(float(entry.ind_value_adjusted))
+                try:
+                    data.append(round(float(entry.ind_value_adjusted), 2))
+                except:
+                    data.append(float(entry.ind_value_adjusted))
             else:
                 data.append(entry.ind_value_adjusted)
 
@@ -1698,7 +1704,10 @@ def chart_fixed_telephone_tariffs(year):
             indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
             if (entry.ind_value_adjusted):
-                data.append(float(entry.ind_value_adjusted))
+                try:
+                    data.append(round(float(entry.ind_value_adjusted), 4))
+                except:
+                    data.append(float(entry.ind_value_adjusted))
             else:
                 data.append(entry.ind_value_adjusted)
 
@@ -1777,7 +1786,10 @@ def chart_sms_tariff(year):
             indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
             if (entry.ind_value_adjusted):
-                data.append(float(entry.ind_value_adjusted))
+                try:
+                    data.append(round(float(entry.ind_value_adjusted), 4))
+                except:
+                    data.append(float(entry.ind_value_adjusted))
             else:
                 data.append(entry.ind_value_adjusted)
 
@@ -1999,8 +2011,14 @@ def chart_exchange_rate(year):
                 categories.append(entry.currency.member_state.member_state)
 
             if (entry.exchange_rate):
-                data.append(1/float(entry.exchange_rate))
+
+                try:
+                    data.append(round(1/float(entry.exchange_rate), 5))
+                except:
+                    data.append(1/float(entry.exchange_rate))
+
             else:
+
                 data.append('')
 
         data_dict[indicator_label] = data
