@@ -64,12 +64,12 @@ def sum_val(data_dict, indicator_label):
         return 0
 
 
-def mean_val(data_dict, indicator_label):
+def mean_val(data_dict, indicator_label, round_to=2):
     if data_dict:
         if indicator_label in data_dict:
             if data_dict[indicator_label]:
                 try:
-                    return round(mean(d for d in data_dict[indicator_label] if d != ''), 2)
+                    return round(mean(d for d in data_dict[indicator_label] if d != ''), round_to)
                 except:
                     return 0
             else:
@@ -1725,7 +1725,7 @@ def chart_fixed_telephone_tariffs(year):
                 categories.append("SADC Average")
 
                 data_dict[indicator_label].append(
-                    mean_val(data_dict, indicator_label))
+                    mean_val(data_dict, indicator_label, 4))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title,
@@ -1807,7 +1807,7 @@ def chart_sms_tariff(year):
             categories.append("SADC Average")
 
             data_dict[indicator_label].append(
-                mean_val(data_dict, indicator_label))
+                mean_val(data_dict, indicator_label, 4))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='3')
@@ -2035,7 +2035,7 @@ def chart_exchange_rate(year):
             categories.append("SADC Average")
 
             data_dict[indicator_label].append(
-                mean_val(data_dict, indicator_label))
+                mean_val(data_dict, indicator_label, 5))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='3')
