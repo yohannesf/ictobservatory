@@ -53,14 +53,7 @@
      
 
 
-      {% if form.errors %}
-       
-     
-
-      <p>Your username and password didn't match. Please try again.</p>
-
-     
-      {% endif %}
+      
 
     
   
@@ -94,7 +87,12 @@
             {% comment %} <input type="password" name="password" class="form-control" id="yourPassword" required=""> {% endcomment %}
             {{ form.password|addclass:'form-control' }}
             <div class="invalid-feedback">Please enter your password!</div></div>
-
+            <div class="col-12"> 
+            {% if form.errors %}
+                  {{ form.non_field_errors }}
+                  {% comment %} <p>Your username and password didn't match. Please try again.</p> {% endcomment %}
+            {% endif %}
+            </div>
 
             <div class="col-12">
               <button class="btn btn-primary w-100" type="submit">Login</button>

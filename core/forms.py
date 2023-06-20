@@ -7,7 +7,7 @@ from .models import User
 
 from django.utils.translation import gettext as _
 
-from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserChangeForm as DjangoUserChangeForm
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm, UserChangeForm as DjangoUserChangeForm
 from django.contrib.auth import get_user_model, password_validation
 
 from django import forms
@@ -151,7 +151,8 @@ class UserChangeForm(DjangoUserChangeForm):
 #         return self.cleaned_data
 
 
-# class LoginForm(forms.Form):
+# class LoginForm(AuthenticationForm):
+#     print("here")
 #     username = forms.CharField()
 #     password = forms.CharField(widget=forms.PasswordInput)
 

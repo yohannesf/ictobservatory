@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth.password_validation import (
     UserAttributeSimilarityValidator,
     MinimumLengthValidator,
@@ -29,11 +30,13 @@ class ExtendedUserModelBackend(ModelBackend):
             UserModel().set_password(password)
         else:
 
+            if not user.is_active:
+
+                raise forms.ValidationError(
+                    'Account is inactive. Please contact SADC Secretariat.')
+
             if user.check_password(password) and self.user_can_authenticate(user):
                 return user
-
-            # if not user.is_active:
-            # raise forms.ValidationError('User is inactive.')
 
 
 # This is a possible code block for django settings to enforce password requirements
