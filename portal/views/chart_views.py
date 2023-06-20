@@ -263,6 +263,14 @@ def chart_population(year):
 
                 query_list.append(indicator_data)
 
+    # cts = [entry.member_state.member_state_short_name or entry.member_state.member_state
+    #        for qs in query_list for entry in qs]
+    # print(cts)
+
+    # chart_configs = {
+    #     item.indicator: item for item in ChartConfig.objects.filter(chart=chart)}
+    # print(chart_configs)
+
     for qs in query_list:
         data = []
         for entry in qs:
