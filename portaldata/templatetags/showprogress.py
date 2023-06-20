@@ -1,12 +1,13 @@
 
+from django.db.models import Q
 from django.conf import settings
 
 from django.template import Library
 from core.sharedfunctions import get_current_reporting_year, data_by_year_status
 
 from portaldata.models import INDICATORDATA_STATUS, ExchangeRateData, Indicator, IndicatorData, MemberState, Published
-#from portaldata.views.admin_views import data_by_year_status
-#from portaldata.views.admin_views import indicator_data_by_year_status
+# from portaldata.views.admin_views import data_by_year_status
+# from portaldata.views.admin_views import indicator_data_by_year_status
 
 register = Library()
 
@@ -20,7 +21,7 @@ def getActiveRequiredindicatorsbyassignedto(focusarea, assginedto, *args):
 
 @register.simple_tag
 def getCompletedActiveRequiredindicatorsbyassignedto(focusarea, assginedto, memberstate, *args):
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
     return focusarea.count_completed_indicators_by_assignment(assginedto, memberstate, get_current_reporting_year())
 
 
@@ -39,13 +40,13 @@ def calculateprogress(focusarea, assignedto, memberstate, *args):
 
 @register.simple_tag
 def getSubmitted(focusarea, assignedto, memberstate, *args):
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
     return focusarea.check_submitted(assignedto, memberstate, get_current_reporting_year())
 
 
 @register.simple_tag
 def getRevisionRequest(focusarea, assignedto, memberstate, *args):
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
     return focusarea.get_revision_request(assignedto, memberstate, get_current_reporting_year())
 
 
@@ -59,13 +60,13 @@ def getRevisionRequest_any(assignedto, memberstate, *args):
         submitted=False,
         validation_status=INDICATORDATA_STATUS.returned,
     ).count()
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
     return ind_count
 
 
 @register.simple_tag
 def getRevisionRequestOrg(indicator, org, *args):
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
     return indicator.get_revision_request(org, get_current_reporting_year())
 
 
@@ -99,6 +100,22 @@ def countallcompletedindicators(assignedto, memberstate):
                                              ).exclude(value_NA=False, ind_value__exact=''
                                                        ).exclude(value_NA=False, ind_value__isnull=True).count()
     return ind_count + isExchangeDataCompleted(memberstate)
+
+
+@register.simple_tag
+def countalloptionalcompletedindicators(assignedto, memberstate):
+    '''For Member States'''
+    ind_count = IndicatorData.objects.filter(indicator__required=False, indicator__indicator_assigned_to=assignedto,
+                                             member_state=memberstate, indicator__focus_area__focusarea_status=True,
+                                             reporting_year=get_current_reporting_year(),
+                                             ).exclude(~Q(value_NA=True) & (Q(ind_value='') | Q(ind_value=None))).count()
+    # ind_count = IndicatorData.objects.filter(indicator__required=False, indicator__indicator_assigned_to=assignedto,
+    #                                          member_state=memberstate, indicator__focus_area__focusarea_status=True,
+    #                                          reporting_year=get_current_reporting_year(),
+    #                                          ).exclude(ind_value__exact=''
+    #                                                    ).exclude(ind_value__isnull=True).count()
+
+    return ind_count
 
 
 @register.simple_tag
@@ -148,15 +165,20 @@ def calculateoverallprogressOrg(org, *args):
 @register.simple_tag
 def getOverallToSubmit(assignedto, memberstate, *args):
     '''For Member States'''
-    #memberstate = MemberState.objects.get(pk=memberstate)
+
     ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
                                              indicator__indicator_assigned_to=assignedto,
                                              indicator__focus_area__focusarea_status=True,
-                                             member_state=memberstate).count()
+                                             member_state=memberstate).exclude(~Q(value_NA=True) & (Q(ind_value='') | Q(ind_value=None))).count()
+    # ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
+    #                                          indicator__indicator_assigned_to=assignedto,
+    #                                          indicator__focus_area__focusarea_status=True,
+    #                                          member_state=memberstate).exclude(~Q(value_NA=True) & (Q(ind_value='') | Q(ind_value=None))).count()
+    print(ind_count)
     return ind_count + getExchangeDataUnsubmitted(memberstate)
 
 
-@register.simple_tag
+@ register.simple_tag
 def getOverallToSubmitOrg(org, *args):
     '''For Organisations'''
     ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
@@ -170,25 +192,25 @@ def getOverallToSubmitOrg(org, *args):
 # End Region - Overall progress
 
 
-@register.simple_tag
+@ register.simple_tag
 def isExchangeDataCompleted(memberstate, *args):
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
 
     completed = ExchangeRateData.objects.filter(currency__member_state=memberstate,
                                                 reporting_year=get_current_reporting_year()).count()
     return completed
 
 
-@register.simple_tag
+@ register.simple_tag
 def getExchangeDataUnsubmitted(memberstate, *args):
-    #memberstate = MemberState.objects.get(pk=memberstate)
+    # memberstate = MemberState.objects.get(pk=memberstate)
     ind_count = ExchangeRateData.objects.filter(currency__member_state=memberstate, submitted=False,
                                                 reporting_year=get_current_reporting_year()).count()
 
     return ind_count
 
 
-@register.simple_tag
+@ register.simple_tag
 def getCountbyYearandStatus(reporting_year, validation_status):
     '''Count of indicators by their status (validated, ready, returned) for the selected reporting year'''
     ind_count = data_by_year_status(

@@ -293,11 +293,14 @@
                       <!--end::Main_Title-->
                       <!--begin::Subtitle-->
                               {% countallcompletedindicators 'M' user.getUserMemberState as OveallCompletedIndicators %}
+                              {% countalloptionalcompletedindicators 'M' user.getUserMemberState as OveallOptionalCompletedIndicators %}
                               {% countallactiveindicators 'M' as OverallRequiredIndicators  %}
                               {% comment %} {% calculateprogress focusarea 'M' user.getUserMemberState %} {% endcomment %}
                               {% calculateoverallprogress 'M' user.getUserMemberState as Overallcalculatepg %}
-                      <span class="text-white opacity-50 pt-1 fw-bold fs-6">{{OveallCompletedIndicators}} of {{OverallRequiredIndicators}}
-                        completed</span>
+                      <span class="text-white opacity-50 pt-1 fw-bold fs-6">Required: {{OveallCompletedIndicators}} of {{OverallRequiredIndicators}}
+                         completed </span>
+                         <span class="text-white opacity-50 pt-1 fw-bold fs-6">Optional: {{OveallOptionalCompletedIndicators}}
+                          completed</span>
 
                               
                               
