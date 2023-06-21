@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SADC ICT Observatory is a central point of reference for reliable, accurate and up-to-date collection and dissemination of ICT indicators, measurement, benchmarking and reports"/>
+
     <title>{% block title %}{% endblock title %} - SADC ICT Observatory</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
    
@@ -14,7 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
     <link rel="stylesheet" href="{% static 'css/highcharts.css' %}" />
      <!-- Chart.JS -->
-     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+     {% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script> {% endcomment %}
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/png" />
@@ -144,11 +146,11 @@
 
     
 
-    <!-- Chart.JS -->
+    {% comment %} <!-- Chart.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
 
     
-    <script src="{% static 'js/chart.min.js' %}"></script>
+    <script src="{% static 'js/chart.min.js' %}"></script> {% endcomment %}
     <script src="{% static 'js/bs-init.js' %}"></script>
     <script src="{% static 'js/theme.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>

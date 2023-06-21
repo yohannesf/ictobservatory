@@ -15,12 +15,12 @@
 <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
+
+
 {% endblock extra_js_top %}
 
 
 {% block content %}
-
-
 
 
 
@@ -58,9 +58,10 @@
         </form>
     </div>
 
-
+       
       
     <div class="row">
+             
 
     <!--Start: Iterate Charts-->  
     
@@ -70,10 +71,11 @@
         <div class="card shadow mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="text-primary fw-bold m-0">{{chart|slice:"1:2"|first}}   ({{chart|slice:"2:3"|first}})</h6>
-                <div class="dropdown no-arrow">
+                  <div class="dropdown no-arrow">
                     <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-bars text-bold"></i></button>
                     <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
                         <p class="dropdown-header fw-bold">Options:</p>
+                            
                             <button class="dropdown-item" onclick="return exportChart({{chart|last}},'viewinfullscreen')" value="viewinfullscreen">View in fullscreen</button>
                             <button class="dropdown-item" onclick="return exportChart({{chart|last}},'png')" value="image/png">Download PNG</button>
                             <button class="dropdown-item" onclick="return exportChart({{chart|last}},'jpeg')" value="image/jpeg">Download JPEG</button>
@@ -102,8 +104,37 @@
       
     </div>
   </div>
-  
-  
+
+  {% comment %} 
+  <script>
+    
+
+<div class="bd-example">
+    <button type="button" class="btn btn-lg btn-danger"  data-toggle="popover" title="Popover title" 
+    data-content='test'>Click to toggle popover</button>  </div>
+
+<div class="d-sm-flex justify-content-between align-items-center mb-4 pb-5">
+<button type="button" class="btn popover" data-toggle="popover"  title="Popover title" 
+data-content="Test">Click to toggle popover</button>
+</div>
+
+<a class="btn btn-link login-popover" rel="popover"  data-title="Sign in to the website builder" data-html="true" data-content="Lo4545445"> Sign in  <span class="caret"></span></a> 
+
+    $(function () {
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            placement : 'bottom',
+            sanitize: false,
+            container: 'body',
+            content : "Here is my content",
+            trigger: 'focus'
+        })
+      }); 
+
+     
+    </script>
+    {% endcomment %}
+    
 
 
 {% endblock content %}
@@ -117,6 +148,7 @@
   </footer>{% endblock footer %}
 
 {% block extra_js %}
+
     <script>
         function exportChart(container, option) {
             var chart = $(container).highcharts();

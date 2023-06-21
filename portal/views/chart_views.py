@@ -248,6 +248,7 @@ def chart_population(year):
     if chart:
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
+        chart_description = chart.description
         aggregation = chart.aggregation
 
         indicators_list = ChartConfig.objects.filter(chart=chart)
