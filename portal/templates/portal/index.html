@@ -166,8 +166,8 @@
                     <!--Chart Description-->
                     {% if chart|slice:"3:4"|first  %}
                     <button class="btn btn-circle bg-hover-info" data-toggle="popover" 
-                    title="{{chart|slice:"1:2"|first|safe}}" 
-                    data-bs-content="{{chart|slice:"3:4"|first}}">
+                    title="{{chart|slice:"1:2"|first}}" 
+                    data-bs-content="{{chart|slice:"3:4"|first|safe}}">
                         <span  style="color: blue;" class=" bi bi-info-circle small "></span>
                     </button>
                     {% endif %}
