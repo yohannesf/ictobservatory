@@ -79,7 +79,7 @@ def set_chart_options():
 
 def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
                 valign='bottom', floating=False, layout='horizontal', round='1', width='',
-                max_value=None, chart_color=None):
+                max_value=None, chart_color=None, chart_description=None):
     '''
     A function to generate column charts.
         Categories: Categories (x axis)
@@ -198,10 +198,10 @@ def ColumnChart(categories, data_dict, chart_title, y_axis_title, year,
     </div>
     '''
 
-    return [html, chart_title, year, container]
+    return [html, chart_title, year, chart_description, container]
 
 
-def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line Charts
+def LineChart(categories, data_dict, chart_title, y_axis_title, year, chart_description=None):  # Line Charts
     '''
     A function to generate line charts.
         Categories: Categories (x axis)
@@ -280,11 +280,11 @@ def LineChart(categories, data_dict, chart_title, y_axis_title, year):  # Line C
     </div>
     '''
 
-    return [html, chart_title, year, container]
+    return [html, chart_title, year, chart_description, container]
 
 
 def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
-                 stacking='normal', grouped_stack='', valign='bottom', floating=False, chart_color=None):  # Stacked
+                 stacking='normal', grouped_stack='', valign='bottom', floating=False, chart_color=None, chart_description=None):  # Stacked
     '''
     A function to stackedchart column charts.
         Categories: Categories (x axis)
@@ -376,10 +376,10 @@ def StackedChart(categories, data_dict, chart_title, y_axis_title, year,
     </div>
     '''
 
-    return [html, chart_title, year, container]
+    return [html, chart_title, year, chart_description, container]
 
 
-def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # Spiderweb chart
+def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year, chart_description=None):  # Spiderweb chart
     '''
     A function to spiderweb charts.
         Categories: Categories (x axis)
@@ -474,10 +474,10 @@ def SpiderWebChart(categories, data_dict, chart_title, y_axis_title, year):  # S
     </div>
     '''
 
-    return [html, chart_title, year, container]
+    return [html, chart_title, year, chart_description, container]
 
 
-def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Variable Pie Charts
+def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year, chart_description=None):  # Variable Pie Charts
     '''
     A function to SunBurst Charts.
         Categories: Categories (x axis)
@@ -586,4 +586,4 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year):  # Va
     </div>
     '''
 
-    return [html, chart_title, year, container]
+    return [html, chart_title, year, chart_description, container]

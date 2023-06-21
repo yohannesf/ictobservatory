@@ -66,12 +66,31 @@
     <!--Start: Iterate Charts-->  
     
     {% for chart in charts  %}
+
+   
        
     <div class="col-lg-4 col-xl-6">
         <div class="card shadow mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="text-primary fw-bold m-0">{{chart|slice:"1:2"|first}}   ({{chart|slice:"2:3"|first}})</h6>
-                  <div class="dropdown no-arrow">
+                <h6 class="text-primary fw-bold m-0">
+                    {{chart|slice:"1:2"|first}}   ({{chart|slice:"2:3"|first}})</h6>
+                
+                  
+               
+               
+               
+                   <div class="dropdown no-arrow">
+                <!--Chart Description-->
+                    {% if chart|slice:"3:4"|first  %}
+                    <button class="btn btn-circle bg-hover-info" data-toggle="popover" 
+                    title="{{chart|slice:"1:2"|first}}" 
+                    data-bs-content="{{chart|slice:"3:4"|first}}">
+                        <span  style="color: blue;" class=" bi bi-info-circle small "></span>
+                    </button>
+                    {% endif %}
+                <!--end-->
+
+
                     <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-bars text-bold"></i></button>
                     <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
                         <p class="dropdown-header fw-bold">Options:</p>
@@ -88,6 +107,8 @@
                 </div>
             </div>
             <div class="card-body" >
+                
+               
                     {{chart|first|safe}}
             </div>
         </div>
@@ -104,9 +125,24 @@
       
     </div>
   </div>
+ 
+
+  <script>
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+      }); 
+
+     
+    </script>
+  {% comment %} <script>
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+})
+  </script> {% endcomment %}
 
   {% comment %} 
-  <script>
+ 
     
 
 <div class="bd-example">
@@ -120,6 +156,7 @@ data-content="Test">Click to toggle popover</button>
 
 <a class="btn btn-link login-popover" rel="popover"  data-title="Sign in to the website builder" data-html="true" data-content="Lo4545445"> Sign in  <span class="caret"></span></a> 
 
+ <script>
     $(function () {
         $('[data-toggle="popover"]').popover({
             html: true,

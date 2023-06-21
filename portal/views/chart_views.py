@@ -240,6 +240,7 @@ def chart_population(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -308,7 +309,8 @@ def chart_population(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                             chart_title=chart_title, y_axis_title=y_axis_title,
+                             year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -329,6 +331,7 @@ def chart_population_male_female(year):
     main_stack_label = ''
 
     data_dict = {}
+    chart_description = ''
 
     chart = Chart.objects.filter(
         chart_name='chart_population_male_female').first()
@@ -337,6 +340,7 @@ def chart_population_male_female(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
+        chart_description = chart.description
 
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
@@ -394,7 +398,8 @@ def chart_population_male_female(year):
                             y_axis_title=y_axis_title,
                             year=year, stacking='percent',
                             grouped_stack=main_stack_label,
-                            chart_color=color_lightblue_lightgreen)  # ,
+                            chart_color=color_lightblue_lightgreen,
+                            chart_description=chart_description)  # ,
 
     return recieved
 
@@ -411,6 +416,7 @@ def chart_gpd_per_capita(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -420,6 +426,7 @@ def chart_gpd_per_capita(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
+        chart_description = chart.description
 
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
@@ -475,7 +482,8 @@ def chart_gpd_per_capita(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title, year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -493,6 +501,8 @@ def chart_gni_per_capita(year):
     y_axis_title = ''
     aggregation = ''
 
+    chart_description = ''
+
     data_dict = {}
 
     chart = Chart.objects.filter(chart_name='chart_gni').first()
@@ -501,6 +511,7 @@ def chart_gni_per_capita(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
+        chart_description = chart.description
 
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
@@ -551,7 +562,8 @@ def chart_gni_per_capita(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title, year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -567,6 +579,7 @@ def chart_telecom_revenue(year):
 
     chart_title = ''
     y_axis_title = ''
+    chart_description = ''
 
     main_stack_label = ''
 
@@ -577,7 +590,7 @@ def chart_telecom_revenue(year):
     if chart:
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -619,7 +632,9 @@ def chart_telecom_revenue(year):
 
     recieved = StackedChart(categories=categories, data_dict=data_dict,
                             chart_title=chart_title, y_axis_title=y_axis_title, year=year,
-                            stacking='normal', grouped_stack=main_stack_label, valign='bottom', floating=False)  # ,
+                            stacking='normal',
+                            grouped_stack=main_stack_label,
+                            valign='bottom', floating=False, chart_description=chart_description)  # ,
 
     return recieved
 
@@ -638,6 +653,7 @@ def chart_internet_user_penetration(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -648,7 +664,7 @@ def chart_internet_user_penetration(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         population_indicator = ChartConfig.objects.filter(
@@ -746,7 +762,7 @@ def chart_internet_user_penetration(year):
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year,
                              valign='bottom', floating=False, layout='horizontal',
-                             width='120', chart_color=sixcolors)
+                             width='120', chart_color=sixcolors, chart_description=chart_description)
 
     return chart_html
 
@@ -763,6 +779,7 @@ def chart_telecom_investment(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -772,7 +789,7 @@ def chart_telecom_investment(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -826,7 +843,7 @@ def chart_telecom_investment(year):
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title, y_axis_title=y_axis_title,
-                             year=year, chart_color=tricolors)
+                             year=year, chart_color=tricolors, chart_description=chart_description)
 
     return chart_html
 
@@ -844,6 +861,7 @@ def chart_existing_ict_regulation(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -854,7 +872,7 @@ def chart_existing_ict_regulation(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -915,7 +933,7 @@ def chart_existing_ict_regulation(year):
     data_dict['Existence of policy'] = spiderweb_data
 
     chart_html = SpiderWebChart(categories=categories, data_dict=data_dict,
-                                chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                                chart_title=chart_title, y_axis_title=y_axis_title, year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -935,6 +953,7 @@ def chart_existence_of_policy_by_ms(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -945,7 +964,7 @@ def chart_existence_of_policy_by_ms(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1012,7 +1031,7 @@ def chart_existence_of_policy_by_ms(year):
                              y_axis_title=y_axis_title,
                              year=year, round='2',
                              max_value=100,
-                             chart_color=color_lightblue)
+                             chart_color=color_lightblue, chart_description=chart_description)
 
     return chart_html
 
@@ -1029,6 +1048,7 @@ def chart_mobile_penetration_rate(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1039,7 +1059,7 @@ def chart_mobile_penetration_rate(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1093,7 +1113,7 @@ def chart_mobile_penetration_rate(year):
                 scorecard_sadc_mobile_penetration(year))
 
     chart_html = LineChart(categories=categories, data_dict=data_dict,
-                           chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                           chart_title=chart_title, y_axis_title=y_axis_title, year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -1110,6 +1130,7 @@ def chart_fixed_telephone_line(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1120,7 +1141,7 @@ def chart_fixed_telephone_line(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1174,7 +1195,7 @@ def chart_fixed_telephone_line(year):
                              chart_title=chart_title,
                              y_axis_title=y_axis_title,
                              year=year,
-                             chart_color=color_blue)
+                             chart_color=color_blue, chart_description=chart_description)
 
     return chart_html
 
@@ -1191,6 +1212,7 @@ def chart_pop_coveredby_mobl_network(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1201,7 +1223,7 @@ def chart_pop_coveredby_mobl_network(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1272,7 +1294,7 @@ def chart_pop_coveredby_mobl_network(year):
                              chart_title=chart_title,
                              y_axis_title=y_axis_title,
                              year=year,
-                             chart_color=tricolors)
+                             chart_color=tricolors, chart_description=chart_description)
 
     return chart_html
 
@@ -1289,6 +1311,7 @@ def chart_mobl_geog_coverage(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1299,7 +1322,7 @@ def chart_mobl_geog_coverage(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1356,7 +1379,7 @@ def chart_mobl_geog_coverage(year):
                              chart_title=chart_title,
                              y_axis_title=y_axis_title,
                              year=year,
-                             chart_color=color_green)
+                             chart_color=color_green, chart_description=chart_description)
 
     return chart_html
 
@@ -1373,6 +1396,7 @@ def chart_inter_internet_bandwidth(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1383,7 +1407,7 @@ def chart_inter_internet_bandwidth(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1437,7 +1461,7 @@ def chart_inter_internet_bandwidth(year):
                              chart_title=chart_title,
                              y_axis_title=y_axis_title,
                              year=year,
-                             chart_color=color_blue)
+                             chart_color=color_blue, chart_description=chart_description)
 
     return chart_html
 
@@ -1454,6 +1478,7 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1464,7 +1489,7 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1514,7 +1539,7 @@ def chart_inter_internet_bandwidth_per_inhabitant(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -1674,6 +1699,7 @@ def chart_fixed_telephone_tariffs(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1684,7 +1710,7 @@ def chart_fixed_telephone_tariffs(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1739,7 +1765,7 @@ def chart_fixed_telephone_tariffs(year):
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title,
                              y_axis_title=y_axis_title, year=year,
-                             round='3', chart_color=sixcolors)
+                             round='3', chart_color=sixcolors, chart_description=chart_description)
 
     return chart_html
 
@@ -1756,6 +1782,7 @@ def chart_sms_tariff(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1766,7 +1793,7 @@ def chart_sms_tariff(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1819,7 +1846,8 @@ def chart_sms_tariff(year):
                 mean_val(data_dict, indicator_label, 4))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='3')
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title, year=year, round='3', chart_description=chart_description)
 
     return chart_html
 
@@ -1836,6 +1864,7 @@ def chart_literacy_rate(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1846,6 +1875,7 @@ def chart_literacy_rate(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
+        chart_description = chart.description
 
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
@@ -1896,7 +1926,9 @@ def chart_literacy_rate(year):
                 mean_val(data_dict, indicator_label))
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
-                             chart_title=chart_title, y_axis_title=y_axis_title, year=year, round='0', max_value=100)
+                             chart_title=chart_title,
+                             y_axis_title=y_axis_title, year=year, round='0',
+                             max_value=100, chart_description=chart_description)
 
     return chart_html
 
@@ -1913,6 +1945,7 @@ def chart_ict_contrib_gdp(year):
     chart_title = ''
     y_axis_title = ''
     aggregation = ''
+    chart_description = ''
 
     data_dict = {}
 
@@ -1923,7 +1956,7 @@ def chart_ict_contrib_gdp(year):
         chart_title = chart.chart_title
         y_axis_title = chart.y_axis_title
         aggregation = chart.aggregation
-
+        chart_description = chart.description
         indicators_list = ChartConfig.objects.filter(chart=chart)
 
         if indicators_list:
@@ -1984,7 +2017,7 @@ def chart_ict_contrib_gdp(year):
     data_dict = dict(zip(categories, data_dict[indicator_label]))
 
     chart_html = SunBurstChart(categories=categories, data_dict=data_dict,
-                               chart_title=chart_title, y_axis_title=y_axis_title, year=year)
+                               chart_title=chart_title, y_axis_title=y_axis_title, year=year, chart_description=chart_description)
 
     return chart_html
 
@@ -2001,6 +2034,8 @@ def chart_exchange_rate(year):
     chart_title = 'Exchange Rate (Local Currency to USD)'
     y_axis_title = 'USD'
     aggregation = 'avg'
+    chart_description = ''
+    #chart_description = chart.description
 
     data_dict = {}
 
