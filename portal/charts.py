@@ -72,7 +72,19 @@ def set_chart_options():
 
                         thousandsSep: ',',
                         numericSymbols: ["k", "mn", "B", "T", "P", "E"]
-                        }
+                        },
+                        responsive: {
+                                rules: [{
+                                    chartOptions: {
+                                        legend: {
+                                            enabled: false
+                                        }
+                                    },
+                                    condition: {
+                                        maxWidth: 500
+                                    }
+                                }]
+                            }
                         }
                     );'''
 

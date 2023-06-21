@@ -226,3 +226,7 @@ input[type=number] {
 p.text-justify {
     text-align: justify;
 }
+
+.btn-circle:hover {
+    border-color: white;
+}
