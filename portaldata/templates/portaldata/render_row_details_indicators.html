@@ -1,0 +1,57 @@
+{% load static %}
+
+
+<table  width="100%" class="table  table-bordered dt-responsive compact wrap">
+
+    
+        <thead class="table-dark " >
+            <tr>
+              <th colspan="100%" class="table-dark text-center card-title text-white" >Details</th>
+    </thead>
+    <tbody>
+       
+        <tr><td>S/N</td><td><strong>{{indicator.indicator_number}}</strong></td></tr>
+        
+        <tr><td>Indicator</td><td><strong>{{indicator.label}}</strong></td></tr>
+        <tr><td>Focus Area</td><td><strong>{{indicator.focus_area}}</strong></td></tr>
+        
+        {% comment %}
+        {% if ind_data.value_NA != False %} {% endcomment %}
+        <tr><td>Data Type</td><td><strong>{{indicator.get_data_type_display}}</strong></td></tr>
+        {% if indicator.get_data_type_display == 'Currency' %}  
+        <tr><td>Currency</td>
+            <td>
+                <strong>
+                    {% if indicator.get_type_of_currency_display == "USD"  %}
+                        {{indicator.get_type_of_currency_display}}
+                    {% else %}
+                        Local Currency
+                    {% endif %}
+                </strong>
+            </td>
+        </tr>
+        {% endif %} 
+        {% comment %} {% else %}
+        <tr><td>Data</td><td><strong>N/A</strong></td></tr>
+        {% endif %} {% endcomment %}
+           
+        {% comment %} <tr><td>Data N/A</td><td><strong>{{ind_data.value_NA}}</strong></td></tr> {% endcomment %}
+        <tr><td>Definition</td><td><strong>{{indicator.definition|safe}}</strong></td></tr>
+        <tr><td>Source</td><td><strong>{{indicator.source}}</strong></td></tr>
+        <tr><td>Type</td><td><strong>{{indicator.indicator_type}}</strong></td></tr>
+        <tr><td>Status</td><td><strong>{{indicator.status}}</strong></td></tr>
+        <tr><td>Required?</td><td><strong> 
+            {% if indicator.required == True  %} Required 
+            {% else %} Optional
+            {% endif %}  </strong></td></tr>
+        <tr><td>Assigned to</td><td><strong>{{indicator.get_indicator_assigned_to_display}}</strong></td></tr>
+        
+       
+        
+        <tr><td>Last Update</td><td><strong>{{indicator.last_update}}</strong></td></tr>
+        <tr><td>Updated By</td><td><strong>{{indicator.updated_by|title }}</strong></td></tr>
+    </tbody>
+</table>
+
+
+

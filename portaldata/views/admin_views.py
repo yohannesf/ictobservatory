@@ -1,5 +1,6 @@
 
 
+from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
 from ajax_datatable.views import AjaxDatatableView
@@ -157,6 +158,14 @@ def indicator_list_view(request):
 
 
 class IndicatorListtableView(AjaxDatatableView):
+
+    def render_row_details(self, pk, request=None):
+
+        indicator = self.model.objects.get(pk=pk)
+
+        context = {'indicator': indicator}
+
+        return render_to_string('portaldata/render_row_details_indicators.html', context)
 
     # def render_row_details(self, pk, request=None):
     #     # self.model.objects.get(pk=pk)
