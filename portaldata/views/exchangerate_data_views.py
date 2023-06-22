@@ -2,11 +2,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from core.sharedfunctions import get_current_reporting_year
+from django.contrib.auth.decorators import login_required
 
 from ..forms.indicator_data_entry_edit_by_ms import ExchangeRateDataForm
 from ..models import ExchangeRateData
 
 
+@login_required
 def exchange_rate_data(request):
 
     existing = ExchangeRateData.objects.filter(currency__member_state=request.user.getUserMemberState(),

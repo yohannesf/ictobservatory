@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db import transaction
 from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
@@ -41,7 +43,7 @@ from ..forms.indicator_data_entry_edit_by_orgs import (
 
 
 @login_required
-# @group_required('Member State')
+@group_required('Member State')
 def data_entry_progress_by_ms(request):
     """Data Entry Progress page for Member States"""
 
@@ -53,7 +55,7 @@ def data_entry_progress_by_ms(request):
 
 
 @login_required
-# @group_required('Organisation')
+@group_required('Organisation')
 def data_entry_progress_by_org(request):
     """Data Entry Progress page for Organisations"""
 
@@ -71,6 +73,7 @@ def data_entry_progress_by_org(request):
 
 
 @login_required
+@staff_member_required
 def manage_general_indicatordata(request):
     """General Indicator Data View"""
 
@@ -127,7 +130,7 @@ def manage_general_indicatordata(request):
 
 
 @login_required
-# @group_required('Member State')
+@group_required('Member State')
 def manage_indicatordata(request, id):
     """
     Data Entry / Edit by Member States
@@ -224,7 +227,7 @@ def manage_indicatordata(request, id):
 
 
 @login_required
-# @group_required('Member State')
+@group_required('Member State')
 def view_indicatordata(request):
     """
     Function to show Member States their indicator data on backend. Submitted or in draft status.
@@ -244,6 +247,7 @@ def view_indicatordata(request):
     return render(request, template_name, context=context)
 
 
+@method_decorator(login_required, name='dispatch')
 class ViewIndicatorDatatableView(AjaxDatatableView):
 
     # TO DO: Update queryset to filter all data entered by member states
@@ -356,7 +360,7 @@ class ViewIndicatorDatatableView(AjaxDatatableView):
 
 
 @login_required
-# @group_required('Organisation')
+@group_required('Organisation')
 def manage_indicatordata_organisation(request, id):
     """
     Data Entry / Edit by Organizations

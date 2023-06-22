@@ -4,6 +4,7 @@ from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
 from notifications.signals import notify
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from core.models import SystemUser, User
 from core.sharedfunctions import get_published_years
@@ -16,9 +17,11 @@ from portaldata.views.indicator_data_views import (
     update_currency_indicators_to_usd,
 )
 from ..models import Indicator, IndicatorData, MemberState
+from core.decorators import group_required
 
 
 @login_required
+@group_required("Member State", "Organisation", "SADC", "Admin")
 def index(request):
     """Backend Home Page (a landing page when user is logged in)"""
 
@@ -47,6 +50,7 @@ def send_emails(recipient_list, subject, message, mass=False):
 
 
 @login_required
+@staff_member_required
 def send_message_by_admins(request):
     """Send Message, system wide"""
 

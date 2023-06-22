@@ -17,12 +17,17 @@ from ictobservatory import settings
 from portaldata.forms.indicator_data_revision import IndicatorDataRevision
 from django.template.loader import render_to_string
 from notifications.signals import notify
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 from portaldata.models import (IND_ASSIGNED_TO, INDICATORDATA_STATUS,
                                AssignedIndicator, IndicatorData, IndicatorDataValidationHistory, MemberState)
 
 
 @csrf_exempt
+@login_required
+@staff_member_required
 def validate_data(request):
     '''Validat Data button to update indicator data status as "Validated" '''
 
@@ -44,6 +49,8 @@ def validate_data(request):
 
 
 @csrf_exempt
+@login_required
+@staff_member_required
 def send_back_for_revision(request, id):
     '''Sending indicator data for revision'''
 
@@ -147,6 +154,8 @@ def email_notifications(subject, recipient_list, message):
     send_mail(subject, message, email_from, recipient_list)
 
 
+@login_required
+@staff_member_required
 def indicatordata_list_view(request):
     """
     Render the page which contains the table.
@@ -160,6 +169,8 @@ def indicatordata_list_view(request):
     return render(request, template_name, context=context)
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class IndicatorDatatableView(AjaxDatatableView):
 
     def get_initial_queryset(self, request=None):

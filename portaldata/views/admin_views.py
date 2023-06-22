@@ -18,11 +18,14 @@ from django.forms import formset_factory,  modelformset_factory
 from ..models import IND_ASSIGNED_TO, FocusArea, GeneralIndicator, Indicator, IndicatorData,  AssignedIndicator, Published, ReportingPeriod
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from core.decorators import group_required
 from ..forms.admin_forms import (
     IndicatorAssignEditForm, IndicatorAssignEntryForm, IndicatorForm, FocusAreaForm, ReportingPeriodForm)
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class IndicatorCreateView(CreateView):
 
     model = Indicator
@@ -54,6 +57,7 @@ class IndicatorCreateView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class IndicatorUpdateView(UpdateView):
 
     model = Indicator
@@ -90,6 +94,7 @@ class IndicatorUpdateView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class GeneralIndicatorListView(ListView):
     model = GeneralIndicator
     ''' model_list.html -> indicator_list.html'''
@@ -98,6 +103,7 @@ class GeneralIndicatorListView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class GeneralIndicatorCreateView(CreateView):
 
     model = GeneralIndicator
@@ -122,6 +128,7 @@ class GeneralIndicatorCreateView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class GeneralIndicatorUpdateView(UpdateView):
 
     model = GeneralIndicator
@@ -146,6 +153,7 @@ class GeneralIndicatorUpdateView(UpdateView):
 
 
 @login_required
+@staff_member_required
 def indicator_list_view(request):
     """
     Render the page which contains the table.
@@ -157,6 +165,8 @@ def indicator_list_view(request):
     return render(request, template_name)
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class IndicatorListtableView(AjaxDatatableView):
 
     def render_row_details(self, pk, request=None):
@@ -261,6 +271,7 @@ class IndicatorListtableView(AjaxDatatableView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class FocusAreaCreateView(CreateView):
     model = FocusArea
     '''model_form.html -> focusare__form.html'''
@@ -287,6 +298,7 @@ class FocusAreaCreateView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class FocusAreaUpdateView(UpdateView):
     model = FocusArea
     form_class = FocusAreaForm
@@ -306,18 +318,21 @@ class FocusAreaUpdateView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class FocusAreaListView(ListView):
     model = FocusArea
     context_object_name = "FocusAreas"
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class ReportingPeriodListView(ListView):
     model = ReportingPeriod
     context_object_name = "ReportingPeriods"
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class ReportingPeriodCreateView(CreateView):
     model = ReportingPeriod
     '''model_form.html -> reportingperiod_form.html'''
@@ -337,6 +352,7 @@ class ReportingPeriodCreateView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class ReportingPeriodUpdateView(UpdateView):
     model = ReportingPeriod
     '''model_form.html -> reportingperiod_form.html'''
@@ -354,6 +370,7 @@ class ReportingPeriodUpdateView(UpdateView):
 
 
 @login_required
+@staff_member_required
 def manage_indicatorassignment(request):
 
     exisiting_indicator_assign_data = AssignedIndicator.objects.prefetch_related('indicator').filter(
@@ -435,6 +452,8 @@ def manage_indicatorassignment(request):
 
 
 @ csrf_exempt
+@login_required
+@staff_member_required
 def publish_data(request):
 
     indicator_data = IndicatorData.objects.all().values('reporting_year'

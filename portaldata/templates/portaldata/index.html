@@ -31,54 +31,177 @@
            
 
           </div>
-            <section class="section dashboard">
+    <section class="section dashboard">
 
-              {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
 
-              {% if user.is_sadc or user.is_superuser %}  
+            {% if user.is_sadc or user.is_superuser %}  
 
               <div class="row">
 
                 <div class="col-lg-9">
+                  
+                  <div class="card d-none">
+                    <div class="card-body"><h5 class="card-title">Admin Dashboard</h5>
+                      <div class="row">
+
+                        <div class="col-lg-6">
+                          
+                          <div class="card">
+                            <div class="card-body">
+                              <h6 class="card-title">Data Entry Progress</h6>
+                
+                              <!-- Progress Bars with labels-->
+                              <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                              </div>
+                              <div class="progress mt-3">
+                                <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                              </div>
+                              <div class="progress mt-3">
+                                <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                              </div>
+                              <div class="progress mt-3">
+                                <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+                              </div><!-- End Progress Bars with labels -->
+                
+                            </div>
+                          </div>
+
+                          <div class=""><br></div>
+                          <div class="card">
+                            <div class="card-body">
+                              <h6 class="card-title">Submit Info</h6>
+                
+                              <!-- List group with custom content -->
+                              <ol class="list-group list-group-numbered">
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                  <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Subheading</div>
+                                    Cras justo odio
+                                  </div>
+                                  <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                  <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Subheading</div>
+                                    Cras justo odio
+                                  </div>
+                                  <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                  <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Subheading</div>
+                                    Cras justo odio
+                                  </div>
+                                  <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                              </ol><!-- End with custom content -->
+                
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-lg-6">
+
+                          <div class="card">
+                            <div class="card-body">
+                              <h6 class="card-title">Login Info</h6>
+
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Position</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Start Date</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <th scope="row">1</th>
+                                <td>Brandon Jacob</td>
+                                <td>Designer</td>
+                                <td>28</td>
+                                <td>2016-05-25</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Bridie Kessler</td>
+                                <td>Developer</td>
+                                <td>35</td>
+                                <td>2014-12-05</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td>Ashleigh Langosh</td>
+                                <td>Finance</td>
+                                <td>45</td>
+                                <td>2011-08-12</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">4</th>
+                                <td>Angus Grady</td>
+                                <td>HR</td>
+                                <td>34</td>
+                                <td>2012-06-11</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">5</th>
+                                <td>Raheem Lehner</td>
+                                <td>Dynamic Division Officer</td>
+                                <td>47</td>
+                                <td>2011-04-19</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {% comment %} <div class=""><br></div> {% endcomment %}
+
                   <div class="card">
                     <div class="card-body"><h5 class="card-title">Admin Process</h5>
                       <div class="activity">
-                        <div class="activity-item d-flex">
-                          <div class="activite-label">Overall&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
-                          <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
-                          <div class="activity-content"> You can create Focus areas, Indicators etc.. through this backend. </div></div>
-                        
+
                           <div class="activity-item d-flex">
-                              <div class="activite-label">Validation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
-                              <i class="bi bi-circle-fill activity-badge text-danger align-self-start"></i>
-                              <div class="activity-content"> Once data is submitted by Member States or Organisations, you'll receive a notification. You can then visit the validation page to start validating data.</div></div>
-                              
-                          <div class="activity-item d-flex">
-                            <div class="activite-label">Publishing&nbsp;&nbsp;&nbsp;&nbsp;</div> 
-                            <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
-                            <div class="activity-content"> Once validation is completed, go to the Publish link to publish the data for the reporting year.</div></div>
+                            <div class="activite-label">Overall&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+                            <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
+                            <div class="activity-content"> You can create Focus areas, Indicators etc.. through this backend. </div>
+                          </div>
+                          
+                            <div class="activity-item d-flex">
+                                <div class="activite-label">Validation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+                                <i class="bi bi-circle-fill activity-badge text-danger align-self-start"></i>
+                                <div class="activity-content"> Once data is submitted by Member States or Organisations, you'll receive a notification. You can then visit the validation page to start validating data.</div>
+                            </div>
+                                
+                            <div class="activity-item d-flex">
+                              <div class="activite-label">Publishing&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+                              <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                              <div class="activity-content"> Once validation is completed, go to the Publish link to publish the data for the reporting year.</div>
+                            </div>
                             
-                          {% comment %} <div class="activity-item d-flex"><div class="activite-label">Step 4:</div> 
-                            <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
-                            <div class="activity-content"> Once data is revised (based on Step 3), you'll need to resubmit your data.</div></div>
-                             {% endcomment %}
-                          {% comment %} <div class="activity-item d-flex">
-                              <div class="activite-label">2 days</div> 
-                            <i class="bi bi-circle-fill activity-badge text-warning align-self-start"></i><div class="activity-content"> Est sit eum reiciendis exercitationem</div></div>
-                            
-                          <div class="activity-item d-flex">
-                              <div class="activite-label">4 weeks</div> 
-                              <i class="bi bi-circle-fill activity-badge text-muted align-self-start"></i>
-                              <div class="activity-content"> Dicta dolorem harum nulla eius. Ut quidem quidem sit quas</div></div> {% endcomment %}
-                            
-                          </div></div></div>
+                                 
+                      </div>
+                    </div>
+                  </div>
+                
 
-              {% endif %}
+            {% endif %}
 
-              {% endif %}
+          {% endif %}
 
 
-{% if user.is_authenticated %}
+      {% if user.is_authenticated %}
               {% if   user.is_memberstate or user.is_organisation %}  
 
               <div class="row">
