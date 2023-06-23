@@ -185,21 +185,24 @@ def getOverallToSubmit_admin_dashboard(assignedto, memberstate, *args):
     ms = MemberState.objects.filter(
         (Q(member_state=memberstate) | Q(member_state_short_name=memberstate))).first()
 
-    ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
-                                             indicator__indicator_assigned_to=assignedto,
-                                             indicator__focus_area__focusarea_status=True,
-                                             member_state=ms
-                                             ).exclude(Q(validation_status=INDICATORDATA_STATUS.validated)
-                                                       | Q(validation_status=INDICATORDATA_STATUS.ready)
-                                                       ).count()
+    ind_data = IndicatorData.objects.filter(reporting_year=get_current_reporting_year(),
+                                            indicator__indicator_assigned_to=assignedto,
+                                            indicator__focus_area__focusarea_status=True,
+                                            member_state=ms)
+    if ind_data:
 
-    ind_count_returned = IndicatorData.objects.filter(submitted=False, validation_status=INDICATORDATA_STATUS.returned, reporting_year=get_current_reporting_year(),
-                                                      indicator__indicator_assigned_to=assignedto,
-                                                      indicator__focus_area__focusarea_status=True,
-                                                      member_state=ms
-                                                      ).count()
+        ind_count = ind_data.filter(submitted=False
+                                    ).exclude(Q(validation_status=INDICATORDATA_STATUS.validated)
+                                              | Q(validation_status=INDICATORDATA_STATUS.ready)
+                                              ).count()
 
-    return [ind_count, ind_count_returned]
+        ind_count_returned = ind_data.filter(submitted=False, validation_status=INDICATORDATA_STATUS.returned
+
+                                             ).count()
+
+        return [ind_count, ind_count_returned]
+    else:
+        return None
 
 
 @ register.simple_tag
