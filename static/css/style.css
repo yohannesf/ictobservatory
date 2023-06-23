@@ -259,9 +259,9 @@ body {
 
 }
 
-.progress {
+/* .progress {
     --bs-progress-bg: #fff;
-}
+} */
 
 .card-body .small {
     font-size: 0.75rem;

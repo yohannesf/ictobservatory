@@ -10,6 +10,7 @@ from core.models import SystemUser, User
 from core.sharedfunctions import get_published_years
 
 from portaldata.forms.send_message_form import SendMessageFormForAdmins, SendMessageFormForMS
+from portaldata.views.admin_views import data_entry_progress_admin_dashboard
 
 from portaldata.views.indicator_data_views import (
     send_message_copy_to_self_ms,
@@ -26,12 +27,17 @@ def index(request):
     """Backend Home Page (a landing page when user is logged in)"""
 
     # TO DO -> to be replaced by a button on the backend for admins with year selection dropdown
+
+    context = {}
+
     if (request.user.is_superuser or request.user.is_sadc):
         if get_published_years():
             years_qs = get_published_years()
             [update_currency_indicators_to_usd(i) for i in years_qs]
 
-    return render(request, "portaldata/index.html")
+        context = {'progress': data_entry_progress_admin_dashboard()}
+
+    return render(request, "portaldata/index.html", context=context)
 
 
 def send_emails(recipient_list, subject, message, mass=False):

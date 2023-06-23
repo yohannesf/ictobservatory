@@ -174,7 +174,7 @@ def getOverallToSubmit(assignedto, memberstate, *args):
     #                                          indicator__indicator_assigned_to=assignedto,
     #                                          indicator__focus_area__focusarea_status=True,
     #                                          member_state=memberstate).exclude(~Q(value_NA=True) & (Q(ind_value='') | Q(ind_value=None))).count()
-    print(ind_count)
+
     return ind_count + getExchangeDataUnsubmitted(memberstate)
 
 

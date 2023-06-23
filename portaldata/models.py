@@ -258,9 +258,10 @@ class MemberState(models.Model):
 
     @property
     def ms_shortname(self):
-        if self.member_state_short_name != None or self.member_state_short_name != '':
+        if self.member_state_short_name:
             return self.member_state_short_name
         else:
+
             return self.member_state
 
     def count_active(self):
@@ -538,7 +539,7 @@ class ReportingPeriod(models.Model):
 
     def save(self, *args, **kwargs):
         if self.current:
-            print(self.current)
+
             ReportingPeriod.objects.update(current=Q(pk=self.pk))
 
         super(ReportingPeriod, self).save(*args, **kwargs)
@@ -708,8 +709,7 @@ def update_usd(sender, instance, **kwargs):
             instance.indicator.data_type == DATA_TYPE.currency
             and instance.indicator.type_of_currency != "usd"
         ):
-            print(get_exchange_rate(instance.member_state,
-                  get_current_reporting_year()))
+
             if get_exchange_rate(instance.member_state, get_current_reporting_year()) != 0:
                 instance.ind_value_adjusted = round(
                     float(instance.ind_value)
@@ -719,7 +719,6 @@ def update_usd(sender, instance, **kwargs):
                     ),
                     4,
                 )
-                print(instance.ind_value_adjusted)
 
         else:
             instance.ind_value_adjusted = instance.ind_value

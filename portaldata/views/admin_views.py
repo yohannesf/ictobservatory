@@ -13,9 +13,12 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.forms import formset_factory,  modelformset_factory
+from core.sharedfunctions import is_reporting_period
+
+from portaldata.templatetags.showprogress import calculateoverallprogress, countallcompletedindicators
 
 
-from ..models import IND_ASSIGNED_TO, FocusArea, GeneralIndicator, Indicator, IndicatorData,  AssignedIndicator, Published, ReportingPeriod
+from ..models import IND_ASSIGNED_TO, FocusArea, GeneralIndicator, Indicator, IndicatorData,  AssignedIndicator, MemberState, Published, ReportingPeriod
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -442,15 +445,6 @@ def manage_indicatorassignment(request):
     return render(request, 'portaldata/indicator-assignment.html', context=context)
 
 
-# @ csrf_exempt
-# def publish_unpublish(request):
-
-#     if request.method == 'POST':
-#         id = request.POST.get('id')
-
-#     return HttpResponse(status=200)
-
-
 @ csrf_exempt
 @login_required
 @staff_member_required
@@ -483,3 +477,38 @@ def publish_data(request):
                 published_year.save()
 
     return render(request, 'portaldata/publish_form.html', context=context)
+
+
+def data_entry_progress_admin_dashboard():
+
+    if is_reporting_period:
+        member_states = list(
+            MemberState.objects.filter(memberstate_status=True))
+
+        try:
+            progress = {
+                ms.ms_shortname: calculateoverallprogress('M', ms) for ms in member_states}
+            print(progress)
+            return progress
+        except:
+            return None
+    else:
+        return None
+    #print(calculateoverallprogress('M', ms))
+
+
+def data_submission_progress_admin_dashboard(request):
+    pass
+
+
+def member_states_logged_in_admin_dashboard(request):
+    pass
+
+
+# @ csrf_exempt
+# def publish_unpublish(request):
+
+#     if request.method == 'POST':
+#         id = request.POST.get('id')
+
+#     return HttpResponse(status=200)
