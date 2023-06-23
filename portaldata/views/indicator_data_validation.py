@@ -37,6 +37,12 @@ def validate_data(request):
         if IndicatorData.objects.get(pk=id).validation_status == INDICATORDATA_STATUS.validated:
             IndicatorData.objects.filter(pk=id).update(
                 validation_status=INDICATORDATA_STATUS.ready)
+        elif IndicatorData.objects.get(pk=id).validation_status == INDICATORDATA_STATUS.returned:
+            IndicatorData.objects.filter(pk=id).update(
+                validation_status=INDICATORDATA_STATUS.validated, submitted=True)
+
+            IndicatorDataValidationHistory.objects.filter(indicator_data_id=id).update(
+                current=False)
         else:
             IndicatorData.objects.filter(pk=id).update(
                 validation_status=INDICATORDATA_STATUS.validated)

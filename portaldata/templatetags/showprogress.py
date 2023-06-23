@@ -178,6 +178,30 @@ def getOverallToSubmit(assignedto, memberstate, *args):
     return ind_count + getExchangeDataUnsubmitted(memberstate)
 
 
+@register.simple_tag
+def getOverallToSubmit_admin_dashboard(assignedto, memberstate, *args):
+    '''For Member States'''
+
+    ms = MemberState.objects.filter(
+        (Q(member_state=memberstate) | Q(member_state_short_name=memberstate))).first()
+
+    ind_count = IndicatorData.objects.filter(submitted=False, reporting_year=get_current_reporting_year(),
+                                             indicator__indicator_assigned_to=assignedto,
+                                             indicator__focus_area__focusarea_status=True,
+                                             member_state=ms
+                                             ).exclude(Q(validation_status=INDICATORDATA_STATUS.validated)
+                                                       | Q(validation_status=INDICATORDATA_STATUS.ready)
+                                                       ).count()
+
+    ind_count_returned = IndicatorData.objects.filter(submitted=False, validation_status=INDICATORDATA_STATUS.returned, reporting_year=get_current_reporting_year(),
+                                                      indicator__indicator_assigned_to=assignedto,
+                                                      indicator__focus_area__focusarea_status=True,
+                                                      member_state=ms
+                                                      ).count()
+
+    return [ind_count, ind_count_returned]
+
+
 @ register.simple_tag
 def getOverallToSubmitOrg(org, *args):
     '''For Organisations'''

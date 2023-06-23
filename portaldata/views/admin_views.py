@@ -488,7 +488,7 @@ def data_entry_progress_admin_dashboard():
         try:
             progress = {
                 ms.ms_shortname: calculateoverallprogress('M', ms) for ms in member_states}
-            print(progress)
+
             return progress
         except:
             return None

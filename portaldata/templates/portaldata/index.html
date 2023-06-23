@@ -50,20 +50,32 @@
                       {% comment %} <h5 class="card-title">Admin Dashboard</h5> {% endcomment %}
                       <div class="row">
 
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                           <div class="card ">
                             <div class="card-body">
-                              <h5 class="card-title">Data Entry Progress</h5>
+                              <h5 class="card-title mb-3">Data Entry Progress</h5>
 
 
                               <table class="table ">
+                                <thead>
+                                  <th >Member State</th>
+                                  <th>Progress</th>
+                                  <th class="text-center" > Submitted</th>
+                                  <th class="text-center">Revision</th>
+                                </thead>
                                
                                 <tbody>
                                   {% if progress %}
                                   {% for k,v in progress.items  %}
                                   <tr >
-                                    <td class="w-50 p-1" >{{k}}</td>
-                                    <td class="p-1">
+
+                                    {% comment %}    {% endcomment %}
+                                    {% getOverallToSubmit_admin_dashboard 'M' k as get_number_to_submit %}
+                                    
+                                 
+
+                                    <td class=" p-1" >{{k}}     </td>
+                                    <td class="  p-1">
 
                                       {% if  v  <= 60 and v  > 0 %}
 
@@ -91,6 +103,19 @@
                                       {% endif %}
                                      
                                     </td>
+
+                                    <td class="text-center p-1">
+                                      
+                                     
+                                    {% if get_number_to_submit|first == 0  %}<i class="bi bi-check-circle-fill" style="color:#1cc88a;"></i>{% endif %}
+                                     
+                                    {% if get_number_to_submit|last != 0  %}<i  style="color:#1cc88a;" class="bi bi-circle-half"></i>{% endif %}
+
+                                    </td>
+
+                                    <td class="text-center p-1">{% if get_number_to_submit|last != 0  %}{{get_number_to_submit|first}}
+                                      
+                                      {% endif %}</td>
                                     
                                   </tr>
                               
@@ -112,7 +137,7 @@
 
                           <div class=""><br></div>
 
-                          <div class="card d-none">
+                          {% comment %} <div class="card d-none">
                             <div class="card-body">
                               <h6 class="card-title">Submit Info</h6>
                 
@@ -142,7 +167,7 @@
                               </ol><!-- End with custom content -->
                 
                             </div>
-                          </div>
+                          </div> {% endcomment %}
 
                         </div>
                      
