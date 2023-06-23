@@ -8,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from core.models import SystemUser, User
 from core.sharedfunctions import get_published_years
+from portaldata.cron import reporting_period_open
 
 from portaldata.forms.send_message_form import SendMessageFormForAdmins, SendMessageFormForMS
 from portaldata.views.admin_views import data_entry_progress_admin_dashboard
@@ -53,6 +54,47 @@ def send_emails(recipient_list, subject, message, mass=False):
         pass
 
         #send_mail(subject, message, email_from, recipient_list)
+
+
+def send_reporting_period_open_notification():
+
+    try:
+
+        users = []  # Users to be notified
+        emails = []  # email addresses of users
+        admin = ''
+
+        subject = "Reporting Period"
+        message = "Please be informed that the data reporting is now open."
+
+        admins = User.objects.filter(is_superuser=True)
+
+        if admins:
+            admin = admins.first()
+
+        all_ms = list(MemberState.objects.filter(
+            memberstate_status=True).values_list('id', flat=True).order_by('member_state'))
+
+        users = list(User.objects.filter(
+            systemuser__user_member_state__in=list(all_ms)).exclude(is_active=False))
+
+        if users:
+            # send notification
+            notify.send(admin, recipient=users,
+                        verb=subject, description=message,)
+            try:
+                # Append email addresses of users to a list - to pass it to the send_emails function
+                [emails.append(i.email) for i in users]
+            except:
+                pass
+
+        if emails:
+            emails.append(admin.email)
+
+            send_emails(emails, subject=subject,
+                        message=message, mass=True)
+    except:
+        pass
 
 
 @login_required

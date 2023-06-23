@@ -1,10 +1,27 @@
 
 
+from datetime import date
 from django.conf import settings
 from notifications.models import Notification
 from django.db.models import Count
 from core.models import User
 from django.core.mail import send_mail
+
+from portaldata.models import MemberState, ReportingPeriod
+
+
+def reporting_period_open():
+    from portaldata.views.home_views import send_reporting_period_open_notification
+
+    reporting_start_date = ReportingPeriod.objects.filter(current=True)
+
+    if reporting_start_date:
+
+        start_date = reporting_start_date.first()
+
+        if date.today() == start_date.reporting_start_date:
+
+            send_reporting_period_open_notification()
 
 
 def email_notifications():
