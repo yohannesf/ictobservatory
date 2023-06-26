@@ -3,6 +3,8 @@ db.sqlite3
 *.pyc
 .vscode/*
 .env
+.env_sadc
+.env_local
 .venv
 .venv/*
 /ictobservatory/settings-local.py
