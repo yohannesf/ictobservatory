@@ -15,12 +15,14 @@
     <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/frontend.css' %}">
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery.dataTables.min.css' %}">
 
 
-    <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" />
     
-    <link href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.bootstrap5.min.css" />
-    <link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    
+    {% comment %} <link href="https://cdn.datatables.net/buttons/2.3.3/css/buttons.bootstrap5.min.css" /> {% endcomment %}
+    {% comment %} <link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" /> {% endcomment %}
 
     
    
@@ -29,18 +31,30 @@
 {% block extrajstop %}
 
         
-        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+       
+        <script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
 
-        <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+        
+        <script type="text/javascript" src="{% static 'js/dataTables.buttons.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/buttons.bootstrap5.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/buttons.html5.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/pdfmake.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/vfs_fonts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/buttons.html5.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/buttons.print.min.js' %}"></script>
+
+        {% comment %} <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script> {% endcomment %}
+
+        {% comment %} <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.bootstrap5.min.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/buttons.html5.min.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script> {% endcomment %}
+        {% comment %} <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script> {% endcomment %}
        
     
 {% endblock extrajstop %}
