@@ -147,8 +147,8 @@ def send_notification(sender, recipients, subject, message):
         for i in recipients:
             email_address.append(i.email)
 
-        # email_notifications(
-        #     subject=subject, recipient_list=email_address, message=message)
+        email_notifications(
+            subject=subject, recipient_list=email_address, message=message)
     except:
         print("something went wrong")
 

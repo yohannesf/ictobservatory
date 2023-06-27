@@ -21,7 +21,11 @@
 
 {% block content %}
 
-{{ form.media.css }}
+<link rel="stylesheet" href="{% static 'css//select2.css' %}" />
+
+
+
+{% comment %} {{ form.media.css }} {% endcomment %}
 
 
 <div class="d-flex flex-column" id="content-wrapper">
@@ -200,6 +204,9 @@
 {% endblock content %}
 
 {% block extra_js %}
-{{ form.media.js }}
+{% comment %} {{ form.media.js }} {% endcomment %}
+
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script src="{% static 'django_select2/django_select2.js' %}"></script>
     
 {% endblock extra_js %}

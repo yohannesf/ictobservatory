@@ -493,7 +493,7 @@ def send_message_to_admins(name, submittedby, reporting_year):
     for u in users:
         recipient_list.append(u.email)
 
-    # send_mail('Data Submission', description, email_from, recipient_list)
+    send_mail('Data Submission', description, email_from, recipient_list)
 
 
 def send_message_copy_to_self_ms(member_state, submittedby, reporting_year):
@@ -522,7 +522,7 @@ def send_message_copy_to_self_ms(member_state, submittedby, reporting_year):
         for u in users:
             recipient_list.append(u.email)
 
-        # send_mail('Data Submission', description, email_from, recipient_list)
+        send_mail('Data Submission', description, email_from, recipient_list)
 
 
 def send_message_copy_to_self_org(organisation, submittedby, reporting_year):
@@ -551,7 +551,7 @@ def send_message_copy_to_self_org(organisation, submittedby, reporting_year):
         for u in users:
             recipient_list.append(u.email)
 
-        # send_mail('Data Submission', description, email_from, recipient_list)
+        send_mail('Data Submission', description, email_from, recipient_list)
 
 
 def update_currency_indicators_to_usd(reporting_year, member_state=""):

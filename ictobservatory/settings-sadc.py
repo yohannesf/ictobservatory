@@ -24,6 +24,11 @@ import dotenv
 # # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = "django-insecure-5yxxz0g8a8!ap0ve+ua_q0&u8a!g2(2k9yl+a%ky!8h!ow+s_z"
 
+AUTHENTICATION_BACKENDS = [
+    # 'django.contrib.auth.backends.ModelBackend',
+    'core.backends.ExtendedUserModelBackend',
+]
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # print(BASE_DIR)
@@ -47,16 +52,18 @@ if os.path.isfile(dotenv_file):
 
 # print(os.getenv('DB_NAME'))
 
-#SECRET_KEY = os.getenv('SECRET_KEY')
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+SECRET_KEY = '=6b_2=!3s2hq3-nc@#rx6v=##u53xt!b=(#)c(2nk%&4qfpvy)'
+
+#SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 #ALLOWED_HOSTS = []
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
-ALLOWED_HOSTS = ['192.168.1.195',  'localhost']
+ALLOWED_HOSTS = ['192.168.1.195', '127.0.0.1:8080',
+                 'localhost', 'localhost:8080']
 
 
 # Application definition
@@ -118,9 +125,10 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
+
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -262,10 +270,6 @@ EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 
-AUTHENTICATION_BACKENDS = [
-    # 'django.contrib.auth.backends.ModelBackend',
-    'core.backends.ExtendedUserModelBackend',
-]
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -431,5 +435,5 @@ JAZZMIN_UI_TWEAKS = {
 
 CRONJOBS = [
     #('* * * * *', 'portaldata.cron.email_notifications'),
-    ('* * * * *', 'portaldata.cron.reporting_period_open')
+    ('0 0 * * *', 'portaldata.cron.reporting_period_open')
 ]

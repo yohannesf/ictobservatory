@@ -49,11 +49,11 @@ def send_emails(recipient_list, subject, message, mass=False):
         mass_email = [(subject, message, email_from, [recipient])
                       for recipient in recipient_list]
 
-        # send_mass_mail(mass_email)
+        send_mass_mail(mass_email)
     else:
-        pass
+        # pass
 
-        #send_mail(subject, message, email_from, recipient_list)
+        send_mail(subject, message, email_from, recipient_list)
 
 
 def send_reporting_period_open_notification():
