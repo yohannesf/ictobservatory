@@ -481,7 +481,7 @@ def publish_data(request):
 
 def data_entry_progress_admin_dashboard():
 
-    if is_reporting_period:
+    if is_reporting_period(30):
         member_states = list(
             MemberState.objects.filter(memberstate_status=True))
 

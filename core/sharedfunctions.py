@@ -89,7 +89,7 @@ def get_num_days_remaining():
         return None
 
 
-def is_reporting_period():
+def is_reporting_period(additional_days=None):
     '''Check wheter current date (today) within the reporting perid '''
     from portaldata.models import ReportingPeriod
 
@@ -108,9 +108,24 @@ def is_reporting_period():
     if rpt_end_date:
         r_end_date = rpt_end_date[0]
 
-    if datetime.date.today() == r_start_date and datetime.date.today() == r_end_date:
-        return False
-    elif datetime.date.today() >= r_start_date and datetime.date.today() <= r_end_date:
-        return True
+    if additional_days:
+
+        try:
+            print(r_end_date + datetime.timedelta(days=int(additional_days)))
+
+            if datetime.date.today() >= r_start_date and datetime.date.today() <= r_end_date + datetime.timedelta(days=int(additional_days)):
+                print("here")
+                return True
+            else:
+                return False
+        except:
+            return False
+
     else:
-        return False
+
+        # if datetime.date.today() == r_start_date and datetime.date.today() == r_end_date:
+        #     return False
+        if datetime.date.today() >= r_start_date and datetime.date.today() <= r_end_date:
+            return True
+        else:
+            return False
