@@ -1,5 +1,7 @@
 
 
+import subprocess
+import datetime
 from datetime import date
 from django.conf import settings
 from notifications.models import Notification
@@ -55,3 +57,41 @@ http://www.sadc.org
     # Notification.objects.filter(emailed=False).update(emailed=True)
 
     # return HttpResponse("sent")
+
+
+def backup_db():
+
+    # This python code can be used to backup a postgres database given the host, user, password and dbname parameters. It also requires a directory to store the backup file. The code uses the subprocess module to run the pg_dump command and the datetime module to generate a timestamp for the backup file name. The code assumes that the pg_dump command is available in the system path.
+
+    # Define the parameters for the database connection
+    # host = "localhost"
+    # user = "postgres"
+    # password = "postgres"
+    # dbname = "testdb"
+
+    host = "localhost"
+    user = "sadc"
+    password = "AVNS_3c9d-bYqLniar99pFdH"
+    dbname = "sadc"
+
+    # Define the directory to store the backup file
+    #backup_dir = "/home/user/backups"
+    backup_dir = "/home/yfikre@sadc.int/backup"
+
+    # Generate a timestamp for the backup file name
+    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    # Construct the backup file name
+    backup_file = f"{backup_dir}/{dbname}_{timestamp}.sql"
+
+    # Construct the pg_dump command
+    pg_dump_cmd = f"pg_dump -h {host} -U {user} -w -F p {dbname} > {backup_file}"
+
+    # Set the environment variable for the password
+    env = {"PGPASSWORD": password}
+
+    # Run the pg_dump command using subprocess
+    subprocess.run(pg_dump_cmd, shell=True, env=env)
+
+    # Print a message indicating success
+    print(f"Backup completed. File saved as {backup_file}")

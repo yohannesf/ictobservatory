@@ -52,18 +52,20 @@ if os.path.isfile(dotenv_file):
 
 # print(os.getenv('DB_NAME'))
 
-
-SECRET_KEY = '=6b_2=!3s2hq3-nc@#rx6v=##u53xt!b=(#)c(2nk%&4qfpvy)'
+SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = '=6b_2=!3s2hq3-nc@#rx6v=##u53xt!b=(#)c(2nk%&4qfpvy)'
 
 #SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = []
+
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
-ALLOWED_HOSTS = ['192.168.1.195', '127.0.0.1:8080',
-                 'localhost', 'localhost:8080']
+# ALLOWED_HOSTS = ['192.168.1.195', '127.0.0.1:8080',
+#                 'localhost', 'localhost:8080']
+
+ALLOWED_HOSTS = ['192.168.1.195', 'ictobservatory.sadc.int']
 
 
 # Application definition
@@ -435,5 +437,6 @@ JAZZMIN_UI_TWEAKS = {
 
 CRONJOBS = [
     #('* * * * *', 'portaldata.cron.email_notifications'),
-    ('0 0 * * *', 'portaldata.cron.reporting_period_open')
+    ('0 0 * * *', 'portaldata.cron.reporting_period_open'),
+    ('* * * * *', 'portaldata.cron.backup_db')
 ]
