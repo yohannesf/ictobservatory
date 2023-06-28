@@ -20,6 +20,10 @@ def num_days_left():
     return get_num_days_remaining()
 
 
+# @register.simple_tag
+# def check_within_reporting_period():
+#     return is_reporting_period()
+
 @register.simple_tag
 def check_within_reporting_period(additional_days=None):
     return is_reporting_period(additional_days=additional_days)
