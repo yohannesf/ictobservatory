@@ -1,5 +1,6 @@
 
 
+from ictobservatory import settings
 import subprocess
 import datetime
 from datetime import date
@@ -69,10 +70,15 @@ def backup_db():
     # password = "postgres"
     # dbname = "testdb"
 
-    host = "localhost"
-    user = "sadc"
-    password = "AVNS_3c9d-bYqLniar99pFdH"
-    dbname = "sadc"
+    host = settings.DATABASES['default']['HOST']
+    user = settings.DATABASES['default']['USER']
+    password = settings.DATABASES['default']['PASSWORD']
+    dbname = settings.DATABASES['default']['NAME']
+
+    # host = "localhost"
+    # user = "sadc"
+    # password = "AVNS_3c9d-bYqLniar99pFdH"
+    # dbname = "sadc"
 
     # Define the directory to store the backup file
     #backup_dir = "/home/user/backups"
