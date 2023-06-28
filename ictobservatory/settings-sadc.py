@@ -31,29 +31,17 @@ AUTHENTICATION_BACKENDS = [
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# print(BASE_DIR)
-
-
-# environment setting from Book: Becoming an Enterprise Django Developer
 
 # Take environment variables from .env file
 dotenv_file = os.path.join(BASE_DIR, ".env")
 
-# print(dotenv.load_dotenv(dotenv_path=dotenv_file))
-
-#print(dotenv.get_key(dotenv_path=dotenv_file, key_to_get='DB_NAME'))
-
-# print(os.environ.get('DB_NAME'))
-
-# print(os.getenv('DB_NAME'))
 
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
-# print(os.getenv('DB_NAME'))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-# SECRET_KEY = '=6b_2=!3s2hq3-nc@#rx6v=##u53xt!b=(#)c(2nk%&4qfpvy)'
+
 
 #SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
@@ -91,7 +79,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'django_crontab',
-    # 'dbbackup',  # django-dbbackup
+
     # 'authtools',
 
 
@@ -137,11 +125,6 @@ TEMPLATES = [
     },
 ]
 
-# INTERNAL_IPS = [
-#     # ...
-#     "127.0.0.1",
-#     # ...
-# ]
 
 WSGI_APPLICATION = "ictobservatory.wsgi.application"
 
@@ -160,19 +143,6 @@ DATABASES = {
 
     }
 }
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": "sadc",  # os.getenv('DB_NAME'),
-#         "USER": "sadc",  # os.getenv('DB_USER'),
-#         # os.getenv('DB_USER_PASSWORD'),
-#         "PASSWORD": "AVNS_3c9d-bYqLniar99pFdH",
-#         "HOST": "localhost",  # os.getenv('DB_HOST'),
-#         "PORT": '',
-
-#     }
-# }
 
 
 # Password validation
@@ -218,15 +188,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-# DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-# DBBACKUP_STORAGE_OPTIONS = {
-#     'location': 'D:\\OneDrive\\Documents\\sadc_local\\backup'}  # '/my/backup/dir/'}
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -438,5 +404,5 @@ JAZZMIN_UI_TWEAKS = {
 CRONJOBS = [
     #('* * * * *', 'portaldata.cron.email_notifications'),
     ('0 0 * * *', 'portaldata.cron.reporting_period_open'),
-    ('* * * * *', 'portaldata.cron.backup_db')
+    ('0 0 1 * *', 'portaldata.cron.backup_db')
 ]
