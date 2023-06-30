@@ -12,3 +12,4 @@ db.sqlite3
 /ictobservatory/settings_.py
 /ictobservatory/settings-upload.py
 /ictobservatory/settings-sadc.py
+/ictobservatory/settings.py
