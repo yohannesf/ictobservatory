@@ -111,10 +111,9 @@ def is_reporting_period(additional_days=None):
     if additional_days:
 
         try:
-            print(r_end_date + datetime.timedelta(days=int(additional_days)))
 
             if datetime.date.today() >= r_start_date and datetime.date.today() <= r_end_date + datetime.timedelta(days=int(additional_days)):
-                print("here")
+
                 return True
             else:
                 return False

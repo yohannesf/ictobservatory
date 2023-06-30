@@ -64,8 +64,12 @@ def send_reporting_period_open_notification():
         emails = []  # email addresses of users
         admin = ''
 
-        subject = "Reporting Period"
-        message = "Please be informed that the data reporting is now open."
+        subject = "Reporting Period Open"
+        message = '''This is to inform you that data entry period starts today. 
+
+Please sign in to SADC ICT Observatory to start entering data.
+
+SADC Secretariat'''
 
         admins = User.objects.filter(is_superuser=True)
 
@@ -93,6 +97,7 @@ def send_reporting_period_open_notification():
 
             send_emails(emails, subject=subject,
                         message=message, mass=True)
+
     except:
         pass
 
