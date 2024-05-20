@@ -14,8 +14,6 @@ from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
 import dotenv
-import sys
-import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,31 +24,36 @@ import dj_database_url
 # # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = "django-insecure-5yxxz0g8a8!ap0ve+ua_q0&u8a!g2(2k9yl+a%ky!8h!ow+s_z"
 
+AUTHENTICATION_BACKENDS = [
+    # 'django.contrib.auth.backends.ModelBackend',
+    'core.backends.ExtendedUserModelBackend',
+]
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# print(BASE_DIR)
-
-
-# environment setting from Book: Becoming an Enterprise Django Developer
 
 # Take environment variables from .env file
-# Uncommented for deployment
-# dotenv_file = os.path.join(BASE_DIR, ".env")
-# if os.path.isfile(dotenv_file):
-#     dotenv.load_dotenv(dotenv_file)
-
-# Added for deployment
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+dotenv_file = os.path.join(BASE_DIR, ".env")
 
 
-#SECRET_KEY = os.getenv('SECRET_KEY')
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
+
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+
+#SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = os.getenv("DEBUG", "True") == "True"  # Added for deployment
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
-                          "127.0.0.1,localhost").split(",")
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+# ALLOWED_HOSTS = ['192.168.1.195', '127.0.0.1:8080',
+#                 'localhost', 'localhost:8080']
+
+ALLOWED_HOSTS = ['192.168.1.195', 'ictobservatory.sadc.int']
 
 
 # Application definition
@@ -72,10 +75,11 @@ INSTALLED_APPS = [
     'django_select2',
     'django_pivot',
     "django_tables2",
-
+    'notifications',
     "crispy_forms",
     "crispy_bootstrap5",
     'django_crontab',
+
     # 'authtools',
 
 
@@ -85,7 +89,6 @@ INSTALLED_APPS = [
     "portal.apps.PortalConfig",
     "portaldata.apps.PortaldataConfig",
     "core.apps.CoreConfig",
-    'notifications',
 
 ]
 
@@ -98,10 +101,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
     # "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "ictobservatory.urls"
+
 
 TEMPLATES = [
     {
@@ -110,55 +115,34 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
+
                 "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-# INTERNAL_IPS = [
-#     # ...
-#     "127.0.0.1",
-#     # ...
-# ]
 
 WSGI_APPLICATION = "ictobservatory.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv('DB_NAME'),
-#         "USER": os.getenv('DB_USER'),
-#         "PASSWORD": os.getenv('DB_USER_PASSWORD'),
-#         "HOST": os.getenv('DB_HOST'),
-#         "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+DATABASES = {
+    "default": {
 
-#     }
-# }
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv('DB_NAME'),
+        "USER": os.getenv('DB_USER'),
+        "PASSWORD": os.getenv('DB_USER_PASSWORD'),
+        "HOST": os.getenv('DB_HOST'),
+        "PORT": '',
 
-DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
-
-# if DEVELOPMENT_MODE is True:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-#         }
-#     }
-# el
-
-if len(sys.argv) > 0:  # and sys.argv[1] != 'collectstatic':
-    if os.getenv("DATABASE_URL", None) is None:
-        raise Exception("DATABASE_URL environment variable not defined")
-    DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
     }
+}
 
 
 # Password validation
@@ -208,9 +192,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = "/static/"
 
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -242,24 +225,18 @@ SELECT2_JS = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.m
 SELECT2_CSS = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2.min.css"
 SELECT2_I18N_PATH = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/i18n"
 
+DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap4.html'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap4.html'
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_USER')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
-
-AUTHENTICATION_BACKENDS = [
-    'core.backends.ExtendedUserModelBackend',
-]
 
 
 JAZZMIN_SETTINGS = {
@@ -425,5 +402,7 @@ JAZZMIN_UI_TWEAKS = {
 #JAZZMIN_SETTINGS["show_ui_builder"] = True
 
 CRONJOBS = [
-    ('* * * * *', 'portaldata.cron.email_notifications')
+    #('* * * * *', 'portaldata.cron.email_notifications'),
+    ('0 0 * * *', 'portaldata.cron.reporting_period_open'),
+    ('0 0 1 * *', 'portaldata.cron.backup_db')
 ]

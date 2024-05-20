@@ -1970,6 +1970,7 @@ def chart_ict_contrib_gdp(year):
 
                 query_list.append(indicator_data)
 
+      
         for qs in query_list:
 
             data = []
@@ -1993,6 +1994,7 @@ def chart_ict_contrib_gdp(year):
                     data.append(entry.ind_value_adjusted)
 
             data_dict[indicator_label] = data
+          
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''

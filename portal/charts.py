@@ -507,15 +507,18 @@ def SunBurstChart(categories, data_dict, chart_title, y_axis_title, year, chart_
     color = get_random_colors((len(data_dict)*5))
 
     for k, v in data_dict.items():
+        if v:
 
-        data.append({
-            'name': k,
-            'y': v,
-            # 'z': 119,
-            # 'color': color[random.randint(0, len(color)-1)],
-            # if single series, don't show in legend
-            # 'showInLegend': False if len(data_dict) == 1 else True
-        })
+            data.append({
+                'name': k,
+                'y': v,
+                # 'z': 119,
+                # 'color': color[random.randint(0, len(color)-1)],
+                # if single series, don't show in legend
+                # 'showInLegend': False if len(data_dict) == 1 else True
+            })
+
+   
 
     chart = {
 
