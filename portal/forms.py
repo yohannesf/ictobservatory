@@ -100,7 +100,10 @@ class FilterForm(forms.Form):
         MEMBERSTATE_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
 
         # YEAR_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
-        INDICATOR_CHOICES.insert(0, ["all", "Select All"])  # type: ignore
+        
+        
+        INDICATOR_CHOICES.insert(0, ["all", "Select All Indicators"])  # type: ignore
+        INDICATOR_CHOICES.insert(1, ["exchange_rate", "Exchange Rate"])  # type: ignore
 
         self.fields['indicator_filter_field'] = forms.MultipleChoiceField(
             choices=INDICATOR_CHOICES, widget=Select2MultipleWidget)

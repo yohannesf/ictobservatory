@@ -200,6 +200,63 @@
 
   </script>
 
+  <script>
+    {% comment %} $(document).ready(function(){
+        // Bind event to the select element (assuming your dropdown has an id like #indicator_select)
+        $('#id_indicator_filter_field').change(function(){
+            // Get all the selected options
+            var selectedValues = $(this).val();
+
+            // Check if 'Exchange Rate' is selected
+            if(selectedValues.includes('exchange_rate')){
+                console.log("here");
+                // Deselect all other options and keep only 'Exchange Rate'
+                $(this).val(['exchange_rate']).trigger('change.select2');
+                //$(this).val(['exchange_rate']).trigger('change'); // 'change' to visually reflect the change
+            }
+        });
+    }); {% endcomment %}
+
+    $(document).ready(function(){
+      // Initialize Select2 if not already initialized
+      $('#id_indicator_filter_field').select2();
+  
+      // Select2 event listener for selection
+      $('#id_indicator_filter_field').on('select2:select', function(e) {
+          var selectedValues = $(this).val();
+  
+          // Check if 'Exchange Rate' is selected
+          if(selectedValues.includes('exchange_rate')){
+              console.log("Exchange Rate selected, limiting other selections.");
+              // Disable all other options but keep 'Exchange Rate' selectable
+              $('#id_indicator_filter_field option:not([value="exchange_rate"])').prop('disabled', true).trigger('change.select2');
+          } else if (selectedValues.length > 0) {
+              // If any other value is selected, disable 'Exchange Rate'
+              console.log("Other value selected, disabling Exchange Rate.");
+              $('#id_indicator_filter_field option[value="exchange_rate"]').prop('disabled', true).trigger('change.select2');
+          }
+      });
+  
+      // Re-enable everything when items are unselected
+      $('#id_indicator_filter_field').on('select2:unselect', function(e) {
+          var selectedValues = $(this).val();
+  
+          // If 'Exchange Rate' is unselected, re-enable all other options
+          if (!selectedValues.includes('exchange_rate')) {
+              console.log("Exchange Rate unselected, re-enabling other options.");
+              $('#id_indicator_filter_field option:not([value="exchange_rate"])').prop('disabled', false).trigger('change.select2');
+          }
+  
+          // If all selections are cleared, re-enable everything
+          if (selectedValues.length === 0) {
+              console.log("No selections, re-enabling everything.");
+              $('#id_indicator_filter_field option').prop('disabled', false).trigger('change.select2');
+          }
+      });
+  });
+  
+</script>
+
       
 {% endblock content %}
 
