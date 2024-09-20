@@ -247,6 +247,7 @@ def generate_report(request):
                                         'currency__member_state__member_state'],
                                     'reporting_year', 'exchange_rate', aggregation=Max)  # type: ignore
             print(pivot_table)
+            currency_data_type = "Exchange rate from 1 USD to the local currency."
             for item in list(pivot_table):
                 dict_values = list(item.keys())
 
