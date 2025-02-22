@@ -1,4 +1,5 @@
 
+
 from django.contrib.humanize.templatetags.humanize import intcomma
 
 from django.http import HttpResponse
@@ -190,6 +191,14 @@ class IndicatorDataTable(tables.Table):
                     paginator_class = tables.LazyPaginator
                     empty_text = 'Query did not return any results. Please refine your search.'
 
+                def __init__(self, *args, years=None, **kwargs):
+                    super().__init__(*args, **kwargs)
+                
+                    if years:
+                        for year in sorted(years):  # Force correct year order
+                            #print(year)
+                            self.base_columns[str(year)] = tables.Column() # type: ignore
+
 def generate_report(request):
     '''
     Report / Query Generator
@@ -246,14 +255,31 @@ def generate_report(request):
                                     ['currency__currency_label',
                                         'currency__member_state__member_state'],
                                     'reporting_year', 'exchange_rate', aggregation=Max)  # type: ignore
-            print(pivot_table)
+            #print(pivot_table)
             currency_data_type = "Exchange rate from 1 USD to the local currency."
             for item in list(pivot_table):
                 dict_values = list(item.keys())
 
-            dict_values = dict_values[2:]
-            print(dict_values)
-            tbl = ExchangeRateDataTable('')
+            #dict_values = dict_values[2:]
+            dict_values = [year for year in dict_values[2:] if any(year in row for row in pivot_table)]
+            #print(dict_values)
+            
+            #tbl = ExchangeRateDataTable('')
+            # 1️⃣ Reset only year columns (keep the static ones)
+            existing_columns = list(ExchangeRateDataTable.base_columns.keys()) # type: ignore
+
+            for col in existing_columns:
+                if col.isdigit():  # If column is a year, remove it
+                    del ExchangeRateDataTable.base_columns[col] # type: ignore
+
+            # 2️⃣ Add only the years present in pivot_table
+            for colname in dict_values:
+                if colname.isdigit():  # Ensure only numeric year columns are added
+                    column = tables.Column(orderable=False, empty_values=())
+                    ExchangeRateDataTable.base_columns[colname] = column # type: ignore
+
+            # 3️⃣ Create a new table instance
+            tbl = ExchangeRateDataTable(pivot_table)
 
             for colname in dict_values:
                 column = tables.Column(orderable=False, empty_values=None)
@@ -261,8 +287,11 @@ def generate_report(request):
                 tbl.base_columns[colname] = column  # type: ignore
 
             tbl = ExchangeRateDataTable(pivot_table)
+            #print(pivot_table)
+            
+            
 
-            print(tbl)
+            #print(tbl)
 
             RequestConfig(request).configure(tbl)
 
@@ -278,6 +307,9 @@ def generate_report(request):
                 return exporter.response(f"{file_name}"'.{}'.format(export_format))
             context = {"table": tbl, "form": form, "currency_indicators": currency_indicators,
                "currency_data_type": currency_data_type}
+            
+           
+
 
             return render(request, "portal/generatereport.html", context=context)
             
@@ -308,10 +340,13 @@ def generate_report(request):
             # this is not needed
 
             if years and years != ['Select All'] and 'Select All' not in years:
+                
                 ind_data = ind_data.filter(reporting_year__in=years)
             else:
                 ind_data = ind_data.filter(
                     reporting_year__in=get_published_years())
+                
+            
 
             if 'filter_usd' in request.GET:
 
@@ -342,15 +377,34 @@ def generate_report(request):
                                     ['indicator__label',
                                         'member_state__member_state'],
                                     'reporting_year', 'ind_value', aggregation=Max)  # type: ignore
+                
+            
 
             for item in list(pivot_table):
                 dict_values = list(item.keys())
 
             dict_values = dict_values[2:]
+            #print(dict_values)
 
             
 
-            tbl = IndicatorDataTable('')
+            #tbl = IndicatorDataTable('')
+            # 1️⃣ Reset only year columns (keep the static ones)
+            existing_columns = list(IndicatorDataTable.base_columns.keys()) # type: ignore
+
+            for col in existing_columns:
+                if col.isdigit():  # If column is a year, remove it
+                    del IndicatorDataTable.base_columns[col] # type: ignore
+
+            # 2️⃣ Add only the years present in pivot_table
+            for colname in dict_values:
+                if colname.isdigit():  # Ensure only numeric year columns are added
+                    column = tables.Column(orderable=False, empty_values=())
+                    IndicatorDataTable.base_columns[colname] = column # type: ignore
+
+            # 3️⃣ Create a new table instance
+            tbl = IndicatorDataTable(pivot_table)
+            
 
             for colname in dict_values:
                 column = tables.Column(orderable=False, empty_values=None)
@@ -358,6 +412,8 @@ def generate_report(request):
                 tbl.base_columns[colname] = column  # type: ignore
 
             tbl = IndicatorDataTable(pivot_table)
+          
+          
 
             RequestConfig(request).configure(tbl)
 
@@ -375,6 +431,9 @@ def generate_report(request):
             tbl = None
 
             pivot_table = None
+
+   
+
 
     context = {"table": tbl, "form": form, "currency_indicators": currency_indicators,
                "currency_data_type": currency_data_type}
