@@ -7,9 +7,34 @@ db.sqlite3
 .env_local
 .venv
 .venv/*
-/ictobservatory/settings-local.py
+/ictobservatory/settings_local.py
 /ictobservatory/settings-.py
 /ictobservatory/settings_.py
-/ictobservatory/settings-upload.py
+/ictobservatory/settings_upload.py
 /ictobservatory/settings-sadc.py
 /ictobservatory/settings.py
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+venv/
+.env/
+
+# Django static files (generated)
+staticfiles/
+static/
+
+# SQLite DB
+db.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+python-version

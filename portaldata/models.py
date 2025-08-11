@@ -242,7 +242,7 @@ class MemberState(models.Model):
     MEMBERSTATE_STATUS_CHOICES = [(True, "Active"), (False, "Inactive")]
 
     member_state = models.CharField(
-        max_length=255, unique=True, verbose_name="Memeber State"
+        max_length=255, unique=True, verbose_name="Member State"
     )
     member_state_short_name = models.CharField(
         max_length=30, blank=True, verbose_name="Short Name"

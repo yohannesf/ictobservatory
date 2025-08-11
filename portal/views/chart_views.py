@@ -639,8 +639,10 @@ def chart_telecom_revenue(year):
     return recieved
 
 
+'''
+Previous Chart - before fixing
 def chart_internet_user_penetration(year):
-    ''' This is for Internet User Penetration Chart'''
+    #This is for Internet User Penetration Chart
 
     categories = []
 
@@ -681,7 +683,7 @@ def chart_internet_user_penetration(year):
                 indicator_data = get_validated_data(
                     indicator=item.indicator, reporting_year=year)
 
-                '''per100 canculates the Per 100 inhabitat with the value/population * 100'''
+                #per100 canculates the Per 100 inhabitat with the value/population * 100
                 if item.extra_calculation == 'per100':
 
                     qs = []
@@ -747,7 +749,7 @@ def chart_internet_user_penetration(year):
         data_dict[indicator_label] = data
 
         if aggregation:
-            '''if the chart requires aggregation of data across member states'''
+            #if the chart requires aggregation of data across member states
             if aggregation == 'sum':
                 categories.append("SADC Total")
 
@@ -763,6 +765,184 @@ def chart_internet_user_penetration(year):
                              chart_title=chart_title, y_axis_title=y_axis_title, year=year,
                              valign='bottom', floating=False, layout='horizontal',
                              width='120', chart_color=sixcolors, chart_description=chart_description)
+
+    return chart_html
+
+'''
+
+def chart_internet_user_penetration(year):
+    """
+    Builds the Internet User Penetration chart for the given year.
+    Fixes SADC Average calculation to use a population-weighted average
+    for 'per100' series instead of a simple mean.
+
+    Args:
+        year (int): Reporting year for the chart
+
+    Returns:
+        ColumnChart: Configured chart HTML object
+    """
+
+    categories = []       # X-axis labels (countries + SADC roll-up)
+    query_list = []       # Per-series list of IndicatorData querysets
+    population_list = []  # List of population values (not directly used in new logic)
+    pop_by_state = {}     # NEW: Cache population per member_state_id for the given year
+    data_dict = {}        # Chart data: {series_label: [values...]}
+
+    chart_title = ''
+    y_axis_title = ''
+    aggregation = ''
+    chart_description = ''
+    indicator_label = ''
+
+    # Get the chart definition
+    chart = Chart.objects.filter(chart_name='chart_internet_user_penetration').first()
+
+    if chart:
+        chart_title = chart.chart_title
+        y_axis_title = chart.y_axis_title
+        aggregation = chart.aggregation
+        chart_description = chart.description
+
+        indicators_list = ChartConfig.objects.filter(chart=chart)
+
+        # Find the "Population" indicator for per-100 calculations
+        population_cfg = ChartConfig.objects.filter(series_name="Population").first()
+        population_indicator = population_cfg.indicator if population_cfg else None
+
+        if indicators_list:
+            for item in indicators_list:
+                # Get validated data for this indicator/year
+                indicator_data = get_validated_data(
+                    indicator=item.indicator,
+                    reporting_year=year
+                )
+
+                # If extra_calculation == 'per100', convert from raw to per-100 using population
+                if item.extra_calculation == 'per100' and population_indicator:
+                    for i in indicator_data:
+                        try:
+                            # Use cached population if available
+                            pop = pop_by_state.get(i.member_state)
+                            if pop is None:
+                                pop = IndicatorData.objects.get(
+                                    indicator=population_indicator,
+                                    reporting_year=year,
+                                    member_state=i.member_state
+                                ).ind_value
+                                pop_by_state[i.member_state] = pop
+
+                            # Compute per 100 inhabitants
+                            if i.ind_value_adjusted and pop:
+                                per100 = round((float(i.ind_value_adjusted) / float(pop)) * 100, 2)
+                                i.ind_value_adjusted = str(per100)
+                            else:
+                                i.ind_value_adjusted = ''
+                        except IndicatorData.DoesNotExist:
+                            i.ind_value_adjusted = ''
+
+                query_list.append(indicator_data)
+
+    # Build chart data
+    for qs in query_list:
+        data = []
+        if not qs:
+            continue  # Skip empty querysets
+
+        # All entries in qs share the same indicator → grab ChartConfig
+        chart_indicator = ChartConfig.objects.filter(indicator=qs[0].indicator).first()
+        indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else qs[0].indicator.label
+
+        for entry in qs:
+            categories.append(entry.member_state.member_state_short_name or entry.member_state.member_state)
+            if entry.ind_value_adjusted not in ('', None):
+                data.append(float(entry.ind_value_adjusted))
+            else:
+                data.append(entry.ind_value_adjusted)
+
+        data_dict[indicator_label] = data
+
+        # Append SADC roll-up if needed
+        if aggregation:
+            if aggregation == 'sum':
+                categories.append("SADC Total")
+                data_dict[indicator_label].append(sum_val(data_dict, indicator_label))
+
+            elif aggregation == 'avg':
+                # --- BEGIN robust weighted-average block ---
+                # Decide if this series is a per-100 rate:
+                # Use any of: ChartConfig.extra_calculation, series label, or indicator.unit
+                label_l = (indicator_label or '').lower()
+                indicator_unit = getattr(qs[0].indicator, 'unit', '') if qs else ''
+                unit_l = (indicator_unit or '').lower()
+                is_per100 = (
+                    (chart_indicator and getattr(chart_indicator, 'extra_calculation', None) == 'per100')
+                    or ('per 100' in label_l)
+                    or ('per100' in label_l)
+                    or ('per 100' in unit_l)
+                    or ('per100' in unit_l)
+                )
+
+                # Ensure we know how to fetch population
+                population_cfg = ChartConfig.objects.filter(series_name="Population").first()
+                population_indicator = population_cfg.indicator if population_cfg else None
+
+                # Build a local population cache if needed
+                local_pop = {}
+                if is_per100 and population_indicator:
+                    for entry in qs:
+                        if entry.member_state_id in pop_by_state:
+                            local_pop[entry.member_state_id] = pop_by_state[entry.member_state_id]
+                            continue
+                        try:
+                            p = IndicatorData.objects.get(
+                                indicator=population_indicator,
+                                reporting_year=year,
+                                member_state=entry.member_state
+                            ).ind_value
+                            local_pop[entry.member_state_id] = p
+                            pop_by_state[entry.member_state_id] = p  # keep global cache warm
+                        except IndicatorData.DoesNotExist:
+                            local_pop[entry.member_state_id] = None
+
+                if is_per100 and population_indicator:
+                    # Population-weighted average: sum((pct/100)*pop) / sum(pop) * 100
+                    weighted_num = 0.0
+                    weighted_den = 0.0
+                    for entry in qs:
+                        val = entry.ind_value_adjusted
+                        pop = local_pop.get(entry.member_state_id)
+                        if val not in ('', None) and pop:
+                            try:
+                                v = float(val)
+                                weighted_num += (v / 100.0) * float(pop)
+                                weighted_den += float(pop)
+                            except (TypeError, ValueError):
+                                pass
+
+                    weighted_pct = round((weighted_num / weighted_den) * 100, 2) if weighted_den else None
+                    categories.append("SADC Average")
+                    data_dict[indicator_label].append(weighted_pct if weighted_pct is not None else '')
+                else:
+                    # Not a per-100 series → simple mean of available numeric entries
+                    categories.append("SADC Average")
+                    data_dict[indicator_label].append(round(mean_val(data_dict, indicator_label), 2))
+                # --- END robust weighted-average block ---
+
+    # Build and return chart HTML
+    chart_html = ColumnChart(
+        categories=categories,
+        data_dict=data_dict,
+        chart_title=chart_title,
+        y_axis_title=y_axis_title,
+        year=year,
+        valign='bottom',
+        floating=False,
+        layout='horizontal',
+        width='120',
+        chart_color=sixcolors,
+        chart_description=chart_description
+    )
 
     return chart_html
 
@@ -1200,8 +1380,9 @@ def chart_fixed_telephone_line(year):
     return chart_html
 
 
+'''OLD CODE
 def chart_pop_coveredby_mobl_network(year):
-    ''' This is for Population Covered by Mobile Network Chart'''
+     #This is for Population Covered by Mobile Network Chart
 
     categories = []
 
@@ -1276,7 +1457,7 @@ def chart_pop_coveredby_mobl_network(year):
         avg_pop_coverage_3g = "-"
 
     if aggregation:
-        '''if the chart requires aggregation of data across member states'''
+       #if the chart requires aggregation of data across member states
         if aggregation == 'sum':
             categories.append("SADC Total")
 
@@ -1297,6 +1478,165 @@ def chart_pop_coveredby_mobl_network(year):
                              chart_color=tricolors, chart_description=chart_description)
 
     return chart_html
+'''
+
+def chart_pop_coveredby_mobl_network(year):
+    """
+    Percentage of Population Covered by Mobile Network (by Member State + SADC roll-up)
+
+    - Categories (countries) are built ONCE from the first series only.
+    - Adds a single 'SADC Average' label at the end of categories.
+    - Population-weighted SADC Average for percentage/rate series.
+    - Simple-mean fallback for non-rate series or when population missing.
+    - Restores top-card value `avg_pop_coverage_3g` (simple mean as before).
+    """
+
+    # ---------- setup ----------
+    categories = []           # x-axis labels (countries ... + 'SADC Average')
+    data_dict = {}            # {series_label: [values per country, ... , sadc_avg]}
+    series_infos = []         # keep (series_label, qs, chart_indicator) for later
+    pop_by_state = {}         # cache: {member_state_id: population}
+
+    chart_title = ''
+    y_axis_title = ''
+    aggregation = ''
+    chart_description = ''
+    indicator_label = ''
+    categories_built = False  # build country labels only once
+
+    chart = Chart.objects.filter(chart_name='chart_pop_coveredby_mobl_network').first()
+    if chart:
+        chart_title = chart.chart_title
+        y_axis_title = chart.y_axis_title
+        aggregation = chart.aggregation
+        chart_description = chart.description
+
+        indicators_list = ChartConfig.objects.filter(chart=chart)
+
+        # population indicator (for weighting)
+        population_cfg = ChartConfig.objects.filter(series_name="Population").first()
+        population_indicator = population_cfg.indicator if population_cfg else None
+
+        if indicators_list:
+            for item in indicators_list:
+                qs = get_validated_data(indicator=item.indicator, reporting_year=year)
+                if not qs:
+                    continue
+
+                chart_indicator = ChartConfig.objects.filter(indicator=qs[0].indicator).first()
+                series_label = (
+                    chart_indicator.series_name if chart_indicator and chart_indicator.series_name
+                    else qs[0].indicator.label
+                )
+                series_infos.append((series_label, qs, chart_indicator))
+
+                # build categories once from the first series only
+                if not categories_built:
+                    for entry in qs:
+                        categories.append(entry.member_state.member_state_short_name or entry.member_state.member_state)
+                    categories_built = True
+
+                # collect series values (per-country)
+                series_vals = []
+                for entry in qs:
+                    val = entry.ind_value_adjusted if entry.ind_value_adjusted not in (None, '') else entry.ind_value
+                    try:
+                        series_vals.append(float(val))
+                    except (TypeError, ValueError):
+                        series_vals.append('')  # keep blank for missing
+
+                data_dict[series_label] = series_vals
+
+    # ---------- restore top-card value (simple mean as before) ----------
+    global avg_pop_coverage_3g
+    series_key = 'Percentage of population covered by at least a 3G mobile network'
+    if series_key in data_dict:
+        vals = data_dict[series_key]
+        numeric = [v for v in vals if isinstance(v, (int, float))]
+        avg_pop_coverage_3g = round(sum(numeric) / len(numeric), 1) if numeric else "-"
+    else:
+        avg_pop_coverage_3g = "-"
+
+    # ---------- append SADC Average ----------
+    if aggregation and series_infos:
+        # add the SADC Average label ONCE at the end
+        categories.append("SADC Average")
+
+        for series_label, qs, chart_indicator in series_infos:
+            if aggregation == 'sum':
+                # sum across existing numeric entries
+                numeric_vals = [v for v in data_dict[series_label] if isinstance(v, (int, float))]
+                sadc_val = round(sum(numeric_vals), 2) if numeric_vals else ''
+                data_dict[series_label].append(sadc_val)
+                continue
+
+            if aggregation == 'avg':
+                # detect if series is a percentage/rate that should be population-weighted
+                label_l = (series_label or '').lower()
+                indicator_unit = getattr(qs[0].indicator, 'unit', '') if qs else ''
+                unit_l = (indicator_unit or '').lower()
+                is_rate = (
+                    'percentage of population covered' in label_l
+                    or 'percent' in unit_l
+                    or 'per 100' in label_l
+                    or 'per 100' in unit_l
+                )
+
+                if is_rate and population_indicator:
+                    # warm population cache for the exact states in this series
+                    local_pop = {}
+                    for entry in qs:
+                        mid = entry.member_state_id
+                        if mid not in pop_by_state:
+                            try:
+                                p = IndicatorData.objects.get(
+                                    indicator=population_indicator,
+                                    reporting_year=year,
+                                    member_state=entry.member_state
+                                ).ind_value
+                                pop_by_state[mid] = p
+                            except IndicatorData.DoesNotExist:
+                                pop_by_state[mid] = None
+                        local_pop[mid] = pop_by_state[mid]
+
+                    # weighted average: sum((pct/100)*pop) / sum(pop) * 100
+                    w_num = 0.0
+                    w_den = 0.0
+                    for entry in qs:
+                        val = entry.ind_value_adjusted if entry.ind_value_adjusted not in (None, '') else entry.ind_value
+                        pop = local_pop.get(entry.member_state_id)
+                        if val not in (None, '') and pop:
+                            try:
+                                v = float(val)  # 0–100 percent
+                                w_num += (v / 100.0) * float(pop)
+                                w_den += float(pop)
+                            except (TypeError, ValueError):
+                                pass
+
+                    sadc_avg = round((w_num / w_den) * 100, 2) if w_den else ''
+                    data_dict[series_label].append(sadc_avg)
+
+                else:
+                    # simple mean over numeric entries
+                    numeric_vals = [v for v in data_dict[series_label] if isinstance(v, (int, float))]
+                    sadc_avg = round(sum(numeric_vals) / len(numeric_vals), 2) if numeric_vals else ''
+                    data_dict[series_label].append(sadc_avg)
+
+    # ---------- render ----------
+    chart_html = ColumnChart(
+        categories=categories,
+        data_dict=data_dict,
+        chart_title=chart_title,
+        y_axis_title=y_axis_title,
+        year=year,
+        chart_color=tricolors,
+        chart_description=chart_description
+    )
+    return chart_html
+
+
+
+
 
 
 def chart_mobl_geog_coverage(year):
@@ -1687,8 +2027,9 @@ def chart_inter_internet_bandwidth_per_user(year):
     return chart_html
 
 
+''' OLD CODE
 def chart_fixed_telephone_tariffs(year):
-    ''' This is for Fixed Telephone Tariffs'''
+    # This is for Fixed Telephone Tariffs
 
     categories = []
 
@@ -1749,7 +2090,7 @@ def chart_fixed_telephone_tariffs(year):
         data_dict[indicator_label] = data
 
         if aggregation:
-            '''if the chart requires aggregation of data across member states'''
+            #if the chart requires aggregation of data across member states
             if aggregation == 'sum':
                 categories.append("SADC Total")
 
@@ -1767,6 +2108,118 @@ def chart_fixed_telephone_tariffs(year):
                              y_axis_title=y_axis_title, year=year,
                              round='3', chart_color=sixcolors, chart_description=chart_description)
 
+    return chart_html
+'''
+
+def chart_fixed_telephone_tariffs(year):
+    """
+    Fixed Telephone Tariffs (per Member State + SADC roll-up)
+
+    Fixes for 2023:
+    - Skips any pre-aggregated rows like 'SADC Average'/'SADC Total' that may be present in the data.
+    - Builds country categories once from the first series only.
+    - Appends a single 'SADC Average' label at the end and computes the mean over numeric entries.
+    - Rounds the appended SADC average to 4 decimals (to match existing behavior).
+
+    Args:
+        year (int): Reporting year.
+    Returns:
+        ColumnChart
+    """
+
+    # ---------- setup ----------
+    categories = []            # x-axis labels (countries ... + 'SADC Average' if needed)
+    data_dict = {}             # {series_label: [per-country values ... , sadc_avg]}
+    series_infos = []          # [(series_label, qs, chart_indicator)]
+    categories_built = False
+
+    chart_title = ''
+    y_axis_title = ''
+    aggregation = ''
+    chart_description = ''
+    indicator_label = ''
+
+    # ---------- fetch chart & configs ----------
+    chart = Chart.objects.filter(chart_name='chart_fixed_telephone_tariffs').first()
+    if chart:
+        chart_title = chart.chart_title
+        y_axis_title = chart.y_axis_title
+        aggregation = chart.aggregation
+        chart_description = chart.description
+
+        indicators_list = ChartConfig.objects.filter(chart=chart)
+
+        if indicators_list:
+            for item in indicators_list:
+                # validated rows for this series/year
+                qs = get_validated_data(indicator=item.indicator, reporting_year=year)
+                if not qs:
+                    continue
+
+                chart_indicator = ChartConfig.objects.filter(indicator=qs[0].indicator).first()
+                series_label = (
+                    chart_indicator.series_name if chart_indicator and chart_indicator.series_name
+                    else qs[0].indicator.label
+                )
+                series_infos.append((series_label, qs, chart_indicator))
+
+                # Build categories ONCE from the first series, skipping any pre-aggregated rows
+                if not categories_built:
+                    for entry in qs:
+                        name = entry.member_state.member_state_short_name or entry.member_state.member_state
+                        if name and name.lower() not in ('sadc average', 'sadc total'):
+                            categories.append(name)
+                    categories_built = True
+
+                # Collect this series' per-country values (skip any pre-aggregated rows)
+                series_vals = []
+                for entry in qs:
+                    name = entry.member_state.member_state_short_name or entry.member_state.member_state
+                    if name and name.lower() in ('sadc average', 'sadc total'):
+                        continue  # ignore pre-aggregated rows in the raw data
+
+                    # Prefer adjusted value; fallback to raw
+                    val = entry.ind_value_adjusted if entry.ind_value_adjusted not in (None, '') else entry.ind_value
+                    try:
+                        # round to 4 decimals per original intent
+                        series_vals.append(round(float(val), 4))
+                    except (TypeError, ValueError):
+                        series_vals.append('')
+
+                data_dict[series_label] = series_vals
+
+    # ---------- append SADC roll-up ----------
+    if aggregation and series_infos:
+        # add the SADC label once at the end (not per-series)
+        if aggregation == 'sum':
+            categories.append("SADC Total")
+        elif aggregation == 'avg':
+            categories.append("SADC Average")
+
+        for series_label, qs, chart_indicator in series_infos:
+            if aggregation == 'sum':
+                # sum across numeric entries (ignore blanks)
+                numeric_vals = [v for v in data_dict[series_label] if isinstance(v, (int, float))]
+                sadc_val = round(sum(numeric_vals), 4) if numeric_vals else ''
+                data_dict[series_label].append(sadc_val)
+
+            elif aggregation == 'avg':
+                # simple mean across numeric entries (ignore blanks)
+                numeric_vals = [v for v in data_dict[series_label] if isinstance(v, (int, float))]
+                sadc_avg = round(sum(numeric_vals) / len(numeric_vals), 4) if numeric_vals else ''
+                data_dict[series_label].append(sadc_avg)
+
+    # ---------- render ----------
+    chart_html = ColumnChart(
+        categories=categories,
+        data_dict=data_dict,
+        chart_title=chart_title,
+        y_axis_title=y_axis_title,
+        year=year,
+        round='3',
+        chart_color=sixcolors,
+        chart_description=chart_description
+    )
     return chart_html
 
 
@@ -1904,12 +2357,21 @@ def chart_literacy_rate(year):
 
             indicator_label = chart_indicator.series_name if chart_indicator and chart_indicator.series_name else entry.indicator.label
 
+            '''
+            OLD APPROACH
             if (entry.ind_value_adjusted):
                 data.append(float(entry.ind_value_adjusted))
             else:
-                data.append(entry.ind_value_adjusted)
+                data.append(entry.ind_value_adjusted)'''
+            
 
-        data_dict[indicator_label] = data
+            val = entry.ind_value_adjusted if entry.ind_value_adjusted not in (None, '') else entry.ind_value
+            try:
+                data.append(float(val))
+            except (TypeError, ValueError):
+                data.append('')  # keep blanks for non-numeric/missing
+
+    data_dict[indicator_label] = data
 
     if aggregation:
         '''if the chart requires aggregation of data across member states'''
@@ -1919,11 +2381,21 @@ def chart_literacy_rate(year):
             data_dict[indicator_label].append(
                 sum_val(data_dict, indicator_label))
 
+            ''' OLD CODE
+            elif aggregation == 'avg':
+                categories.append("SADC Average")
+
+                data_dict[indicator_label].append(
+                    mean_val(data_dict, indicator_label))
+            '''
         elif aggregation == 'avg':
             categories.append("SADC Average")
-
-            data_dict[indicator_label].append(
-                mean_val(data_dict, indicator_label))
+            numeric_vals = [
+                v for v in data_dict[indicator_label]
+                if isinstance(v, (int, float))
+            ]
+            sadc_avg = round(sum(numeric_vals)/len(numeric_vals), 2) if numeric_vals else ''
+            data_dict[indicator_label].append(sadc_avg)
 
     chart_html = ColumnChart(categories=categories, data_dict=data_dict,
                              chart_title=chart_title,
